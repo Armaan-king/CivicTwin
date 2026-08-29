@@ -1,0 +1,238 @@
+/* CivicTwin design system.
+   One source of truth for the phosphor world. Every value here was contrast-checked
+   against the ground; see the audit note beside each text tier. */
+
+:root {
+  /* ground */
+  --ground: #0c0b0a;
+  --panel: #0f0e0c;
+
+  /* text: warm neutral in three steps. amber is an accent, never the body colour. */
+  --t1: #e6e1d8; /* 15.1:1 */
+  --t2: #a9a296; /*  7.8:1 */
+  --t3: #847d73; /*  4.8:1 */
+
+  /* accent and alert. these two only. */
+  --gold: #f2b024; /* 10.3:1 */
+  --alert: #ef4e36; /*  5.4:1 */
+
+  /* rules, in four weights. 1px only, never thicker. */
+  --rule-strong: #3a342c;
+  --rule: #2b2721;
+  --rule-dim: #221f1b;
+  --rule-faint: #1e1b17;
+
+  /* figure fills for the population field */
+  --fig-none: #332f29;
+  --fig-quiet: #5a5349;
+
+  /* button ramp */
+  --btn-top: #f9be3a;
+  --btn-bottom: #de9a12;
+  --btn-border: #b87f10;
+  --btn-top-hover: #fdcb55;
+  --btn-bottom-hover: #e9a81e;
+  --btn-ink: #191309;
+
+  /* type ramp. seven rungs with real gaps between them, so things can recede.
+     the old ramp clustered six sizes between 10 and 15px, which is why every
+     element read at the same volume. */
+  --fs-12: 12px;   /* meta, only where it must be small */
+  --fs-14: 14px;   /* secondary */
+  --fs-16: 16px;   /* body */
+  --fs-20: 20px;   /* lead */
+  --fs-28: 28px;   /* section */
+  --fs-40: 40px;   /* figure */
+  --fs-64: 64px;   /* display */
+  --fs-112: 112px; /* hero only */
+
+  /* spacing. one scale, used everywhere. */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 36px;
+  --s-5: 56px;
+  --s-6: 80px;
+
+  --font-display: "Space Mono", "IBM Plex Mono", ui-monospace, monospace;
+  --font-ui: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--t1);
+  font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* browser surfaces belong to the design system too */
+::selection { background: var(--gold); color: var(--ground); }
+* { caret-color: var(--gold); }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: var(--ground); }
+::-webkit-scrollbar-thumb { background: #2e2a25; }
+:focus-visible { outline: 1px solid var(--gold); outline-offset: 2px; }
+
+a { color: var(--gold); text-underline-offset: 3px; }
+a:hover { color: #f9ce6a; }
+/* the wordmark is a link home; make that legible without underlining it */
+a.gold { transition: opacity .16s ease; }
+a.gold:hover { opacity: .72; color: var(--gold); }
+
+/* ---- CRT surface. sits UNDER the interface, never over it. ---- */
+.crt-scan,
+.crt-vig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.crt-scan {
+  background: repeating-linear-gradient(
+    0deg, rgba(0, 0, 0, 0.1) 0 1px, rgba(0, 0, 0, 0) 1px 4px
+  );
+}
+.crt-vig {
+  background: radial-gradient(
+    132% 112% at 50% 48%, transparent 56%, rgba(0, 0, 0, 0.44) 100%
+  );
+}
+.crt-amb {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    820px 560px at 66% 34%, rgba(242, 176, 36, 0.045), transparent 68%
+  );
+}
+
+/* ---- text tiers ---- */
+.t1 { color: var(--t1); }
+.t2 { color: var(--t2); }
+.t3 { color: var(--t3); }
+.gold { color: var(--gold); }
+.alert { color: var(--alert); }
+.display { font-family: var(--font-display); font-weight: 700; }
+
+/* ---- controls ---- */
+.btn,
+.btn-ghost {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-14);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 0;
+  font-family: inherit;
+  transition: background 0.18s ease, border-color 0.18s ease,
+              color 0.18s ease, transform 0.12s ease;
+}
+
+.btn {
+  padding: 13px 54px 13px 22px;
+  border: 1px solid var(--btn-border);
+  background: linear-gradient(180deg, var(--btn-top) 0%, var(--btn-bottom) 100%);
+  color: var(--btn-ink);
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255, 246, 222, 0.72),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+/* the trailing block: interest lives at the edge, never across the label */
+.btn::before {
+  content: "";
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 38px;
+  border-left: 1px solid rgba(25, 19, 9, 0.26);
+  background: rgba(25, 19, 9, 0.08);
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  right: 17px; top: 50%;
+  width: 6px; height: 6px;
+  margin-top: -3px;
+  border-right: 1.6px solid var(--btn-ink);
+  border-top: 1.6px solid var(--btn-ink);
+  transform: rotate(45deg);
+  transition: right 0.18s ease;
+}
+.btn:hover {
+  background: linear-gradient(180deg, var(--btn-top-hover) 0%, var(--btn-bottom-hover) 100%);
+}
+.btn:hover::after { right: 14px; }
+.btn:active {
+  transform: translateY(1px) scale(0.994);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.btn-ghost {
+  padding: 13px 50px 13px 20px;
+  border: 1px solid #77652b;
+  color: #f4c868;
+  background: linear-gradient(180deg, rgba(242, 176, 36, 0.1), rgba(242, 176, 36, 0.02));
+  box-shadow: inset 0 1px 0 rgba(240, 200, 130, 0.13);
+}
+.btn-ghost::before {
+  content: "";
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 34px;
+  border-left: 1px solid rgba(242, 176, 36, 0.24);
+}
+.btn-ghost::after {
+  content: "";
+  position: absolute;
+  right: 15px; top: 50%;
+  width: 6px; height: 6px;
+  margin-top: -3px;
+  border-right: 1.6px solid #e5a72c;
+  border-top: 1.6px solid #e5a72c;
+  transform: rotate(45deg);
+  transition: right 0.18s ease;
+}
+.btn-ghost:hover { border-color: #e5a72c; color: #fce4a8; background: rgba(242, 176, 36, 0.14); }
+.btn-ghost:hover::after { right: 12px; }
+.btn-ghost:active { transform: translateY(1px) scale(0.994); box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.28); }
+
+.box { border: 1px solid var(--rule); }
+.box-alert { border: 1px solid #7c3025; }
+
+/* ---- motion. one authored moment, and it collapses cleanly. ---- */
+@keyframes fig-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fig-hot { 0%, 100% { opacity: 0.62; } 50% { opacity: 1; } }
+@keyframes ring-out { 0% { r: 10; opacity: 0.3; } 100% { r: 310; opacity: 0; } }
+@keyframes dash-flow { to { stroke-dashoffset: -280; } }
+@keyframes caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+.fig { animation: fig-in 0.5s ease-out both; }
+.fig-hot { animation: fig-in 0.5s ease-out both, fig-hot 3.4s ease-in-out infinite 1.2s; }
+.ring { animation: ring-out 4.4s ease-out infinite; }
+.flow { stroke-dasharray: 5 9; animation: dash-flow 3.8s linear infinite; }
+.caret { animation: caret 1.15s step-end infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fig, .fig-hot, .ring, .flow, .caret {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  .ring { display: none; }
+}
+
+/* ---- narrow screens. the demo may run on a 1280 laptop or a 1024 projector,
+   and a three-zone grid at that width crushes every column. ---- */
+@media (max-width: 1180px) {
+  .grid-split { grid-template-columns: minmax(0, 1fr) !important; }
+  .grid-split > aside,
+  .grid-split > nav { max-height: none !important; }
+  .pad-wide { padding-left: var(--s-4) !important; padding-right: var(--s-4) !important; }
+}

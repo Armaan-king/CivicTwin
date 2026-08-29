@@ -1,0 +1,178 @@
+"""CivicTwin API.
+
+Serves the routes in docs/architecture.md section 5 against the committed fixture, so the
+frontend can flip from VITE_TRANSPORT=fixture to http and get identical shapes back. As
+each engine workstream lands (W3 population, W4 simulation, W5 audit) the handler bodies
+are replaced; the routes and the schemas do not move.
+
+    uvicorn app.main:app --reload --port 8000     (from backend/)
+"""
+from __future__ import annotations
+
+import asyncio
+import json
+import pathlib
+import uuid
+from typing import Any
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
+
+from app.agents.policy_interpreter import PolicyInterpretationFailed, interpret
+from app.schemas.policy import StartRunRequest, StartRunResponse
+from app.schemas.run import Intervention, SimulationRun
+from app.services.llm import LLMError, TELEMETRY, build_client
+
+FIXTURE = pathlib.Path(__file__).resolve().parents[2] / "data" / "fixtures" / "demo_run.json"
+
+app = FastAPI(title="CivicTwin", version="0.1.0")
+
+# the Vite dev server. tighten before anything leaves a laptop.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
+_llm = build_client()
+_run_cache: SimulationRun | None = None
+
+
+def load_run() -> SimulationRun:
+    """Produce the current run.
+
+    ############################################################################
+    #  W4 IMPLEMENTERS: THIS IS THE FUNCTION YOU REPLACE.
+    #
+    #  Today it reads data/fixtures/demo_run.json. Replace the body with a call
+    #  into backend/app/simulation/, and keep the return type. The SimulationRun
+    #  validation below is the contract check: an engine that drifts from the
+    #  schema fails here, loudly, instead of quietly in the browser.
+    #
+    #  Do NOT extend scripts/make_fixture.py. That script generates the demo
+    #  fixture and is deliberately not the engine. See backend/IMPLEMENTING.md.
+    ############################################################################
+    """
+    global _run_cache
+    if _run_cache is None:
+        if not FIXTURE.exists():
+            raise HTTPException(
+                503, "No run available. Generate one with python scripts/make_fixture.py")
+        raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+        # validated once, at the boundary. ~10 ms for 2,000 personas.
+        _run_cache = SimulationRun.model_validate(raw)
+    return _run_cache
+
+
+@app.get("/health")
+def health() -> dict[str, Any]:
+    return {
+        "ok": True,
+        "run_available": FIXTURE.exists(),
+        "llm_provider": _llm.completion.name,
+        "llm_calls": len(TELEMETRY.calls),
+    }
+
+
+# ----------------------------------------------------------------- reads
+@app.get("/api/runs/{run_id}", response_model=SimulationRun)
+def get_run(run_id: str) -> SimulationRun:
+    run = load_run()
+    if run_id not in ("latest", run.run_id):
+        raise HTTPException(404, f"No run {run_id}")
+    return run
+
+
+@app.get("/api/runs/{run_id}/interventions", response_model=list[Intervention])
+def get_interventions(run_id: str) -> list[Intervention]:
+    return get_run(run_id).interventions
+
+
+@app.get("/api/runs/{run_id}/impacts")
+def get_impacts(run_id: str) -> dict[str, Any]:
+    run = get_run(run_id)
+    return {"metrics": run.metrics.model_dump(), "events": [e.model_dump() for e in run.events]}
+
+
+@app.get("/api/consultations/{consultation_id}")
+def get_consultation(consultation_id: str) -> dict[str, Any]:
+    return get_run("latest").consultation.model_dump(by_alias=True)
+
+
+# ----------------------------------------------------------------- writes
+@app.post("/api/runs", response_model=StartRunResponse)
+def start_run(req: StartRunRequest) -> StartRunResponse:
+    """Interpret a proposal. Fails loudly rather than guessing (AGENTS.md 18)."""
+    try:
+        policy = interpret(req.policy_text, _llm)
+    except PolicyInterpretationFailed as exc:
+        # the text was understood but produced nothing simulable: the planner can fix this
+        raise HTTPException(422, exc.detail) from exc
+    except LLMError as exc:
+        # the model itself is unreachable or misbehaving: not the planner's fault, and not
+        # something to paper over with a plausible default
+        raise HTTPException(502, f"The interpreter is unavailable: {exc}") from exc
+    return StartRunResponse(run_id=f"run_{uuid.uuid4().hex[:6]}", policy=policy)
+
+
+class FeedbackIn(BaseModel):
+    support: int = Field(ge=1, le=5)
+    perceived_fairness: int | None = Field(default=None, ge=1, le=5)
+    clarity_of_explanation: int | None = Field(default=None, ge=1, le=5)
+    confidence_in_delivery: int | None = Field(default=None, ge=1, le=5)
+    expected_personal_impact: int | None = Field(default=None, ge=-2, le=2)
+    comment: str | None = Field(default=None, max_length=2000)
+    cohort: dict[str, str] | None = None
+
+
+@app.post("/api/consultations/{consultation_id}/feedback")
+def submit_feedback(consultation_id: str, body: FeedbackIn) -> dict[str, str]:
+    # W7 persists this. Accepted and validated now so the citizen page is wired end to end.
+    return {"response_id": f"r_{uuid.uuid4().hex[:8]}", "status": "recorded"}
+
+
+class CalibrationDecision(BaseModel):
+    approved: bool
+
+
+@app.post("/api/runs/{run_id}/calibration/apply")
+def apply_calibration(run_id: str, body: CalibrationDecision) -> dict[str, str]:
+    """Human approval, always. Never applied automatically (scenario-v1.md L3)."""
+    return {"status": "applied" if body.approved else "rejected", "recorded": "true"}
+
+
+# ----------------------------------------------------- streaming rounds
+@app.post("/api/runs/{run_id}/rounds/stream")
+async def stream_rounds(run_id: str) -> StreamingResponse:
+    """NDJSON, one object per line. architecture.md 5.1.
+
+    Replays the recorded chain round by round so the UI can show the cascade
+    propagating rather than appearing fully formed.
+    """
+    run = get_run(run_id)
+    events = [e.model_dump() for e in run.events]
+
+    async def gen():
+        for rnd in (1, 2, 3):
+            in_round = [e for e in events if e["round"] == rnd]
+            yield json.dumps({
+                "type": "round_start", "round": rnd,
+                "active": sorted({e["persona_id"] for e in in_round})[:200],
+            }) + "\n"
+            for e in in_round[:120]:          # cap the wire, not the model
+                yield json.dumps({
+                    "type": "event", "round": rnd, "persona_id": e["persona_id"],
+                    "event": e["kind"], "before": e["before"], "after": e["after"],
+                    "cause": e["cause"],
+                }) + "\n"
+                await asyncio.sleep(0.004)
+            yield json.dumps({
+                "type": "round_complete", "round": rnd,
+                "changed": sorted({e["persona_id"] for e in in_round})[:200],
+            }) + "\n"
+        yield json.dumps({"type": "complete", "run_id": run.run_id}) + "\n"
+
+    return StreamingResponse(gen(), media_type="application/x-ndjson")

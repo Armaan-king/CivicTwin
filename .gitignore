@@ -1,0 +1,25 @@
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# node
+node_modules/
+dist/
+.vite/
+
+# env and secrets
+.env
+.env.local
+
+# data: raw and processed are derived, fixtures are committed
+data/raw/
+data/processed/
+
+# derived: copied from data/fixtures by frontend/scripts/sync-fixture.mjs
+frontend/public/fixtures/
+
+# tooling caches
+.pytest_cache/
+*.tsbuildinfo
+.impeccable/

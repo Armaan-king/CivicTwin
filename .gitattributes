@@ -1,0 +1,4 @@
+# keep line endings stable across the team's machines
+* text=auto eol=lf
+*.png binary
+*.jpg binary
