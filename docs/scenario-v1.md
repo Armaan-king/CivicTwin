@@ -194,6 +194,21 @@ Three is not arbitrary: it is the exact depth of the canonical harm chain in `go
 One-pass propagation stops at the first arrow and forfeits the product's differentiator. A
 fourth round produces nothing observable and invites runaway cascades.
 
+**Round 1 has two valid triggers, not one.** The table above names `THRESHOLD_EXCEEDED`
+because it is the commonest and it is the canonical chain. A dependant who loses the trip
+outright reaches round 2 through `ESSENTIAL_ACCESS_LOST` instead, and that is the same
+finding by a shorter route: they still cannot make the journey, someone still absorbs it.
+
+Requiring every chain to pass through `THRESHOLD_EXCEEDED` would mean a resident whose
+stop closed entirely is less evidence of second-order harm than one whose walk merely got
+too long, which is backwards. What every chain **must** contain is `DEPENDENCY_ABSORBED`,
+and it must cross from one person to another at that link. That crossing is the claim; the
+route into it is not.
+
+The canonical chain must still occur somewhere in a run. If no dependant anywhere breached
+a threshold before someone absorbed it, the threshold model is doing no work and `C3` is
+decoration.
+
 **These are propagation depths, not days.** No claim is made that round 2 happens on
 Tuesday. State this in the UI wherever rounds are exposed.
 
