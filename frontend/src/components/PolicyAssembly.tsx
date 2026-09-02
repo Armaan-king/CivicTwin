@@ -27,21 +27,24 @@ export interface PolicyAssemblyProps {
   outcomes: Map<string, PersonaOutcome>;
   edges: GraphEdge[];
   height?: number;
-  /** figures drawn. Beyond this they overlap into a smear rather than reading as people. */
+  /** Figures drawn. Solved rather than guessed: at 1,400 the assembly was 921 units wide
+   *  in a 725-unit frame, so the ends of every row were cropped off the sides. */
   sample?: number;
 }
 
-const QUIET = new THREE.Color("#4a443b");
+//: The unaffected majority. Warm grey rather than near-black: at #4a443b on this ground
+//: they read as shadows, and a crowd that reads as shadows is not a crowd.
+const QUIET = new THREE.Color("#7b7367");
 const WARM = new THREE.Color("#f2b024");
 const HOT = new THREE.Color("#ef4e36");
 
 /** One person: a head and a tapered body. Small, but unmistakably a figure. */
 function figureGeometry(): THREE.BufferGeometry {
-  const head = new THREE.SphereGeometry(1.5, 7, 5);
-  head.translate(0, 6.2, 0);
-  // shoulders wider than feet, so the silhouette reads as a person at three pixels tall
-  const body = new THREE.CylinderGeometry(1.05, 2.1, 8.4, 6);
-  body.translate(0, 0.6, 0);
+  const head = new THREE.SphereGeometry(1.8, 8, 6);
+  head.translate(0, 7.2, 0);
+  // shoulders wider than feet, so the silhouette reads as a person at fifteen pixels tall
+  const body = new THREE.CylinderGeometry(1.2, 2.4, 9.6, 7);
+  body.translate(0, 0.8, 0);
 
   const merged = new THREE.BufferGeometry();
   const parts = [head, body];
@@ -66,7 +69,7 @@ function figureGeometry(): THREE.BufferGeometry {
 }
 
 export function PolicyAssembly({
-  personas, outcomes, edges, height = 720, sample = 1400,
+  personas, outcomes, edges, height = 720, sample = 620,
 }: PolicyAssemblyProps) {
   const mount = useRef<HTMLDivElement>(null);
 
@@ -77,7 +80,7 @@ export function PolicyAssembly({
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, el.clientWidth / height, 1, 4000);
-    camera.position.set(0, 132, 560);
+    camera.position.set(0, 118, 580);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -105,12 +108,15 @@ export function PolicyAssembly({
     // Concentric arcs facing a centre. Rows grow as they go back, the way seating does,
     // so density stays even instead of crowding at the front.
     const seat = new Map<string, THREE.Vector3>();
-    const ROWS = 26;
-    const SPREAD = 2.35;            // radians of arc the assembly occupies
+    // Solved against the frame rather than picked: 20 rows over 1.9 radians puts the
+    // assembly 644 units wide inside a 751-unit view, with figures ~15px tall at this
+    // height. Wider and the rows run off the sides; tighter and they stop being people.
+    const ROWS = 20;
+    const SPREAD = 1.9;
     let placed = 0;
     for (let row = 0; row < ROWS && placed < seated.length; row++) {
-      const radius = 96 + row * 15.5;
-      const capacity = Math.max(8, Math.round(radius * SPREAD / 15.5));
+      const radius = 96 + row * 15;
+      const capacity = Math.max(8, Math.round(radius * SPREAD / 15));
       for (let s = 0; s < capacity && placed < seated.length; s++, placed++) {
         const t = capacity === 1 ? 0.5 : s / (capacity - 1);
         const a = -SPREAD / 2 + t * SPREAD;
@@ -118,7 +124,7 @@ export function PolicyAssembly({
         const jitter = ((placed * 2654435761) % 1000) / 1000 - 0.5;
         seat.set(seated[placed].persona_id, new THREE.Vector3(
           Math.sin(a) * radius + jitter * 5,
-          row * 2.6,                       // rows rise slightly, like a rake
+          row * 2.2,                       // rows rise slightly, like a rake
           -Math.cos(a) * radius + jitter * 5
         ));
       }
@@ -127,8 +133,37 @@ export function PolicyAssembly({
 
     // ---------------------------------------------------------------- the figures
     const geo = figureGeometry();
-    const mat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true,
-                                              opacity: 0.94 });
+    // Instance colour through an attribute we own. MeshBasicMaterial with
+    // vertexColors: true reads the geometry's `color` attribute, which this geometry does
+    // not have, so every figure rendered black. Owning the shader removes the question.
+    const instanceColour = new THREE.InstancedBufferAttribute(
+      new Float32Array(shown.length * 3), 3
+    );
+    geo.setAttribute("aColor", instanceColour);
+
+    const mat = new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: { uFade: { value: 1 } },
+      vertexShader: `
+        attribute vec3 aColor;
+        varying vec3 vColor;
+        varying float vUp;
+        void main() {
+          vColor = aColor;
+          vUp = position.y;
+          vec4 mv = modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `
+        varying vec3 vColor;
+        varying float vUp;
+        uniform float uFade;
+        void main() {
+          // a touch brighter at the head, so a figure has some form without lighting
+          float lift = 0.82 + smoothstep(-4.0, 7.0, vUp) * 0.34;
+          gl_FragColor = vec4(vColor * lift, uFade);
+        }`,
+    });
     const mesh = new THREE.InstancedMesh(geo, mat, shown.length);
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
 
@@ -149,12 +184,12 @@ export function PolicyAssembly({
       const sev = o?.second_order ? "second" : (o?.severity ?? "none");
       severity.push(sev);
       colour.copy(sev === "second" || sev === "high" ? HOT : sev === "moderate" ? WARM : QUIET);
-      mesh.setColorAt(i, colour);
+      instanceColour.setXYZ(i, colour.r, colour.g, colour.b);
 
       // the change sweeps the room from the left, so the wave has a direction to read
       arrival[i] = (at.x + 420) / 840;
     });
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    instanceColour.needsUpdate = true;
     world.add(mesh);
 
     // ---------------------------------------------------------------- the thread
@@ -172,7 +207,9 @@ export function PolicyAssembly({
       for (let s = 0; s < steps; s++) {
         const p0 = s / steps;
         const p1 = (s + 1) / steps;
-        const lift = (x: number) => Math.sin(x * Math.PI) * 54;
+        // Head height, barely arced. At 54 units over an 8-unit figure these read as
+        // projectiles flying across the room rather than as a line between two people.
+        const lift = (x: number) => 7 + Math.sin(x * Math.PI) * 7;
         threadPts.push(
           a.x + (b.x - a.x) * p0, a.y + (b.y - a.y) * p0 + lift(p0), a.z + (b.z - a.z) * p0,
           a.x + (b.x - a.x) * p1, a.y + (b.y - a.y) * p1 + lift(p1), a.z + (b.z - a.z) * p1
@@ -185,15 +222,8 @@ export function PolicyAssembly({
                                                     opacity: 0 });
     world.add(new THREE.LineSegments(threadGeo, threadMat));
 
-    // the floor the assembly stands on: one hairline, so the figures have ground
-    const ring = new THREE.RingGeometry(92, 96 + ROWS * 15.5, 96, 1, -SPREAD / 2 - Math.PI / 2,
-                                        SPREAD);
-    const floor = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({
-      color: 0x1c1915, transparent: true, opacity: 0.5, side: THREE.DoubleSide,
-    }));
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -4.4;
-    world.add(floor);
+    // No floor. A ring under the seats was a wedge of flat colour competing with the
+    // figures for attention, and the figures are the subject.
 
     // ---------------------------------------------------------------- interaction
     let dragging = false;
@@ -242,7 +272,7 @@ export function PolicyAssembly({
       spin += (target - spin) * 0.06;
       world.rotation.y = spin;
 
-      camera.lookAt(0, 34, -60);
+      camera.lookAt(0, 26, -70);
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);
     };
@@ -264,7 +294,6 @@ export function PolicyAssembly({
       window.removeEventListener("pointerup", up);
       geo.dispose();
       threadGeo.dispose();
-      ring.dispose();
       mat.dispose();
       threadMat.dispose();
       renderer.dispose();
