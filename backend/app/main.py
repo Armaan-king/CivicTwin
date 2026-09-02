@@ -136,7 +136,12 @@ def start_run(req: StartRunRequest) -> StartRunResponse:
         )
     except StudyAreaNotFound as exc:
         raise HTTPException(422, str(exc)) from exc
-    return StartRunResponse(run_id=run_id, policy=policy)
+
+    # Hand back the run's policy, not the interpreter's. They differ in the part that
+    # matters: which town the words resolved to, which stop names matched, and which
+    # matched nothing. A planner who cannot see that cannot tell whether we read them
+    # correctly, and the whole reading is a claim about their words.
+    return StartRunResponse(run_id=run_id, policy=_runs[run_id].policy)
 
 
 class FeedbackIn(BaseModel):
