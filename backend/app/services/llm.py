@@ -143,6 +143,12 @@ class LLMClient:
         self.completion = completion
         self.max_attempts = max_attempts
 
+    @property
+    def provider_name(self) -> str:
+        """Which adapter is behind this client. Callers branch on it to decide whether a
+        result is a real model output, and the UI says which it was."""
+        return self.completion.name
+
     def structured(self, schema: type[T], system: str, prompt: str,
                    max_tokens: int = 1024) -> T:
         last: LLMOutputInvalid | None = None

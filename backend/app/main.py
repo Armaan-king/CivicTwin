@@ -178,3 +178,80 @@ async def stream_rounds(run_id: str) -> StreamingResponse:
         yield json.dumps({"type": "complete", "run_id": run.run_id}) + "\n"
 
     return StreamingResponse(gen(), media_type="application/x-ndjson")
+
+
+# ------------------------------------------------------------------ W10 persona voices
+_voice_cache: dict[str, "VoiceRun"] = {}
+
+
+def get_voices(run_id: str) -> "VoiceRun":
+    """Every resident's view of the policy, generated once per run and held.
+
+    Generation is the expensive part of the product when a model is behind it, so it
+    happens once and both the list endpoint and the stream read the same result. Without
+    that, opening the page twice would cost twice.
+    """
+    from app.engine import EXPRESS_SAVING_MIN, study_area
+    from app.population import build_population
+    from app.simulation import simulate
+    from app.voices import generate_voices
+
+    run = get_run(run_id)
+    if run_id not in _voice_cache:
+        geo, removed = study_area()
+        pop = build_population(geo)
+        sim = simulate(geo, pop, removed, EXPRESS_SAVING_MIN)
+        _voice_cache[run_id] = generate_voices(
+            pop, sim.outcomes, sim.events, geo,
+            run.policy.text or "", run.policy_version, llm=build_client(),
+        )
+    return _voice_cache[run_id]
+
+
+@app.get("/api/runs/{run_id}/voices")
+def list_voices(run_id: str, limit: int = 200, offset: int = 0) -> dict:
+    """Residents, most-affected first, paged.
+
+    `generated_by` is not decoration: it says whether these were written by a model or by
+    the offline template, and the page shows it. Presenting a template as a model output
+    would be exactly the false claim `AGENTS.md` §28 forbids.
+    """
+    vr = get_voices(run_id)
+    window = vr.voices[offset:offset + limit]
+    return {
+        "run_id": run_id,
+        "generated_by": vr.generated_by,
+        "total": len(vr.voices),
+        "offset": offset,
+        "spoke": sum(1 for v in vr.voices if len(v.turns) > 1),
+        "ungrounded_dropped": vr.ungrounded,
+        "cached_batches": vr.cached_batches,
+        "model_batches": vr.model_batches,
+        "voices": [v.model_dump() for v in window],
+    }
+
+
+@app.post("/api/runs/{run_id}/voices/stream")
+async def stream_voices(run_id: str, limit: int = 120) -> StreamingResponse:
+    """NDJSON, one resident per line, as they are produced.
+
+    The point of streaming here is not speed, it is that watching two thousand people
+    react is the thing this product does that a chart cannot.
+    """
+    vr = get_voices(run_id)
+    voices = vr.voices[:limit]
+
+    async def gen():
+        yield json.dumps({"type": "start", "total": len(vr.voices),
+                          "streaming": len(voices),
+                          "generated_by": vr.generated_by}) + "\n"
+        for v in voices:
+            yield json.dumps({"type": "voice", "voice": v.model_dump()}) + "\n"
+            await asyncio.sleep(0.012)
+        yield json.dumps({
+            "type": "complete",
+            "spoke": sum(1 for v in vr.voices if len(v.turns) > 1),
+            "ungrounded_dropped": vr.ungrounded,
+        }) + "\n"
+
+    return StreamingResponse(gen(), media_type="application/x-ndjson")
