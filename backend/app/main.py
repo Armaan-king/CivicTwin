@@ -44,26 +44,28 @@ _run_cache: SimulationRun | None = None
 def load_run() -> SimulationRun:
     """Produce the current run.
 
-    ############################################################################
-    #  W4 IMPLEMENTERS: THIS IS THE FUNCTION YOU REPLACE.
-    #
-    #  Today it reads data/fixtures/demo_run.json. Replace the body with a call
-    #  into backend/app/simulation/, and keep the return type. The SimulationRun
-    #  validation below is the contract check: an engine that drifts from the
-    #  schema fails here, loudly, instead of quietly in the browser.
-    #
-    #  Do NOT extend scripts/make_fixture.py. That script generates the demo
-    #  fixture and is deliberately not the engine. See backend/IMPLEMENTING.md.
-    ############################################################################
+    The engine computes it: `app/engine.py` builds the study area, samples the population,
+    constructs the graph, simulates the policy, re-simulates every valid alternative, and
+    runs the consultation. About 0.3 s for 2,000 personas, so there is no reason to
+    pre-generate anything.
+
+    Validation happens here, at the boundary. An engine that drifts from the contract
+    fails loudly at the route rather than quietly in the browser, and it costs ~10 ms.
+
+    `data/fixtures/demo_run.json` remains as a fallback for a machine that cannot import
+    the engine, and is otherwise unused. It is a shape-correct artefact, not a simulation.
     """
     global _run_cache
     if _run_cache is None:
-        if not FIXTURE.exists():
-            raise HTTPException(
-                503, "No run available. Generate one with python scripts/make_fixture.py")
-        raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
-        # validated once, at the boundary. ~10 ms for 2,000 personas.
-        _run_cache = SimulationRun.model_validate(raw)
+        try:
+            from app.engine import build_run
+            _run_cache = SimulationRun.model_validate(build_run())
+        except ImportError as exc:
+            if not FIXTURE.exists():
+                raise HTTPException(
+                    503, f"No engine and no fixture: {exc}") from exc
+            raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+            _run_cache = SimulationRun.model_validate(raw)
     return _run_cache
 
 

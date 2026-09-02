@@ -27,7 +27,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 
-from app.geography import Geography
+from app.geography import Geography, with_headway
 from app.graph import Journey, TransitNetwork, journey_for
 from app.population import Persona, Population
 from app.rng import derived_rng
@@ -42,6 +42,9 @@ from app.scenario import (
 #: the gateway out of the estate. work trips are journeys to here, not to the CBD, because
 #: what a local stop removal changes is how you reach the interchange.
 WORK_GATEWAY = "55007"
+
+#: door-to-door assisted transport, from booking to arrival. Used by `targeted_support`.
+ASSISTED_TRIP_MIN = 22.0
 
 
 @dataclass
@@ -60,6 +63,10 @@ class Outcome:
     persona_id: str
     severity: str = "none"
     walk_distance_m: int = 0
+    #: what they walked before the policy. severity is a statement about the change, so
+    #: someone already walking past their limit is not harmed by a policy that leaves
+    #: them exactly where they were.
+    baseline_walk_m: int = 0
     journey_time_min: float = 0.0
     #: after minus baseline, in minutes. negative is an improvement. this is the number
     #: the policy is sold on, and the reason an average can improve while people fall off
@@ -91,6 +98,13 @@ def adapt(person: Persona, base: Journey, now: Journey, key: str) -> str:
     """
     if not now.reachable:
         return "abandon_trip"
+    if (now.time_min <= base.time_min + 0.01
+            and now.walk_m <= base.walk_m + 1
+            and now.transfers <= base.transfers):
+        # nothing about this journey changed, so there is nothing to adapt to. without
+        # this the logistic reads an absolute walk ratio rather than a delta and
+        # "adapts" people the policy never touched, which makes a null policy harmful.
+        return "continue_transit"
     d_time = (now.time_min - base.time_min) / max(base.time_min, 1.0)
     z = (
         BETA["intercept"]
@@ -118,16 +132,33 @@ def _destinations(geo: Geography, p: Persona) -> dict[str, tuple[tuple[float, fl
     return trips
 
 
-def _journeys(geo: Geography, pop: Population, net: TransitNetwork) -> dict[str, dict[str, Journey]]:
-    solved_cache: dict[tuple[str, ...], dict] = {}
+def _journeys(
+    geo: Geography,
+    pop: Population,
+    net_by_trip: dict[str, TransitNetwork],
+    assisted: frozenset[str] = frozenset(),
+) -> dict[str, dict[str, Journey]]:
+    """One journey per person per trip.
+
+    Networks are per trip because an intervention can change the network for one kind of
+    trip and not another: retaining a stop at peak helps the commute and does nothing for
+    a Tuesday morning clinic appointment, which is a real and easily-missed distinction.
+    """
+    solved: dict[tuple[str, tuple[str, ...]], dict] = {}
     out: dict[str, dict[str, Journey]] = {}
     for p in pop.personas:
         out[p.persona_id] = {}
-        for name, (dest_xy, dest_stops, _) in _destinations(geo, p).items():
-            key = tuple(dest_stops)
-            if key not in solved_cache:
-                solved_cache[key] = net.solve(list(dest_stops))
-            out[p.persona_id][name] = journey_for(p, p.xy, dest_xy, net, solved_cache[key])
+        for name, (dest_xy, dest_stops, essential) in _destinations(geo, p).items():
+            net = net_by_trip[name]
+            key = (name, tuple(dest_stops))
+            if key not in solved:
+                solved[key] = net.solve(list(dest_stops))
+            if essential and p.persona_id in assisted:
+                # door-to-door assistance: the walk barrier is removed, not the trip
+                out[p.persona_id][name] = Journey(reachable=True, walk_m=0.0,
+                                                  time_min=ASSISTED_TRIP_MIN, transfers=0)
+            else:
+                out[p.persona_id][name] = journey_for(p, p.xy, dest_xy, net, solved[key])
     return out
 
 
@@ -136,6 +167,10 @@ def simulate(
     pop: Population,
     removed: set[str],
     express_saving_min: float = 0.0,
+    headway_delta_pct: float = 0.0,
+    thinned: dict[str, float] | None = None,
+    retained_peak: frozenset[str] = frozenset(),
+    assisted: frozenset[str] = frozenset(),
     record_events: bool = True,
 ) -> SimResult:
     """Run one policy variant to completion.
@@ -144,11 +179,22 @@ def simulate(
     the remaining riders gain from the faster run, which is the trade the policy is
     actually making and the reason the mean journey time can improve while individuals
     fall off a cliff.
+
+    `thinned` is extra waiting minutes per stop: the stops the express pattern passes
+    without removing. They keep their name on the map and lose half their buses, which is
+    what "express, without increasing the fleet" actually costs and what the policy text
+    does not say. `headway_delta_pct` lengthens the whole trunk headway. `retained_peak` stops keep
+    serving the commute and not the clinic trip. `assisted` personas get door-to-door
+    transport for their essential trip.
     """
+    after_geo = with_headway(geo, "265", headway_delta_pct) if headway_delta_pct else geo
     base_net = TransitNetwork(geo)
-    after_net = TransitNetwork(geo, removed=removed)
-    base = _journeys(geo, pop, base_net)
-    now = _journeys(geo, pop, after_net)
+    after_net = TransitNetwork(after_geo, removed=removed, wait_penalty=thinned)
+    peak_net = (TransitNetwork(after_geo, removed=removed - set(retained_peak),
+                               wait_penalty=thinned)
+                if retained_peak else after_net)
+    base = _journeys(geo, pop, {"clinic": base_net, "work": base_net})
+    now = _journeys(after_geo, pop, {"clinic": after_net, "work": peak_net}, assisted=assisted)
 
     by_id = pop.by_id()
     outcomes = {p.persona_id: Outcome(persona_id=p.persona_id) for p in pop.personas}
@@ -169,6 +215,9 @@ def simulate(
     #: dependents who can no longer make the clinic trip unaided. Losing access outright
     #: is the obvious case; a walk past what this person said they can manage is the
     #: commoner one, and it is exactly when a household member starts driving them.
+    #: So is a materially longer trip: waiting is a barrier for a frail passenger in the
+    #: same way distance is, and modelling only the walk misses the half of this policy
+    #: that thins the service rather than moving the stop.
     needs_help: set[str] = set()
 
     for p in pop.personas:
@@ -178,14 +227,16 @@ def simulate(
         o.essential_trips_completed = o.essential_trips_total
 
         worst_walk, worst_time, cause_id = 0.0, 0.0, None
+        base_walk = 0.0
         deltas: list[float] = []
         for name, (_, _, essential) in trips.items():
             b, n = base[p.persona_id][name], now[p.persona_id][name]
             if not b.reachable:
                 continue
+            base_walk = max(base_walk, b.walk_m)
 
             # round 1 -- the network changed under them
-            if b.origin_stop in removed:
+            if b.origin_stop in removed and n.origin_stop != b.origin_stop:
                 cause_id = emit(1, p.persona_id, "PATH_UNAVAILABLE",
                                 {"stop_id": b.origin_stop, "trip": name},
                                 {"stop_id": n.origin_stop, "trip": name})
@@ -214,7 +265,10 @@ def simulate(
                 cause_id = emit(1, p.persona_id, "DURATION_INCREASED",
                                 {"journey_time_min": round(b.time_min, 1)},
                                 {"journey_time_min": round(ride_time, 1)}, cause_id)
-            if n.walk_m > p.max_walk_m:
+                if essential and ride_time > b.time_min * (1 + MODERATE_JOURNEY_DELTA):
+                    needs_help.add(p.persona_id)
+                    anchor[p.persona_id] = cause_id
+            if n.walk_m > p.max_walk_m and n.walk_m > b.walk_m + 1:
                 cause_id = emit(1, p.persona_id, "THRESHOLD_EXCEEDED",
                                 {"walk_distance_m": round(b.walk_m),
                                  "max_walk_m": p.max_walk_m},
@@ -247,6 +301,7 @@ def simulate(
                 o.accessibility_status = "degraded"
 
         o.walk_distance_m = round(worst_walk)
+        o.baseline_walk_m = round(base_walk)
         o.journey_time_min = round(worst_time, 2)
         o.journey_time_delta_min = round(sum(deltas) / len(deltas), 3) if deltas else 0.0
 
@@ -289,18 +344,25 @@ def severity_for(p: Persona, o: Outcome, base: dict, now: dict) -> str:
     Four ways to be severely harmed. The fourth is where the graph pays off: a person with
     no mobility limitation, living nowhere near a removed stop, classified as severely
     harmed because of who they care for.
+
+    Every clause is **relative to the baseline**. Someone who already walked further than
+    they wanted to is not harmed by a policy that leaves them exactly where they were, and
+    counting them would inflate every headline with harm the policy did not cause. The
+    control for this is `test_doing_nothing_harms_nobody`.
     """
     if o.accessibility_status == "unreachable":
-        return "high"
-    if o.walk_distance_m > p.max_walk_m * SEVERE_WALK_MULTIPLIER:
         return "high"
     if o.essential_trips_completed < o.essential_trips_total:
         return "high"
     if o.second_order:
         return "high"
 
-    if o.walk_distance_m > p.max_walk_m:
+    worsened = o.walk_distance_m > o.baseline_walk_m + 1
+    if worsened and o.walk_distance_m > p.max_walk_m * SEVERE_WALK_MULTIPLIER:
+        return "high"
+    if worsened and o.walk_distance_m > p.max_walk_m:
         return "moderate"
+
     worst = 0.0
     for name, b in base.get(p.persona_id, {}).items():
         n = now[p.persona_id].get(name)

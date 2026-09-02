@@ -26,6 +26,7 @@ from app.scenario import (
     DETOUR_FACTOR,
     MOBILITY_WALK_SPEED,
     TRANSFER_PENALTY_MIN,
+    WALK_CEILING_MULTIPLIER,
     WALK_SPEED_M_PER_MIN,
 )
 
@@ -113,9 +114,14 @@ class TransitNetwork:
     F1.7 and is applied per person below.
     """
 
-    def __init__(self, geo: Geography, removed: set[str] | None = None):
+    def __init__(self, geo: Geography, removed: set[str] | None = None,
+                 wait_penalty: dict[str, float] | None = None):
         self.geo = geo
         self.removed = removed or set()
+        #: extra minutes of waiting at a stop, because fewer runs call there. This is how
+        #: an express pattern reaches the stops it does not remove: they keep their name
+        #: on the map and lose half their buses.
+        self.wait_penalty = wait_penalty or {}
         self.g = nx.DiGraph()
         for svc in geo.services.values():
             live = [s for s in svc.stops if s not in self.removed]
@@ -183,19 +189,22 @@ def journey_for(
     """
     best = Journey(reachable=False)
     best_time = float("inf")
+    budget = person.max_walk_m * WALK_CEILING_MULTIPLIER
 
     boardable = []
     for sid in net.live_stops():
         w_on = walk_m(origin_xy, net.geo.stops[sid].xy)
-        if w_on <= person.max_walk_m:
+        if w_on <= budget:
             boardable.append((sid, w_on))
 
     for dest, costs in solved.items():
         w_off = walk_m(net.geo.stops[dest].xy, dest_xy)
-        if w_off > person.max_walk_m:
+        if w_off > budget:
             continue
         off_min = walk_min(w_off, person.mobility_level)
         for sid, w_on in boardable:
+            if w_on + w_off > budget:
+                continue
             for svc in net.geo.serving(sid):
                 node = (sid, svc.service_id)
                 if node not in costs:
@@ -206,6 +215,7 @@ def journey_for(
                 total = (
                     walk_min(w_on, person.mobility_level)
                     + svc.headway_min / 2
+                    + net.wait_penalty.get(sid, 0.0)
                     + BOARD_PENALTY_MIN
                     + ride
                     + off_min
@@ -218,7 +228,7 @@ def journey_for(
 
     # walking the whole way is still a journey, and for a near neighbour it is the best one
     direct = walk_m(origin_xy, dest_xy)
-    if direct <= person.max_walk_m:
+    if direct <= budget:
         t = walk_min(direct, person.mobility_level)
         if t < best_time:
             best = Journey(reachable=True, walk_m=round(direct, 1),

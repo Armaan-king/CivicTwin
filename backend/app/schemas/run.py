@@ -66,6 +66,7 @@ class Persona(BaseModel):
 
     needs_clinic: bool
     xy: tuple[float, float]
+    block_id: str | None = None
 
 
 class PersonaOutcome(BaseModel):
@@ -192,6 +193,20 @@ class PublicConfidence(BaseModel):
     components: dict[str, int]
 
 
+class BlindSpot(BaseModel):
+    """K5, W12: harm the consultation is least likely to hear about.
+
+    `harmed - expected_responses`, reported as cohorts with counts. An estimate over a
+    synthetic population, and the UI says so. The point is operational: it names who to
+    go and reach before deciding anything.
+    """
+    cohort_axis: str
+    cohort_value: str
+    harmed: int
+    expected_responses: int
+    score: float
+
+
 class Consultation(BaseModel):
     responses: list[FeedbackResponse]
     response_count: int
@@ -199,6 +214,7 @@ class Consultation(BaseModel):
     is_representative: bool
     pcs: PublicConfidence
     calibration: list[CalibrationRow]
+    blind_spots: list[BlindSpot] = Field(default_factory=list)
     discovered_constraint: DiscoveredConstraint
     proposed_adjustment: ProposedAdjustment
 
@@ -225,6 +241,8 @@ class SimulationRun(BaseModel):
     policy: PolicyChange
     personas: list[Persona]
     graph: Graph
+    #: the study area as the map draws it. display only; no rule consults it.
+    geography: dict = Field(default_factory=dict)
     outcomes: list[PersonaOutcome]
     events: list[SimEvent]
     metrics: RunMetrics

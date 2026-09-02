@@ -93,6 +93,40 @@ export function Calibration() {
             </Note>
           )}
 
+          {c.blind_spots?.length > 0 && (
+            <div>
+              <h2 className="t3" style={{ fontSize: "var(--fs-14)", fontWeight: 400, margin: "0 0 var(--s-2)" }}>
+                Who this consultation did not hear from
+              </h2>
+              <p className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.6, margin: "0 0 var(--s-3)", maxWidth: "62ch" }}>
+                Harmed residents, against how many of them the response model expects to
+                reply. The gap is not apathy: the people the policy hits hardest are the
+                oldest and the least mobile, and they are the least likely to fill in a form.
+                An estimate over a synthetic population, so treat it as a list of who to go
+                and reach, not as a measurement.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-2)" }}>
+                {c.blind_spots.slice(0, 4).map((b) => {
+                  const share = b.harmed > 0 ? b.expected_responses / b.harmed : 0;
+                  return (
+                    <div
+                      key={`${b.cohort_axis}:${b.cohort_value}`}
+                      style={{ display: "grid", gridTemplateColumns: "132px 1fr 120px", gap: "var(--s-3)", alignItems: "center" }}
+                    >
+                      <span className="t2" style={{ fontSize: "var(--fs-14)" }}>{b.cohort_value}</span>
+                      <div style={{ height: 8, background: "var(--rule)", position: "relative" }}>
+                        <div style={{ position: "absolute", inset: 0, width: `${Math.min(100, share * 100)}%`, background: "var(--gold)" }} />
+                      </div>
+                      <span className="t3" style={{ fontSize: "var(--fs-12)", textAlign: "right" }}>
+                        {b.expected_responses} of {b.harmed} heard
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <PatternNote run={run} pattern="participation_gap" />
 
           <div style={{ marginTop: "auto", borderTop: "1px solid var(--rule)", paddingTop: 16 }}>

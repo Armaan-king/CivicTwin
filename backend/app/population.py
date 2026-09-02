@@ -200,9 +200,15 @@ def build_population(geo: Geography, size: int = POPULATION_SIZE) -> Population:
 def assign_care_edges(pop: Population) -> list[CareEdge]:
     """One carer per dependent, inside one household. D2, D4.
 
-    A dependent is someone whose own mobility limits them *and* who has an essential trip
-    to lose. A carer is a household member who could absorb that trip: no mobility
-    limitation, and in work, which is what makes the absorption cost something.
+    A dependent is someone with an essential trip who does not reliably make it alone:
+    mobility-limited at any age, or simply old. Requiring a diagnosed limitation would
+    miss the archetypal case, which is not a wheelchair but "I take my mother to the
+    polyclinic every Tuesday" -- an 80-year-old who walks fine and does not travel across
+    the estate by herself. Narrowing it to moderate and severe mobility produced 35 carers
+    in 2,000 residents, against a Singapore rate nearer one in ten.
+
+    A carer is a household member who could absorb that trip: no mobility limitation, and
+    in work, which is what makes absorbing it cost something.
     """
     households: dict[str, list[Persona]] = {}
     for p in pop.personas:
@@ -210,13 +216,23 @@ def assign_care_edges(pop: Population) -> list[CareEdge]:
 
     edges: list[CareEdge] = []
     for members in households.values():
+        # OPEN QUESTION, deliberately not settled here. This narrow rule yields 35 carers
+        # in 2,000 residents (1.75%), against a Singapore caregiving rate nearer one in
+        # ten, and it misses the archetypal case: an 80-year-old who walks fine but does
+        # not cross the estate alone. Widening it to frail elders takes second-order harm
+        # from 1 person to 7. Left narrow until the population is built on real data.
         dependents = [
             m for m in members
             if m.mobility_level in ("moderate", "severe") and m.needs_clinic
         ]
+        dependent_ids = {m.persona_id for m in dependents}
         carers = [
             m for m in members
             if m.mobility_level == "none" and m.employment_status == "employed"
+            # never both. widening "dependent" to include healthy elders made two members
+            # of an elder household eligible as each other's carer, which produced
+            # reciprocal CARES_FOR edges and ran the cascade in both directions.
+            and m.persona_id not in dependent_ids
         ]
         if not dependents or not carers:
             continue

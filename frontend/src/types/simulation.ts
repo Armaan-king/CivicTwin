@@ -229,6 +229,16 @@ export interface CalibrationRow {
   flagged: boolean;
 }
 
+/** K5, W12: harm the consultation is least likely to hear about. */
+export interface BlindSpot {
+  cohort_axis: string;
+  cohort_value: string;
+  harmed: number;
+  expected_responses: number;
+  /** harmed minus expected responses: how much of it goes unheard */
+  score: number;
+}
+
 export interface Consultation {
   responses: FeedbackResponse[];
   response_count: number;
@@ -238,6 +248,7 @@ export interface Consultation {
     components: Record<string, number>;
   };
   calibration: CalibrationRow[];
+  blind_spots: BlindSpot[];
   discovered_constraint: {
     type: string; location: string; affects: string[]; source: string; note: string;
   };

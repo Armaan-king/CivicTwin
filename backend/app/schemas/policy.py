@@ -27,9 +27,18 @@ class ReadingStep(BaseModel):
     assumed: bool = False
 
 
+class ResolvedEntity(BaseModel):
+    kind: str
+    id: str
+    label: str
+
+
 class PolicyChange(BaseModel):
     """What the Policy Interpreter must produce. Anything else is rejected."""
     objective: str
+    #: the words the planner typed, kept so the UI can show what was read and from what
+    text: str | None = None
+    resolved_entities: list[ResolvedEntity] = Field(default_factory=list)
     modifications: Modifications
     constraints: Constraints
     reading: list[ReadingStep] = Field(default_factory=list)

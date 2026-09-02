@@ -13,6 +13,7 @@ in **C3**, mean anything.
 """
 from __future__ import annotations
 
+import copy
 import math
 from dataclasses import dataclass, field
 
@@ -138,15 +139,36 @@ def build_geography() -> Geography:
                        stops=["55007", *feeder_ids, "55007"]),
     }
 
+    # NOTE: invented, and it matters more than it looks. Where a facility sits relative
+    # to the network decides who a stop removal can possibly harm: put the clinic in the
+    # middle and half the estate walks there, so the buses stop mattering. This is a
+    # placeholder awaiting the real coordinates (W2), and the demo's numbers should not
+    # be defended until it carries them.
     clinic_stop = stops["55237"]
     polyclinic = (clinic_stop.x + 15.0, clinic_stop.y + 34.0)
-    #: the feeder stop outside it, and the trunk stop up the road
     clinic_stops = ["55237", "55101"]
 
     return Geography(
         span=(span_x, span_y), blocks=blocks, roads=roads, stops=stops,
         services=services, polyclinic=polyclinic, clinic_stops=clinic_stops,
     )
+
+
+def with_headway(geo: Geography, service_id: str, delta_pct: float) -> Geography:
+    """The same estate with one service running less often.
+
+    A positive `delta_pct` lengthens the headway. This exists because "run express without
+    increasing the fleet" is not free: the same vehicles cannot run two patterns, so the
+    local pattern thins out. The policy does not say that, which is exactly why the
+    reading flags it as an assumption rather than a reading.
+    """
+    g = copy.copy(geo)
+    g.services = dict(geo.services)
+    old = geo.services[service_id]
+    g.services[service_id] = Service(old.service_id, old.name,
+                                     round(old.headway_min * (1 + delta_pct / 100), 2),
+                                     list(old.stops))
+    return g
 
 
 def display_dict(geo: Geography) -> dict:

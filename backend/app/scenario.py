@@ -21,6 +21,17 @@ ROUNDS: Final = 4  # 0..3, scenario-v1.md B1
 #: metres a person will walk to a stop. A spec, not a hint: test_contract asserts it.
 MAX_WALK_M: Final[dict[str, int]] = {"none": 1200, "mild": 800, "moderate": 500, "severe": 250}
 
+#: `max_walk_m` is what someone says they will walk. It is a comfort threshold, not a
+#: physical ceiling: when their stop goes away people stretch past it before giving up.
+#: This multiplier is where they stop stretching, and the band between the two is what
+#: F1.6 and F3 are describing.
+#:
+#:     <= 1.0x    fine
+#:     1.0-1.5x   THRESHOLD_EXCEEDED, moderate harm
+#:     1.5-2.0x   severe: they still make the trip, at a cost they should not be paying
+#:     > 2.0x     the destination is transit-unreachable for them
+WALK_CEILING_MULTIPLIER: Final = 2.0
+
 #: severe mobility tolerates no transfers at all. Everyone else, one or two.
 TRANSFER_TOLERANCE: Final[dict[str, int]] = {"none": 2, "mild": 2, "moderate": 1, "severe": 0}
 
