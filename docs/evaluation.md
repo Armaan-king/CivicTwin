@@ -264,6 +264,19 @@ MAE = mean(|observed_g - simulated_g|)
 
 Report error by cohort.
 
+### Reasoning versus baseline
+
+Both the logistic (**L1**) and the per-persona assessment (**P1**) predict support, so
+calibration reports the error of each against observed responses.
+
+```text
+MAE(logistic)   vs   MAE(reasoning)
+```
+
+A structured curve beating a language model on a cohort, or losing to it, is a result worth
+reporting either way. It is also the cheapest evidence that the reasoning pass earns its
+runtime.
+
 ### Signed Bias
 
 Useful for showing consistent over- or under-estimation.

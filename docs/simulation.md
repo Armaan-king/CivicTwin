@@ -361,7 +361,9 @@ Dependency graphs are still valuable even without persuasion dynamics.
 
 # 14. LLM-Assisted Persona Reasoning
 
-LLM reasoning should be selective.
+LLM reasoning runs once per persona, and again only where a later round changed their
+situation. See `scenario-v1.md` §6A for the volume and the caching rule. It is selective in
+the sense that matters: nobody is re-reasoned for a round in which nothing happened to them.
 
 Appropriate example:
 

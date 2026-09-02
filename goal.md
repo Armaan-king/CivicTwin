@@ -510,7 +510,13 @@ LLMs should be used where language interpretation or complex qualitative reasoni
 - proposing alternative interventions,
 - classifying citizen feedback,
 - extracting newly discovered constraints,
-- producing public-facing plain-language explanations.
+- producing public-facing plain-language explanations,
+- reasoning as each synthetic resident about how the policy lands on them.
+
+> **V1 direction.** The last item is now a core capability, not an optional one. Every
+> persona produces a validated `BehaviorAssessment` grounded in their own record, and the
+> result is a screen in its own right. Volume, caching and the honesty constraints are in
+> [`docs/scenario-v1.md`](./docs/scenario-v1.md) §6A.
 
 LLMs should not be used for calculations that deterministic code can perform more reliably.
 
@@ -1043,6 +1049,10 @@ Aggregate observed feedback responsibly.
 
 ### Calibration
 Compare simulated and observed responses.
+
+### Persona Deliberation
+Every synthetic resident reasons about the policy as it lands on them, streamed as it is
+produced and exportable as evidence. See `docs/scenario-v1.md` §6A.
 
 ### Agentic Adaptation
 Demonstrate a visible plan → act → observe → adapt cycle.

@@ -297,9 +297,26 @@ Seven screens, all reading the fixture through `lib/api.ts`. What remains:
   Wiring the policy screen to `POST /api/runs` and the round scrubber to the NDJSON
   stream is the next frontend job.
 - No frontend tests. The backend has 38; the frontend has none.
+- The deliberation screen (**P5**) is not built. It is the one screen that answers "what did
+  this do to people" in their own words, and it is where W10's output lands.
 - `/impact` was restructured to two zones. The other screens got the spacing pass but not
   the same information-architecture rethink; `/interventions` and `/calibration` are the
   two most likely to still feel dense.
+
+### W10 · Persona deliberation (P1-P5) — *new, and now core*
+The agent that makes every resident reason about the policy, plus the screen that shows it.
+
+- `app/agents/persona_voice.py`: a `BehaviorAssessment` per persona, grounded strictly in
+  their record and event trace. It categorises and explains; it never introduces a fact.
+- Batched and concurrent behind the existing `LLMClient`. Roughly 2,040 calls for a
+  2,000-persona run, about two minutes at 20 concurrent.
+- Cached on `sha256(persona_id, policy_version, round, model_id, prompt_version)`, so a
+  replay costs nothing and the demo never waits on a model.
+- Streamed as `assessment` frames on the existing NDJSON round endpoint.
+- Export as JSON and Markdown.
+
+**Done when:** a full pass completes, replays from cache with zero calls, and no assessment
+cites a fact absent from its persona's record. That last one is a test, not a hope.
 
 ### W9 · Evaluation (N1, N2)
 Eight required results from `evaluation.md` section 28, including the **N2** ablation.

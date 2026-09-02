@@ -164,7 +164,13 @@ Where possible:
 - record the configuration of each run,
 - avoid hidden state changes.
 
-Do not simulate every citizen by making an LLM call on every timestep unless explicitly required.
+Do not simulate every citizen by making an LLM call on every timestep.
+
+**Explicitly required, and therefore permitted:** one reasoning pass per persona, plus
+re-reasoning only for personas whose state actually changed in a later round. That is
+`scenario-v1.md` §6A, roughly 2,040 calls for a 2,000-persona run rather than 8,000. It is
+cached by content hash so a replay costs nothing. What stays banned is the unbounded shape:
+every persona, every round, uncached.
 
 The default assumption is that most population evolution should be performed using normal Python logic, graph algorithms, probabilities, and rules.
 
@@ -316,7 +322,9 @@ Avoid without explicit justification:
 - OpenSearch,
 - provisioned throughput,
 - long-lived expensive endpoints,
-- one high-cost LLM call per simulated citizen.
+- one *expensive-model* call per simulated citizen. The per-persona reasoning pass in
+  `docs/scenario-v1.md` §6A uses the cheap model, is bounded at roughly one call per
+  resident, and is cached by content hash.
 
 Cache or reuse results where appropriate.
 

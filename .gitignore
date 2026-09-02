@@ -23,3 +23,6 @@ frontend/public/fixtures/
 .pytest_cache/
 *.tsbuildinfo
 .impeccable/
+
+# reference checkouts. read-only: neither repo is licensed for reuse (AGENTS.md 10B)
+testing/

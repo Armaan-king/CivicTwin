@@ -280,6 +280,8 @@ POST /api/runs/{run_id}/rounds/stream
  "event":"ACCESSIBILITY_THRESHOLD_EXCEEDED","before":{},"after":{},"cause":null}
 {"type":"event","round":2,"persona_id":"p_0921",
  "event":"CAREGIVER_SUPPORT_TRIGGERED","before":{},"after":{},"cause":"evt_00417"}
+{"type":"assessment","round":1,"persona_id":"p_0184","outcome_category":"abandon_trip",
+ "support":2,"explanation":"...","contributing_factors":["walk 1240m","max 500m"],"cached":false}
 {"type":"round_complete","round":1,"changed":["p_0184"],"snapshot":{}}
 {"type":"complete","run_id":"run_...","snapshot":{}}
 ```
@@ -470,6 +472,21 @@ Compares:
 It should expose trade-offs rather than hide them behind a single score.
 
 ---
+
+## 8.8a Persona Deliberation
+
+Input:
+- a persona's structured record,
+- their event trace for this round,
+- the policy in plain language.
+
+Output:
+- a validated `BehaviorAssessment` (`scenario-v1.md` **P2**).
+
+Runs once per persona, and again only where a later round changed their situation. Batched
+and concurrent, cached by content hash, and streamed to the client as it completes. The
+prompt carries the facts; the model categorises and explains. It must not introduce a fact
+the record does not contain.
 
 ## 8.9 Feedback Analyst
 

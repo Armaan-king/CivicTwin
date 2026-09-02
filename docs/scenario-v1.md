@@ -46,6 +46,9 @@ Capacity and crowding modelling (**F2**), social/peer influence (**B2**), histor
 backtesting (**N3**), and cross-tabulated cohorts (**I4**). Each is recorded with its
 rationale below rather than silently dropped.
 
+**Reinstated after being deferred:** per-persona LLM reasoning, now §6A. The original
+rejection was sized against the wrong call volume.
+
 ---
 
 # 2. Scenario frame
@@ -220,8 +223,12 @@ parameters calibration adjusts.
 
 ## C5 — Persona narratives · LOCKED
 
-**Generated once at population build, cached into the fixture, never called during
-simulation.** Labelled synthetic in the UI.
+**Generated once at population build, cached into the fixture.** Labelled synthetic in
+the UI.
+
+Superseded in scope by **P1**: personas now also reason about the policy itself, not only
+carry a description. The build-time cache still applies, and the constraint below is
+unchanged and now matters more.
 
 `AGENTS.md` §8 forbids an LLM call per citizen per timestep; that prohibition is about the
 simulation loop. A one-off descriptive paragraph costs 2,000 cheap calls once, ships inside
@@ -374,8 +381,11 @@ dependency model does real work, and it is what **N2** measures.
 
 ## G1 — Stochastic component · LOCKED
 
-**Exactly one.** The trip adaptation choice, via a logistic. Everything else is
-deterministic.
+**Exactly one, in the deterministic layer.** The trip adaptation choice, via a logistic.
+Everything else in that layer is deterministic.
+
+Since **P3** this runs alongside the per-persona assessment rather than instead of it.
+The logistic stays as the inspectable baseline; the two are compared in calibration.
 
 ```text
 P(adapt) = σ( β0
@@ -452,6 +462,85 @@ way: the log must be complete enough that **every root-cause explanation is reco
 from it**. `evaluation.md` §9 proposes a Grounded Explanation Rate, computable only if the
 chain is present. The `cause` field carries the upstream event id, which is what makes the
 chain traversable.
+
+---
+
+# 6A. Persona deliberation
+
+A reversal of an earlier position, recorded rather than quietly changed. The first draft of
+this spec confined the LLM to policy interpretation and intervention planning and left
+behaviour to the logistic in **G1**. That was sized against the wrong number: PropSim's
+shape is every persona every round, 8,000 calls. Reasoning only where a persona's situation
+is actually at stake costs 2,040.
+
+The product is decision support for people who will run a scenario a handful of times and
+want to understand it, not a service answering thousands of requests an hour. A two-minute
+run that yields a subjective account from every resident is a better trade than a
+sub-second run that yields a number.
+
+## P1 — Every persona reasons about the policy · LOCKED
+
+One pass over the whole population, plus re-reasoning only for personas whose state changed
+in a later round.
+
+```text
+reaction pass    2,000   every resident, once
+cascade pass        40   rounds 2 and 3, only those whose situation moved
+total            2,040   about two minutes at 20 concurrent
+cached replay        0   the demo runs from cache
+```
+
+`AGENTS.md` §8 forbids "every citizen on every timestep", which is the 8,000-call shape.
+Reasoning once per resident, and again only when something happened to them, sits inside
+that rule and is what `simulation.md` §14 already described.
+
+## P2 — The model renders facts, it does not produce them · LOCKED
+
+Every assessment is grounded in the persona's structured record and their event trace. The
+prompt carries the facts; the model categorises and explains. It never invents a
+circumstance, a number or a constraint.
+
+```text
+BehaviorAssessment {
+    outcome_category      continue | switch_mode | abandon_trip | unaffected
+    likelihood            0..1
+    support               1..5, their view of the policy
+    contributing_factors  which structured facts drove it
+    explanation           first person, 2 to 3 sentences
+}
+```
+
+Schema-validated like every other model output (`AGENTS.md` §7). An assessment citing a
+fact absent from the persona's record is a defect, and §12 tests for it.
+
+## P3 — The logistic stays, as a baseline to measure against · LOCKED
+
+**G1** is not replaced. Both predictions are produced and compared.
+
+The logistic is inspectable and its error attributes to a named coefficient. The reasoning
+is richer and its error does not. Keeping both turns that weakness into a result:
+calibration reports how far each sat from observed support, which is real evidence about
+when structured reasoning beats a fitted curve and when it does not.
+
+## P4 — Cached by content hash, so a run replays exactly · LOCKED
+
+```text
+cache_key = sha256(persona_id, policy_version, round, model_id, prompt_version)
+```
+
+A cached run is byte-identical on replay and costs nothing. A fresh run against a live model
+may differ, because temperature 0 is not a determinism guarantee. That limit is stated in
+§14 rather than papered over: the deterministic layer stays reproducible from a seed, the
+reasoning layer is reproducible from cache.
+
+## P5 — The deliberation is a screen, not a log · LOCKED
+
+Assessments stream to a dedicated view as they complete, and the whole set is exportable.
+
+A policymaker's question is "what did this do to people", and a per-person account answers
+it in a way a metric cannot. The export exists because that account is evidence: it belongs
+in the annex of whatever document the decision is written into. JSON for the record,
+Markdown for reading.
 
 ---
 
@@ -629,7 +718,8 @@ capability in `goal.md` §29 with the warnings in `goal.md` §23 and `evaluation
 
 ## L1 — Simulated support function · LOCKED
 
-An explicit, inspectable function of three persona quantities. **Not an LLM judgement.**
+An explicit, inspectable function of three persona quantities, kept as the baseline
+alongside the LLM assessment from **P1**. See **P3** for why both.
 
 ```text
 P(support) = σ( γ0
@@ -764,6 +854,7 @@ acknowledged limits a credibility asset.
 | Baseline + alternative simulations | **Always live** — sub-second, no reason to fake it |
 | Impact audit + root cause | Live — deterministic traversal of the event log |
 | Intervention generation | Live LLM · cached fallback on failure, labelled if it fires |
+| Persona deliberation | Cached by default; a live pass can be run before the demo |
 | Consultation responses | Seeded fixture, labelled · live form open |
 | Calibration | Live — arithmetic over the above |
 
@@ -854,6 +945,11 @@ path, which `AGENTS.md` section 22 rules out. The route geometry is the map.
 6. **No historical validation was performed** (**N3**). No claim of predictive accuracy is
    made anywhere in the submission.
 7. **The 1.35 walking detour factor is a constant, not a measurement** (**F1.2**).
+8. **Persona reasoning replays from cache, not from scratch** (**P4**). The deterministic
+   layer reproduces exactly on a seed; a fresh model pass may differ.
+9. **A synthetic resident's stated view is not a real person's view** (**P2**). It is the
+   model's account of a hypothesis, and the calibration screen exists precisely because
+   that account can be wrong.
 
 ## 14.3 Deferred, with re-entry points
 
