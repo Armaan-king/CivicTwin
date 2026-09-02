@@ -244,7 +244,57 @@ GET   /api/runs/{id}/calibration           CalibrationRow[]
 
 # 4. Workstreams
 
-Ordered by dependency. **W1 unblocks everyone — do it first.**
+Ordered by dependency. Status is current as of the engine build.
+
+| | workstream | status |
+|---|---|---|
+| W1 | Fixture + schemas | **done** — 40 contract tests, 45 fixture checks |
+| W8 | Frontend | **done** — 7 routes, fixture or HTTP transport |
+| W3 | Population + graph | **in progress** — the engine build |
+| W4 | Simulation engine | **in progress** — the engine build |
+| W5 | Impact audit + root cause | **in progress** — falls out of W4's event chain |
+| W2 | Data pipeline | not started — the engine generates its study area for now |
+| W6 | Runtime agents | partial — policy interpreter only |
+| W7 | Consultation + calibration | not started |
+| W10 | Persona deliberation | not started — **the differentiator** |
+| W11 | Resident-authored remedies | not started |
+| W12 | Consultation blind spot | not started |
+| W9 | Evaluation | not started |
+
+## Build order, and why
+
+**W3 + W4 + W5 first, as one piece.** They are separable on paper and not in practice: the
+audit reads the event chain the engine emits, and the engine cannot emit a chain without the
+graph. Splitting them across people produces three half-implementations that never meet.
+
+**W10 next, because it is the differentiator.** Everything above it a competent team builds.
+Two thousand residents reasoning about the policy in their own words, streamed and
+downloadable, is the thing a judge has not seen. It depends on W4 only for the event trace
+each persona reasons about.
+
+**W7, W11, W12 after that.** All three need real outcomes to be honest about.
+
+**W2 last, or never for V1.** The engine generates its own study area, declared synthetic.
+Real LTA coordinates change one module and improve nothing a judge can see. `AGENTS.md` §16
+is satisfied by labelling, not by sourcing.
+
+## Where the engine lives
+
+Flat modules, not packages. `app/simulation/` and `app/graph/` were sketched as directories
+before anything was in them; each holds one module's worth of code, and a package wrapping a
+single file is an empty abstraction (`AGENTS.md` §2, §24).
+
+```text
+app/scenario.py      every declared constant and coefficient. one home, so C4 and G3 can
+                     be pointed at during the demo rather than hunted for.
+app/geography.py     the study area: blocks, stops, services, polyclinic. seeded, synthetic,
+                     and the same object the frontend map already reads.
+app/population.py    C1-C5 personas and households. G2 seeding.
+app/graph.py         D1-D4 DiGraph, D3 stop assignment, F1.1 shortest paths.
+app/simulation.py    F1 rules, F3 severity, G1 logistic, the round loop and the cause chain.
+app/metrics.py       I1 six metrics, four subgroup axes.
+```
+
 
 ### W1 · Fixture + schemas — *blocks all other work*
 Pydantic models for every type in section 3, plus a committed
