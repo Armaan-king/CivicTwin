@@ -1,0 +1,1710 @@
+[
+ {
+  "BusStopCode": "53059",
+  "RoadName": "Upp Thomson Rd",
+  "Description": "Upp Thomson Stn Exit 2",
+  "Latitude": 1.355471,
+  "Longitude": 103.8312231
+ },
+ {
+  "BusStopCode": "53141",
+  "RoadName": "Marymount Rd",
+  "Description": "Opp Whitley Sec Sch",
+  "Latitude": 1.35566500759395,
+  "Longitude": 103.84132706520519
+ },
+ {
+  "BusStopCode": "53149",
+  "RoadName": "Marymount Rd",
+  "Description": "Whitley Sec Sch",
+  "Latitude": 1.35548111090619,
+  "Longitude": 103.84161232917471
+ },
+ {
+  "BusStopCode": "53151",
+  "RoadName": "Marymount Rd",
+  "Description": "Opp Blk 263A CP",
+  "Latitude": 1.357995,
+  "Longitude": 103.841113
+ },
+ {
+  "BusStopCode": "53159",
+  "RoadName": "Marymount Rd",
+  "Description": "Blk 260",
+  "Latitude": 1.357180105,
+  "Longitude": 103.8415963
+ },
+ {
+  "BusStopCode": "53161",
+  "RoadName": "Marymount Rd",
+  "Description": "Marymount CC",
+  "Latitude": 1.362208,
+  "Longitude": 103.842055
+ },
+ {
+  "BusStopCode": "53169",
+  "RoadName": "Marymount Rd",
+  "Description": "Blk 254",
+  "Latitude": 1.361908333,
+  "Longitude": 103.84244
+ },
+ {
+  "BusStopCode": "53181",
+  "RoadName": "Sin Ming Rd",
+  "Description": "Amtech Bldg",
+  "Latitude": 1.35607279929568,
+  "Longitude": 103.83781001395549
+ },
+ {
+  "BusStopCode": "53191",
+  "RoadName": "Sin Ming Rd",
+  "Description": "Blk 7 Ind Est",
+  "Latitude": 1.35837944828586,
+  "Longitude": 103.83908917392279
+ },
+ {
+  "BusStopCode": "53199",
+  "RoadName": "Sin Ming Rd",
+  "Description": "Blk 22A CP",
+  "Latitude": 1.35754830843445,
+  "Longitude": 103.83899242953868
+ },
+ {
+  "BusStopCode": "53201",
+  "RoadName": "Sin Ming Dr",
+  "Description": "Opp NEA Reg Off",
+  "Latitude": 1.36128501070806,
+  "Longitude": 103.83850250682744
+ },
+ {
+  "BusStopCode": "53209",
+  "RoadName": "Sin Ming Dr",
+  "Description": "Aft NEA Reg Off",
+  "Latitude": 1.36099828733018,
+  "Longitude": 103.83852670989133
+ },
+ {
+  "BusStopCode": "53241",
+  "RoadName": "Bishan Rd",
+  "Description": "Opp Blk 217",
+  "Latitude": 1.35615639153054,
+  "Longitude": 103.84995659632311
+ },
+ {
+  "BusStopCode": "53249",
+  "RoadName": "Bishan Rd",
+  "Description": "Blk 210",
+  "Latitude": 1.35538305217047,
+  "Longitude": 103.84911895270494
+ },
+ {
+  "BusStopCode": "53321",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Opp Eunoia JC",
+  "Latitude": 1.36143,
+  "Longitude": 103.840319
+ },
+ {
+  "BusStopCode": "53329",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Eunoia JC",
+  "Latitude": 1.36153970079158,
+  "Longitude": 103.84049549859829
+ },
+ {
+  "BusStopCode": "53331",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Bef Bright Hill Tp",
+  "Latitude": 1.363006,
+  "Longitude": 103.836624
+ },
+ {
+  "BusStopCode": "53339",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Opp Bright Hill Tp",
+  "Latitude": 1.36312998205072,
+  "Longitude": 103.8367836110905
+ },
+ {
+  "BusStopCode": "53341",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Bright Hill Stn Exit 2",
+  "Latitude": 1.36355638900203,
+  "Longitude": 103.83394166697735
+ },
+ {
+  "BusStopCode": "53349",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Bright Hill Stn Exit 1",
+  "Latitude": 1.3637398272719,
+  "Longitude": 103.83379317461136
+ },
+ {
+  "BusStopCode": "53351",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Ai Tong Sch",
+  "Latitude": 1.36080972198475,
+  "Longitude": 103.83211750001261
+ },
+ {
+  "BusStopCode": "53359",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Opp Ai Tong Sch",
+  "Latitude": 1.36125666702141,
+  "Longitude": 103.83196166697407
+ },
+ {
+  "BusStopCode": "53361",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Blk 454",
+  "Latitude": 1.35929833296604,
+  "Longitude": 103.83032083300758
+ },
+ {
+  "BusStopCode": "53369",
+  "RoadName": "Sin Ming Ave",
+  "Description": "Opp Blk 454",
+  "Latitude": 1.35947344252352,
+  "Longitude": 103.8301455974542
+ },
+ {
+  "BusStopCode": "53371",
+  "RoadName": "Bishan St 22",
+  "Description": "Blk 257",
+  "Latitude": 1.35994333341045,
+  "Longitude": 103.84379568310376
+ },
+ {
+  "BusStopCode": "53379",
+  "RoadName": "Bishan St 22",
+  "Description": "Blk 245",
+  "Latitude": 1.36018670154842,
+  "Longitude": 103.84386020713477
+ },
+ {
+  "BusStopCode": "53381",
+  "RoadName": "Bishan St 22",
+  "Description": "Bishan Nth Shop Mall",
+  "Latitude": 1.35830432828214,
+  "Longitude": 103.84496212009292
+ },
+ {
+  "BusStopCode": "53389",
+  "RoadName": "Bishan St 22",
+  "Description": "Opp Bishan Nth Shop Mall",
+  "Latitude": 1.35804473736933,
+  "Longitude": 103.84516933880761
+ },
+ {
+  "BusStopCode": "53439",
+  "RoadName": "Bishan St 23",
+  "Description": "Blk 228",
+  "Latitude": 1.357625,
+  "Longitude": 103.847213
+ },
+ {
+  "BusStopCode": "53509",
+  "RoadName": "Sin Ming Dr",
+  "Description": "LTA Sin Ming Office",
+  "Latitude": 1.35718241,
+  "Longitude": 103.8366892
+ },
+ {
+  "BusStopCode": "53519",
+  "RoadName": "Sin Ming Dr",
+  "Description": "Sin Ming Autocity",
+  "Latitude": 1.35996591,
+  "Longitude": 103.8380155
+ },
+ {
+  "BusStopCode": "54009",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Ang Mo Kio Int",
+  "Latitude": 1.36968769913339,
+  "Longitude": 103.84856716193268
+ },
+ {
+  "BusStopCode": "54011",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Blk 207",
+  "Latitude": 1.36567044820875,
+  "Longitude": 103.84341042482097
+ },
+ {
+  "BusStopCode": "54019",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Blk 307A",
+  "Latitude": 1.366576359,
+  "Longitude": 103.8443435
+ },
+ {
+  "BusStopCode": "54031",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Opp Al-Muttaqin Mque",
+  "Latitude": 1.37008641040706,
+  "Longitude": 103.84534111753092
+ },
+ {
+  "BusStopCode": "54039",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Bef Al-Muttaqin Mque",
+  "Latitude": 1.37091786093364,
+  "Longitude": 103.84563650364578
+ },
+ {
+  "BusStopCode": "54041",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Opp Courts Ang Mo Kio",
+  "Latitude": 1.373676,
+  "Longitude": 103.845043
+ },
+ {
+  "BusStopCode": "54049",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Courts Ang Mo Kio",
+  "Latitude": 1.373029,
+  "Longitude": 103.845336
+ },
+ {
+  "BusStopCode": "54051",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Bef Ang Mo Kio Ave 5",
+  "Latitude": 1.376558,
+  "Longitude": 103.844964
+ },
+ {
+  "BusStopCode": "54059",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Bef Ang Mo Kio Lib",
+  "Latitude": 1.3762849891494,
+  "Longitude": 103.84498299185917
+ },
+ {
+  "BusStopCode": "54061",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Blk 244",
+  "Latitude": 1.36728801688172,
+  "Longitude": 103.83404076959498
+ },
+ {
+  "BusStopCode": "54069",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Opp Blk 244",
+  "Latitude": 1.36691997150676,
+  "Longitude": 103.83405562626137
+ },
+ {
+  "BusStopCode": "54071",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Blk 310C",
+  "Latitude": 1.36433664907741,
+  "Longitude": 103.84490672378502
+ },
+ {
+  "BusStopCode": "54079",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Opp Blk 315",
+  "Latitude": 1.36389805596869,
+  "Longitude": 103.84585916699372
+ },
+ {
+  "BusStopCode": "54081",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Teck Ghee Ct",
+  "Latitude": 1.36358972199933,
+  "Longitude": 103.84786694396756
+ },
+ {
+  "BusStopCode": "54089",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Opp Ang Mo Kio Swim Cplx",
+  "Latitude": 1.36297001065247,
+  "Longitude": 103.8484911674186
+ },
+ {
+  "BusStopCode": "54091",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Blk 331",
+  "Latitude": 1.36167975047647,
+  "Longitude": 103.85092799797833
+ },
+ {
+  "BusStopCode": "54099",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Opp Blk 333",
+  "Latitude": 1.36118777797342,
+  "Longitude": 103.85104805596895
+ },
+ {
+  "BusStopCode": "54101",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Aft Ang Mo Kio Ave 10",
+  "Latitude": 1.35732097800984,
+  "Longitude": 103.85465761724518
+ },
+ {
+  "BusStopCode": "54109",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Bef Ang Mo Kio Ave 10",
+  "Latitude": 1.35708169204878,
+  "Longitude": 103.85433890252277
+ },
+ {
+  "BusStopCode": "54161",
+  "RoadName": "Ang Mo Kio St 11",
+  "Description": "Opp Blk 255",
+  "Latitude": 1.37107664581619,
+  "Longitude": 103.83482933088284
+ },
+ {
+  "BusStopCode": "54169",
+  "RoadName": "Ang Mo Kio St 11",
+  "Description": "Blk 255",
+  "Latitude": 1.37089833300275,
+  "Longitude": 103.83476694396748
+ },
+ {
+  "BusStopCode": "54181",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Mayflower Stn Exit 6",
+  "Latitude": 1.37053305192374,
+  "Longitude": 103.83653495602837
+ },
+ {
+  "BusStopCode": "54189",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Mayflower Stn Exit 5",
+  "Latitude": 1.37046966291161,
+  "Longitude": 103.83679073259783
+ },
+ {
+  "BusStopCode": "54191",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Mayflower Stn Exit 2",
+  "Latitude": 1.37447193336668,
+  "Longitude": 103.83756404776227
+ },
+ {
+  "BusStopCode": "54199",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Bef Mayflower Stn Exit 3",
+  "Latitude": 1.37430000000968,
+  "Longitude": 103.83767277798232
+ },
+ {
+  "BusStopCode": "54201",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Opp Blk 155",
+  "Latitude": 1.375969,
+  "Longitude": 103.839271
+ },
+ {
+  "BusStopCode": "54209",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Bet Blks 152/155",
+  "Latitude": 1.37638119735545,
+  "Longitude": 103.83952322759048
+ },
+ {
+  "BusStopCode": "54211",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Mayflower Sec Sch",
+  "Latitude": 1.36861222198461,
+  "Longitude": 103.83634833298527
+ },
+ {
+  "BusStopCode": "54219",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Opp Mayflower Sec Sch",
+  "Latitude": 1.36880777071199,
+  "Longitude": 103.83679395921905
+ },
+ {
+  "BusStopCode": "54221",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Opp Ang Mo Kio Pr Sch",
+  "Latitude": 1.36995608006054,
+  "Longitude": 103.83959341119167
+ },
+ {
+  "BusStopCode": "54229",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Ang Mo Kio Pr Sch",
+  "Latitude": 1.36960577947339,
+  "Longitude": 103.83993274827546
+ },
+ {
+  "BusStopCode": "54231",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 129",
+  "Latitude": 1.36966012463918,
+  "Longitude": 103.84193909880943
+ },
+ {
+  "BusStopCode": "54239",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 209",
+  "Latitude": 1.369186093503,
+  "Longitude": 103.84332015576305
+ },
+ {
+  "BusStopCode": "54241",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 700B",
+  "Latitude": 1.36913518643274,
+  "Longitude": 103.84618005827467
+ },
+ {
+  "BusStopCode": "54247",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 322",
+  "Latitude": 1.36873836498602,
+  "Longitude": 103.84719306132868
+ },
+ {
+  "BusStopCode": "54248",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 324",
+  "Latitude": 1.36875490594243,
+  "Longitude": 103.84661006967286
+ },
+ {
+  "BusStopCode": "54251",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Aft Grandeur 8",
+  "Latitude": 1.37689002832989,
+  "Longitude": 103.84617199453344
+ },
+ {
+  "BusStopCode": "54259",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp Grandeur 8",
+  "Latitude": 1.3772094440158,
+  "Longitude": 103.84628222196814
+ },
+ {
+  "BusStopCode": "54261",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Aft Ang Mo Kio Stn Exit A",
+  "Latitude": 1.36946941916508,
+  "Longitude": 103.85075454495572
+ },
+ {
+  "BusStopCode": "54269",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Opp Ang Mo Kio Stn",
+  "Latitude": 1.36921006543476,
+  "Longitude": 103.85111893571647
+ },
+ {
+  "BusStopCode": "54271",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 586",
+  "Latitude": 1.36996326781056,
+  "Longitude": 103.85356664655984
+ },
+ {
+  "BusStopCode": "54279",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 427",
+  "Latitude": 1.36968919033429,
+  "Longitude": 103.85404760550173
+ },
+ {
+  "BusStopCode": "54281",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 570",
+  "Latitude": 1.369694,
+  "Longitude": 103.855165
+ },
+ {
+  "BusStopCode": "54289",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 452",
+  "Latitude": 1.369149,
+  "Longitude": 103.855987
+ },
+ {
+  "BusStopCode": "54291",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 564",
+  "Latitude": 1.3693065,
+  "Longitude": 103.858548
+ },
+ {
+  "BusStopCode": "54299",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Opp Blk 565",
+  "Latitude": 1.36890152697813,
+  "Longitude": 103.85832656880861
+ },
+ {
+  "BusStopCode": "54301",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Blk 5022",
+  "Latitude": 1.37019500530585,
+  "Longitude": 103.86284675062745
+ },
+ {
+  "BusStopCode": "54309",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Opp Blk 5022",
+  "Latitude": 1.36988835306854,
+  "Longitude": 103.86306604022437
+ },
+ {
+  "BusStopCode": "54311",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Blk 332",
+  "Latitude": 1.36143610819625,
+  "Longitude": 103.85257506359629
+ },
+ {
+  "BusStopCode": "54319",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Opp Christ The King Ch",
+  "Latitude": 1.36205969144532,
+  "Longitude": 103.85305482306448
+ },
+ {
+  "BusStopCode": "54321",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Blk 354",
+  "Latitude": 1.3639846735447,
+  "Longitude": 103.85237785571755
+ },
+ {
+  "BusStopCode": "54329",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Blk 420",
+  "Latitude": 1.36449772525141,
+  "Longitude": 103.85247983714417
+ },
+ {
+  "BusStopCode": "54331",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Blk 346",
+  "Latitude": 1.36719473720813,
+  "Longitude": 103.85056845375878
+ },
+ {
+  "BusStopCode": "54339",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Blk 422",
+  "Latitude": 1.3678447007404,
+  "Longitude": 103.85057966582927
+ },
+ {
+  "BusStopCode": "54341",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Opp Blk 504",
+  "Latitude": 1.37462142095238,
+  "Longitude": 103.84782467173312
+ },
+ {
+  "BusStopCode": "54349",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Blk 504",
+  "Latitude": 1.37477333299627,
+  "Longitude": 103.84810527802902
+ },
+ {
+  "BusStopCode": "54351",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Nanyang Poly",
+  "Latitude": 1.37647777885877,
+  "Longitude": 103.85003474200923
+ },
+ {
+  "BusStopCode": "54359",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 502",
+  "Latitude": 1.37615334768079,
+  "Longitude": 103.8499921086812
+ },
+ {
+  "BusStopCode": "54369",
+  "RoadName": "Ang Mo Kio Ind Pk 1",
+  "Description": "Opp Blk 4025",
+  "Latitude": 1.35874638898802,
+  "Longitude": 103.85588277797046
+ },
+ {
+  "BusStopCode": "54371",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 409 Mkt/FC",
+  "Latitude": 1.36238306289968,
+  "Longitude": 103.85568284134345
+ },
+ {
+  "BusStopCode": "54379",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 475",
+  "Latitude": 1.36288998904353,
+  "Longitude": 103.85594804936484
+ },
+ {
+  "BusStopCode": "54381",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 443",
+  "Latitude": 1.3657416739059,
+  "Longitude": 103.85608617430734
+ },
+ {
+  "BusStopCode": "54389",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 465",
+  "Latitude": 1.36638973614786,
+  "Longitude": 103.85660537812751
+ },
+ {
+  "BusStopCode": "54391",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Aft Ang Mo Kio Int",
+  "Latitude": 1.371548,
+  "Longitude": 103.848298
+ },
+ {
+  "BusStopCode": "54399",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Bef Ang Mo Kio Stn Exit B",
+  "Latitude": 1.37137302300723,
+  "Longitude": 103.84866111647399
+ },
+ {
+  "BusStopCode": "54401",
+  "RoadName": "Ang Mo Kio St 52",
+  "Description": "Blk 522",
+  "Latitude": 1.3729466814704,
+  "Longitude": 103.8516353477965
+ },
+ {
+  "BusStopCode": "54409",
+  "RoadName": "Ang Mo Kio St 52",
+  "Description": "Jing Shan Pr Sch",
+  "Latitude": 1.37270833297137,
+  "Longitude": 103.85213888899418
+ },
+ {
+  "BusStopCode": "54411",
+  "RoadName": "Ang Mo Kio St 52",
+  "Description": "Blk 527",
+  "Latitude": 1.37235305596731,
+  "Longitude": 103.8542291670297
+ },
+ {
+  "BusStopCode": "54419",
+  "RoadName": "Ang Mo Kio St 52",
+  "Description": "Opp Blk 527",
+  "Latitude": 1.37206167776818,
+  "Longitude": 103.8548909469337
+ },
+ {
+  "BusStopCode": "54429",
+  "RoadName": "Ang Mo Kio St 54",
+  "Description": "Blk 561",
+  "Latitude": 1.370344,
+  "Longitude": 103.85818
+ },
+ {
+  "BusStopCode": "54439",
+  "RoadName": "Ang Mo Kio St 54",
+  "Description": "Blk 549",
+  "Latitude": 1.37328474238491,
+  "Longitude": 103.85715387505564
+ },
+ {
+  "BusStopCode": "54441",
+  "RoadName": "Ang Mo Kio St 53",
+  "Description": "Blk 507",
+  "Latitude": 1.37418169489017,
+  "Longitude": 103.85076922983178
+ },
+ {
+  "BusStopCode": "54449",
+  "RoadName": "Ang Mo Kio St 53",
+  "Description": "Opp Blk 507",
+  "Latitude": 1.3746081045073,
+  "Longitude": 103.85088955053739
+ },
+ {
+  "BusStopCode": "54451",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 643",
+  "Latitude": 1.37723501808517,
+  "Longitude": 103.84059645206445
+ },
+ {
+  "BusStopCode": "54459",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 151",
+  "Latitude": 1.37693336122245,
+  "Longitude": 103.84120098441312
+ },
+ {
+  "BusStopCode": "54461",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 649",
+  "Latitude": 1.37747997146347,
+  "Longitude": 103.84339938777067
+ },
+ {
+  "BusStopCode": "54469",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp Blk 649",
+  "Latitude": 1.3772016702489,
+  "Longitude": 103.84349683756662
+ },
+ {
+  "BusStopCode": "54471",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp Blk 538",
+  "Latitude": 1.37613470846106,
+  "Longitude": 103.853296559924
+ },
+ {
+  "BusStopCode": "54479",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 538",
+  "Latitude": 1.37579335077466,
+  "Longitude": 103.853200441537
+ },
+ {
+  "BusStopCode": "54481",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "ITE Coll Ctrl",
+  "Latitude": 1.37599497932237,
+  "Longitude": 103.855765341723
+ },
+ {
+  "BusStopCode": "54489",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp ITE Coll Ctrl",
+  "Latitude": 1.375675,
+  "Longitude": 103.855423
+ },
+ {
+  "BusStopCode": "54491",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Aft CTE",
+  "Latitude": 1.37717165299187,
+  "Longitude": 103.86010323265269
+ },
+ {
+  "BusStopCode": "54499",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Bef CTE",
+  "Latitude": 1.37700806651463,
+  "Longitude": 103.86055355422364
+ },
+ {
+  "BusStopCode": "54501",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp AMK Ind Pk 2",
+  "Latitude": 1.37787138898682,
+  "Longitude": 103.86266305598139
+ },
+ {
+  "BusStopCode": "54509",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Aft Blk 5000",
+  "Latitude": 1.37758835823729,
+  "Longitude": 103.86257049780349
+ },
+ {
+  "BusStopCode": "54511",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Blk 5032",
+  "Latitude": 1.372192,
+  "Longitude": 103.863322
+ },
+ {
+  "BusStopCode": "54519",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Extra Space",
+  "Latitude": 1.372117,
+  "Longitude": 103.864539
+ },
+ {
+  "BusStopCode": "54521",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Blk 5046",
+  "Latitude": 1.37342640743158,
+  "Longitude": 103.86288750616447
+ },
+ {
+  "BusStopCode": "54529",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Opp Blk 5043",
+  "Latitude": 1.3733597291276,
+  "Longitude": 103.86303621815655
+ },
+ {
+  "BusStopCode": "54531",
+  "RoadName": "Bishan Rd",
+  "Description": "Opp Bishan Pk",
+  "Latitude": 1.35839974282084,
+  "Longitude": 103.85132688003488
+ },
+ {
+  "BusStopCode": "54539",
+  "RoadName": "Bishan Rd",
+  "Description": "Bishan Pk",
+  "Latitude": 1.35857111103202,
+  "Longitude": 103.85104805599867
+ },
+ {
+  "BusStopCode": "54571",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 532",
+  "Latitude": 1.37425472964633,
+  "Longitude": 103.85491933752174
+ },
+ {
+  "BusStopCode": "54579",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 540",
+  "Latitude": 1.37487817367914,
+  "Longitude": 103.85483080978989
+ },
+ {
+  "BusStopCode": "54581",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 574",
+  "Latitude": 1.37105833303092,
+  "Longitude": 103.85665833302312
+ },
+ {
+  "BusStopCode": "54589",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Blk 555",
+  "Latitude": 1.37173441613541,
+  "Longitude": 103.85671893941708
+ },
+ {
+  "BusStopCode": "54591",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Opp Blk 5060",
+  "Latitude": 1.37530666700034,
+  "Longitude": 103.8617738890253
+ },
+ {
+  "BusStopCode": "54599",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Blk 5056",
+  "Latitude": 1.37489472202166,
+  "Longitude": 103.86180138897765
+ },
+ {
+  "BusStopCode": "54601",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Townsville Pr Sch",
+  "Latitude": 1.35942138902131,
+  "Longitude": 103.85514583300495
+ },
+ {
+  "BusStopCode": "54609",
+  "RoadName": "Ang Mo Kio Ave 10",
+  "Description": "Opp Townsville Pr Sch",
+  "Latitude": 1.359358,
+  "Longitude": 103.855321
+ },
+ {
+  "BusStopCode": "54611",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Blk 220",
+  "Latitude": 1.36489470522366,
+  "Longitude": 103.84057417396242
+ },
+ {
+  "BusStopCode": "54619",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Opp Blk 220",
+  "Latitude": 1.36467168386173,
+  "Longitude": 103.84050288513411
+ },
+ {
+  "BusStopCode": "54621",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Blk 223",
+  "Latitude": 1.36595331171712,
+  "Longitude": 103.83773071305599
+ },
+ {
+  "BusStopCode": "54629",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Opp Blk 223",
+  "Latitude": 1.3655880696456,
+  "Longitude": 103.83801666007233
+ },
+ {
+  "BusStopCode": "54631",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Bef Ang Mo Kio Ind Pk 2A",
+  "Latitude": 1.37702166744619,
+  "Longitude": 103.86697522711312
+ },
+ {
+  "BusStopCode": "54641",
+  "RoadName": "Ang Mo Kio Ind Pk 2",
+  "Description": "Sing Ind Cplx",
+  "Latitude": 1.37573967362754,
+  "Longitude": 103.864609061163
+ },
+ {
+  "BusStopCode": "54651",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp Techplace 2",
+  "Latitude": 1.37854275740549,
+  "Longitude": 103.86551861831312
+ },
+ {
+  "BusStopCode": "54659",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Techplace 2",
+  "Latitude": 1.37834008020794,
+  "Longitude": 103.86686274044777
+ },
+ {
+  "BusStopCode": "55011",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Bef Lentor Stn Exit 5",
+  "Latitude": 1.382262,
+  "Longitude": 103.835704
+ },
+ {
+  "BusStopCode": "55019",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Lentor Stn Exit 4",
+  "Latitude": 1.382212,
+  "Longitude": 103.836047
+ },
+ {
+  "BusStopCode": "55021",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Opp Seasons Pk",
+  "Latitude": 1.3857011784032,
+  "Longitude": 103.83872706499656
+ },
+ {
+  "BusStopCode": "55029",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Seasons Pk",
+  "Latitude": 1.38565193733046,
+  "Longitude": 103.83917105055716
+ },
+ {
+  "BusStopCode": "55031",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Opp NCS Hub",
+  "Latitude": 1.38944774212221,
+  "Longitude": 103.84360331162512
+ },
+ {
+  "BusStopCode": "55039",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "NCS Hub",
+  "Latitude": 1.3891573228776,
+  "Longitude": 103.84383135324573
+ },
+ {
+  "BusStopCode": "55041",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft AMK St 64/Apple SG",
+  "Latitude": 1.39122406741106,
+  "Longitude": 103.84602799523668
+ },
+ {
+  "BusStopCode": "55049",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Bef AMK St 64/Apple SG",
+  "Latitude": 1.39110547694961,
+  "Longitude": 103.84659281119058
+ },
+ {
+  "BusStopCode": "55051",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Opp ST Engineering",
+  "Latitude": 1.3924,
+  "Longitude": 103.848962
+ },
+ {
+  "BusStopCode": "55059",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "ST Engineering",
+  "Latitude": 1.3920822654425,
+  "Longitude": 103.84909518015897
+ },
+ {
+  "BusStopCode": "55071",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Bef ECON Medicare Ctr",
+  "Latitude": 1.39246274085167,
+  "Longitude": 103.85261828242731
+ },
+ {
+  "BusStopCode": "55079",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft ECON Medicare Ctr",
+  "Latitude": 1.391952,
+  "Longitude": 103.853366
+ },
+ {
+  "BusStopCode": "55081",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Opp Sunrise Gdns",
+  "Latitude": 1.39177133420779,
+  "Longitude": 103.8559732827973
+ },
+ {
+  "BusStopCode": "55089",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Sunrise Gdns",
+  "Latitude": 1.39129403706334,
+  "Longitude": 103.85630398734284
+ },
+ {
+  "BusStopCode": "55101",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Opp Serenity Pk",
+  "Latitude": 1.3909401415525,
+  "Longitude": 103.85967918415774
+ },
+ {
+  "BusStopCode": "55109",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Serenity Pk",
+  "Latitude": 1.39049447273752,
+  "Longitude": 103.8599334800352
+ },
+ {
+  "BusStopCode": "55111",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 180",
+  "Latitude": 1.37695556267127,
+  "Longitude": 103.83777368753996
+ },
+ {
+  "BusStopCode": "55119",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 617",
+  "Latitude": 1.37728530731209,
+  "Longitude": 103.8378470631113
+ },
+ {
+  "BusStopCode": "55121",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Opp Blk 604",
+  "Latitude": 1.37943138901774,
+  "Longitude": 103.83519777802985
+ },
+ {
+  "BusStopCode": "55129",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Blk 604",
+  "Latitude": 1.37955302001994,
+  "Longitude": 103.83549938754196
+ },
+ {
+  "BusStopCode": "55131",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Blk 612",
+  "Latitude": 1.37986282047018,
+  "Longitude": 103.8396597025406
+ },
+ {
+  "BusStopCode": "55139",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Blk 641",
+  "Latitude": 1.37894011617745,
+  "Longitude": 103.84007487448596
+ },
+ {
+  "BusStopCode": "55141",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Opp Blk 622",
+  "Latitude": 1.38151305598601,
+  "Longitude": 103.83902055596755
+ },
+ {
+  "BusStopCode": "55149",
+  "RoadName": "Ang Mo Kio Ave 4",
+  "Description": "Blk 622",
+  "Latitude": 1.38147638900431,
+  "Longitude": 103.8392680559805
+ },
+ {
+  "BusStopCode": "55151",
+  "RoadName": "Ang Mo Kio Ave 9",
+  "Description": "Ang Mo Kio Community Hosp",
+  "Latitude": 1.3833944010563,
+  "Longitude": 103.8403312479222
+ },
+ {
+  "BusStopCode": "55159",
+  "RoadName": "Ang Mo Kio Ave 9",
+  "Description": "Opp Ang Mo Kio Cmty Hosp",
+  "Latitude": 1.383362,
+  "Longitude": 103.84065
+ },
+ {
+  "BusStopCode": "55169",
+  "RoadName": "Ang Mo Kio St 61",
+  "Description": "Opp Yio Chu Kang CC",
+  "Latitude": 1.38123639226093,
+  "Longitude": 103.84100233602071
+ },
+ {
+  "BusStopCode": "55171",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Castle Green",
+  "Latitude": 1.385783333,
+  "Longitude": 103.8429056
+ },
+ {
+  "BusStopCode": "55179",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Opp Castle Green",
+  "Latitude": 1.385991667,
+  "Longitude": 103.8431694
+ },
+ {
+  "BusStopCode": "55181",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Opp Yio Chu Kang Stn",
+  "Latitude": 1.38143251435794,
+  "Longitude": 103.84389230276943
+ },
+ {
+  "BusStopCode": "55189",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Yio Chu Kang Stn",
+  "Latitude": 1.382955556,
+  "Longitude": 103.844225
+ },
+ {
+  "BusStopCode": "55199",
+  "RoadName": "Ang Mo Kio St 61",
+  "Description": "Blk 645",
+  "Latitude": 1.3795247679563,
+  "Longitude": 103.8426631996752
+ },
+ {
+  "BusStopCode": "55201",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Aft Blk 648",
+  "Latitude": 1.37859113966821,
+  "Longitude": 103.8443777268119
+ },
+ {
+  "BusStopCode": "55209",
+  "RoadName": "Ang Mo Kio Ave 6",
+  "Description": "Opp Blk 646",
+  "Latitude": 1.37863166702811,
+  "Longitude": 103.84468444401317
+ },
+ {
+  "BusStopCode": "55211",
+  "RoadName": "Ang Mo Kio St 62",
+  "Description": "Aft Ang Mo Kio Fire Stn",
+  "Latitude": 1.386216,
+  "Longitude": 103.845539
+ },
+ {
+  "BusStopCode": "55219",
+  "RoadName": "Ang Mo Kio St 62",
+  "Description": "Bef Ang Mo Kio Ave 9",
+  "Latitude": 1.38560725163314,
+  "Longitude": 103.8459306339141
+ },
+ {
+  "BusStopCode": "55221",
+  "RoadName": "Ang Mo Kio St 64",
+  "Description": "Aft Ang Mo Kio St 62",
+  "Latitude": 1.38779002795173,
+  "Longitude": 103.84621115886938
+ },
+ {
+  "BusStopCode": "55229",
+  "RoadName": "Ang Mo Kio St 64",
+  "Description": "Bef Ang Mo Kio St 62",
+  "Latitude": 1.38851043039698,
+  "Longitude": 103.84591573293089
+ },
+ {
+  "BusStopCode": "55231",
+  "RoadName": "Ang Mo Kio St 63",
+  "Description": "Liuxun Sanhemiao Tp",
+  "Latitude": 1.38576093943759,
+  "Longitude": 103.84831692135697
+ },
+ {
+  "BusStopCode": "55239",
+  "RoadName": "Ang Mo Kio St 63",
+  "Description": "Bef AMK St 64",
+  "Latitude": 1.38699777800655,
+  "Longitude": 103.84804111102198
+ },
+ {
+  "BusStopCode": "55241",
+  "RoadName": "Lentor Ave",
+  "Description": "Aft Yio Chu Kang Rd",
+  "Latitude": 1.389545,
+  "Longitude": 103.840319
+ },
+ {
+  "BusStopCode": "55249",
+  "RoadName": "Lentor Ave",
+  "Description": "Bef Yio Chu Kang Rd",
+  "Latitude": 1.389538,
+  "Longitude": 103.84068
+ },
+ {
+  "BusStopCode": "55251",
+  "RoadName": "Lentor Ave",
+  "Description": "Countryside Est",
+  "Latitude": 1.39093600499761,
+  "Longitude": 103.83885575492444
+ },
+ {
+  "BusStopCode": "55259",
+  "RoadName": "Lentor Ave",
+  "Description": "Opp Countryside Est",
+  "Latitude": 1.39143,
+  "Longitude": 103.838608
+ },
+ {
+  "BusStopCode": "55261",
+  "RoadName": "Lentor Ave",
+  "Description": "Bullion Pk Condo",
+  "Latitude": 1.39203,
+  "Longitude": 103.836929
+ },
+ {
+  "BusStopCode": "55269",
+  "RoadName": "Lentor Ave",
+  "Description": "Opp Bullion Pk Condo",
+  "Latitude": 1.39267,
+  "Longitude": 103.836298
+ },
+ {
+  "BusStopCode": "55301",
+  "RoadName": "Ang Mo Kio Ave 9",
+  "Description": "AMK Police Div HQ",
+  "Latitude": 1.38425166698696,
+  "Longitude": 103.84445666701023
+ },
+ {
+  "BusStopCode": "55309",
+  "RoadName": "Ang Mo Kio Ave 9",
+  "Description": "Opp AMK Police Div HQ",
+  "Latitude": 1.384084,
+  "Longitude": 103.844597
+ },
+ {
+  "BusStopCode": "55311",
+  "RoadName": "Ang Mo Kio Ave 9",
+  "Description": "Opp Yio Chu Kang Stadium",
+  "Latitude": 1.38430357836038,
+  "Longitude": 103.84683966636786
+ },
+ {
+  "BusStopCode": "55319",
+  "RoadName": "Ang Mo Kio Ave 9",
+  "Description": "Yio Chu Kang Stadium",
+  "Latitude": 1.38408669861968,
+  "Longitude": 103.84678260704942
+ },
+ {
+  "BusStopCode": "55321",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Opp Nanyang Poly",
+  "Latitude": 1.37836333298131,
+  "Longitude": 103.84722527801875
+ },
+ {
+  "BusStopCode": "55329",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Nanyang Poly",
+  "Latitude": 1.37901970079676,
+  "Longitude": 103.84722527828754
+ },
+ {
+  "BusStopCode": "55331",
+  "RoadName": "Lentor Loop",
+  "Description": "Aft Lentor Gr",
+  "Latitude": 1.38692246241021,
+  "Longitude": 103.8371410383723
+ },
+ {
+  "BusStopCode": "55339",
+  "RoadName": "Lentor Loop",
+  "Description": "Aft Florissa Pk",
+  "Latitude": 1.38708225951205,
+  "Longitude": 103.83711644936153
+ },
+ {
+  "BusStopCode": "55341",
+  "RoadName": "Lentor Dr",
+  "Description": "Lentor Stn Exit 3",
+  "Latitude": 1.384975,
+  "Longitude": 103.836684
+ },
+ {
+  "BusStopCode": "55349",
+  "RoadName": "Lentor Dr",
+  "Description": "Lentor Stn Exit 5",
+  "Latitude": 1.38479144169995,
+  "Longitude": 103.8364930927339
+ },
+ {
+  "BusStopCode": "55351",
+  "RoadName": "Lentor Rd",
+  "Description": "Opp Fudu Wk P/G",
+  "Latitude": 1.3897367880855,
+  "Longitude": 103.83696395007934
+ },
+ {
+  "BusStopCode": "55361",
+  "RoadName": "Lentor Loop",
+  "Description": "Countryside Gdn P/G",
+  "Latitude": 1.38983685641152,
+  "Longitude": 103.83860500061255
+ },
+ {
+  "BusStopCode": "55371",
+  "RoadName": "Lentor Loop",
+  "Description": "Aft Lentor St",
+  "Latitude": 1.388614367271,
+  "Longitude": 103.83440450730951
+ },
+ {
+  "BusStopCode": "55381",
+  "RoadName": "Lentor Loop",
+  "Description": "Bef Bullion Pk",
+  "Latitude": 1.3899041699795,
+  "Longitude": 103.83624640000222
+ },
+ {
+  "BusStopCode": "55509",
+  "RoadName": "Ang Mo Kio Ave 8",
+  "Description": "Yio Chu Kang Int",
+  "Latitude": 1.38113241525166,
+  "Longitude": 103.8455558816965
+ },
+ {
+  "BusStopCode": "56199",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Thomson Hills Dr",
+  "Latitude": 1.37892333298882,
+  "Longitude": 103.83003638899949
+ },
+ {
+  "BusStopCode": "56201",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Munshi Abdullah Ave",
+  "Latitude": 1.38059381566563,
+  "Longitude": 103.83224759401025
+ },
+ {
+  "BusStopCode": "56209",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Bef Thomson Hills Dr",
+  "Latitude": 1.38031863295854,
+  "Longitude": 103.83240305645302
+ },
+ {
+  "BusStopCode": "56241",
+  "RoadName": "Ang Mo Kio Ave 2",
+  "Description": "St. Nicholas Girls'",
+  "Latitude": 1.37199166697877,
+  "Longitude": 103.83320833301671
+ },
+ {
+  "BusStopCode": "56249",
+  "RoadName": "Ang Mo Kio Ave 2",
+  "Description": "Opp St. Nicholas Girls'",
+  "Latitude": 1.37295831920319,
+  "Longitude": 103.83301111771881
+ },
+ {
+  "BusStopCode": "56251",
+  "RoadName": "Ang Mo Kio Ave 2",
+  "Description": "Opp Horizon Gdns",
+  "Latitude": 1.37637472203353,
+  "Longitude": 103.8344186109838
+ },
+ {
+  "BusStopCode": "56259",
+  "RoadName": "Ang Mo Kio Ave 2",
+  "Description": "Horizon Gdns",
+  "Latitude": 1.376844443968,
+  "Longitude": 103.83484027799092
+ },
+ {
+  "BusStopCode": "56261",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Aft Ang Mo Kio Ave 2",
+  "Latitude": 1.367859,
+  "Longitude": 103.831724
+ },
+ {
+  "BusStopCode": "56269",
+  "RoadName": "Ang Mo Kio Ave 1",
+  "Description": "Bef Ang Mo Kio Ave 2",
+  "Latitude": 1.36741835425889,
+  "Longitude": 103.83233403239235
+ },
+ {
+  "BusStopCode": "56289",
+  "RoadName": "Ang Mo Kio Ave 2",
+  "Description": "Bef Shangri-La Wk",
+  "Latitude": 1.37023167757252,
+  "Longitude": 103.83232655288832
+ },
+ {
+  "BusStopCode": "66041",
+  "RoadName": "Boundary Rd",
+  "Description": "Blk 230",
+  "Latitude": 1.3557230306281,
+  "Longitude": 103.8697219448858
+ },
+ {
+  "BusStopCode": "66049",
+  "RoadName": "Boundary Rd",
+  "Description": "Blk 233",
+  "Latitude": 1.35535475300084,
+  "Longitude": 103.86896493522666
+ },
+ {
+  "BusStopCode": "66111",
+  "RoadName": "Lor Chuan",
+  "Description": "Opp Grace Wk",
+  "Latitude": 1.35848277799301,
+  "Longitude": 103.86823666699911
+ },
+ {
+  "BusStopCode": "66119",
+  "RoadName": "Lor Chuan",
+  "Description": "Summer Pl",
+  "Latitude": 1.35683000003038,
+  "Longitude": 103.86812666696963
+ },
+ {
+  "BusStopCode": "66121",
+  "RoadName": "Lor Chuan",
+  "Description": "Chuan Terr",
+  "Latitude": 1.36239972197855,
+  "Longitude": 103.86776000002241
+ },
+ {
+  "BusStopCode": "66129",
+  "RoadName": "Lor Chuan",
+  "Description": "Aft Chuan Gdn",
+  "Latitude": 1.36149111,
+  "Longitude": 103.8680175
+ },
+ {
+  "BusStopCode": "66139",
+  "RoadName": "S'goon Gdn Way",
+  "Description": "Opp Trinity Meth Ch",
+  "Latitude": 1.36357778856307,
+  "Longitude": 103.86929111065648
+ },
+ {
+  "BusStopCode": "66151",
+  "RoadName": "Chartwell Dr",
+  "Description": "Opp Penshurst Pl",
+  "Latitude": 1.36306633208702,
+  "Longitude": 103.86588376967377
+ },
+ {
+  "BusStopCode": "66161",
+  "RoadName": "Chartwell Dr",
+  "Description": "Opp Crowhurst Dr",
+  "Latitude": 1.36123776322522,
+  "Longitude": 103.86464333342467
+ },
+ {
+  "BusStopCode": "66171",
+  "RoadName": "Chartwell Dr",
+  "Description": "Bef Cooling Cl",
+  "Latitude": 1.35976302696107,
+  "Longitude": 103.86361193890139
+ },
+ {
+  "BusStopCode": "66181",
+  "RoadName": "Burghley Dr",
+  "Description": "Aft Chartwell Rd",
+  "Latitude": 1.35878665442309,
+  "Longitude": 103.86185764149462
+ },
+ {
+  "BusStopCode": "66191",
+  "RoadName": "Burghley Dr",
+  "Description": "Aft Corfe Pl",
+  "Latitude": 1.36065611099902,
+  "Longitude": 103.85983944399274
+ },
+ {
+  "BusStopCode": "66201",
+  "RoadName": "Berwick Dr",
+  "Description": "Opp Brockhampton Dr",
+  "Latitude": 1.36208638896684,
+  "Longitude": 103.85966527802135
+ },
+ {
+  "BusStopCode": "66211",
+  "RoadName": "Berwick Dr",
+  "Description": "Opp Bloxhome Dr",
+  "Latitude": 1.36412138937997,
+  "Longitude": 103.86103467229529
+ },
+ {
+  "BusStopCode": "66221",
+  "RoadName": "Tavistock Ave",
+  "Description": "Opp Portchester Ave",
+  "Latitude": 1.36834972197817,
+  "Longitude": 103.86262638902237
+ },
+ {
+  "BusStopCode": "66231",
+  "RoadName": "Tavistock Ave",
+  "Description": "Bef Huddington Ave",
+  "Latitude": 1.36994831751271,
+  "Longitude": 103.86438051938194
+ },
+ {
+  "BusStopCode": "66241",
+  "RoadName": "Hemsley Ave",
+  "Description": "Hemsley Ave",
+  "Latitude": 1.36890803491379,
+  "Longitude": 103.86562505721909
+ },
+ {
+  "BusStopCode": "66251",
+  "RoadName": "Kensington Pk Rd",
+  "Description": "Opp Kingswear Ave",
+  "Latitude": 1.36724305880207,
+  "Longitude": 103.86653816215
+ },
+ {
+  "BusStopCode": "66261",
+  "RoadName": "Kensington Pk Rd",
+  "Description": "S'goon Gdns Country Club",
+  "Latitude": 1.36555110748973,
+  "Longitude": 103.86640982940798
+ },
+ {
+  "BusStopCode": "66271",
+  "RoadName": "S'goon Gdn Way",
+  "Description": "S'goon Gdn Circus",
+  "Latitude": 1.36398333300081,
+  "Longitude": 103.86578916701893
+ },
+ {
+  "BusStopCode": "66291",
+  "RoadName": "Berwick Dr",
+  "Description": "Aft Medway Dr",
+  "Latitude": 1.3659363788285,
+  "Longitude": 103.86192411659012
+ },
+ {
+  "BusStopCode": "66341",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Daikin S'pore",
+  "Latitude": 1.37114196132937,
+  "Longitude": 103.86525341485559
+ },
+ {
+  "BusStopCode": "66349",
+  "RoadName": "Ang Mo Kio Ave 3",
+  "Description": "Opp Daikin S'pore",
+  "Latitude": 1.37082760014108,
+  "Longitude": 103.86541771672718
+ },
+ {
+  "BusStopCode": "66451",
+  "RoadName": "Ang Mo Kio Ave 5",
+  "Description": "Aft AMK Ind Pk 2",
+  "Latitude": 1.37872496881803,
+  "Longitude": 103.86854361874474
+ },
+ {
+  "BusStopCode": "66599",
+  "RoadName": "S'goon Nth Ave 5",
+  "Description": "KLA Corporation",
+  "Latitude": 1.37284849802167,
+  "Longitude": 103.868436813377
+ },
+ {
+  "BusStopCode": "67011",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Bef Begonia Rd",
+  "Latitude": 1.39009747909366,
+  "Longitude": 103.86263251348234
+ },
+ {
+  "BusStopCode": "67019",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Begonia Rd",
+  "Latitude": 1.38976371710347,
+  "Longitude": 103.86253811109862
+ },
+ {
+  "BusStopCode": "67021",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Opp Dedap Rd",
+  "Latitude": 1.389306388988,
+  "Longitude": 103.86548666703128
+ },
+ {
+  "BusStopCode": "67029",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Dedap Rd",
+  "Latitude": 1.38906690681702,
+  "Longitude": 103.86517736947857
+ },
+ {
+  "BusStopCode": "67039",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "Aft Seletar Rd",
+  "Latitude": 1.38831000001759,
+  "Longitude": 103.86800750000182
+ },
+ {
+  "BusStopCode": "67049",
+  "RoadName": "Yio Chu Kang Rd",
+  "Description": "The Greenwich",
+  "Latitude": 1.38773464426252,
+  "Longitude": 103.869986495669
+ },
+ {
+  "BusStopCode": "67081",
+  "RoadName": "Sengkang West Rd",
+  "Description": "Aft Yio Chu Kang Rd",
+  "Latitude": 1.38990180700693,
+  "Longitude": 103.86883700264016
+ },
+ {
+  "BusStopCode": "67089",
+  "RoadName": "Sengkang West Rd",
+  "Description": "Bef Fernvale Lane",
+  "Latitude": 1.39029406445756,
+  "Longitude": 103.86916019529639
+ },
+ {
+  "BusStopCode": "67091",
+  "RoadName": "Sengkang West Rd",
+  "Description": "Opp Blk 459B",
+  "Latitude": 1.392881,
+  "Longitude": 103.869086
+ },
+ {
+  "BusStopCode": "67099",
+  "RoadName": "Sengkang West Rd",
+  "Description": "Blk 459B",
+  "Latitude": 1.3937,
+  "Longitude": 103.869287
+ }
+]
