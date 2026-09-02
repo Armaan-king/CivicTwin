@@ -3,7 +3,7 @@ import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
-import type { PersonaVoice, VoiceListing } from "@/types/voice";
+import type { AgentVoice, VoiceListing } from "@/types/voice";
 
 /**
  * Two thousand residents, one at a time.
@@ -23,6 +23,7 @@ const ADAPTATION: Record<string, { label: string; tone: "alert" | "gold" | "quie
   adapting: { label: "adapting", tone: "gold" },
   absorbing: { label: "absorbing it", tone: "alert" },
   substituting: { label: "paying another way", tone: "gold" },
+  delegating: { label: "someone else goes", tone: "alert" },
   giving_up: { label: "stopped going", tone: "alert" },
 };
 
@@ -88,21 +89,24 @@ export function Voices() {
       const turns = v.turns
         .map(
           (t) =>
-            `**Round ${t.round}** · support ${t.position.toFixed(2)} · ${t.adaptation}\n\n` +
+            `**Round ${t.round}** · support ${t.position.toFixed(2)} · ` +
+            `${t.response} · ${t.severity}\n\n` +
             `${t.reasoning}\n` +
             (t.changed_because ? `\n> changed because: ${t.changed_because}\n` : "") +
-            (t.cites.length ? `\n\`events: ${t.cites.join(", ")}\`\n` : "")
+            (t.influenced_by ? `\n> after hearing from ${t.influenced_by}\n` : "") +
+            (t.grounded_in.length ? `\n\`facts: ${t.grounded_in.join(", ")}\`\n` : "")
         )
         .join("\n");
       return `${head}\n${turns}`;
     });
     const doc =
-      `# Resident voices\n\n` +
+      `# Resident deliberation\n\n` +
       `Run \`${run.run_id}\` · ${run.study_area} · ${data.total} residents, ` +
-      `${data.spoke} with something to report.\n\n` +
-      `Written by: **${data.generated_by}**. Every quotation is grounded in simulation ` +
-      `events recorded for that resident; ${data.ungrounded_dropped} were rejected for ` +
-      `citing an event that was not theirs.\n\n` +
+      `${data.spoke} who spoke more than once, ${data.moved} who changed their mind.\n\n` +
+      `Reasoned by **${data.model}** in ${data.seconds}s over ${data.calls} model calls ` +
+      `(${data.cached_batches} served from cache). Each resident reasoned only from facts ` +
+      `they were given; ${data.rejected} turns were rejected for citing something they ` +
+      `were not told.\n\n` +
       `Residents are synthetic. The bus network is real (LTA DataMall).\n\n---\n\n` +
       lines.join("\n---\n\n");
     const url = URL.createObjectURL(new Blob([doc], { type: "text/markdown" }));
@@ -147,9 +151,8 @@ export function Voices() {
           ))}
           <span style={{ flexGrow: 1 }} />
           <span className="t3" style={{ fontSize: "var(--fs-12)" }}>
-            written by {data.generated_by}
-            {data.generated_by === "offline-template" && " — not a model output"}
-            {data.ungrounded_dropped > 0 && ` · ${data.ungrounded_dropped} rejected as ungrounded`}
+            reasoned by {data.model} · {data.calls} calls, {data.cached_batches} cached, {data.seconds}s
+            {data.rejected > 0 && ` · ${data.rejected} turns rejected as ungrounded`}
           </span>
           <button className="btn" onClick={download}>DOWNLOAD TRANSCRIPT</button>
         </div>
@@ -159,7 +162,7 @@ export function Voices() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           {shown.slice(0, revealed).map((v) => {
             const last = v.turns[v.turns.length - 1];
-            const tone = ADAPTATION[last?.adaptation ?? "unaffected"];
+            const tone = ADAPTATION[last?.response ?? "unaffected"];
             const isOpen = open === v.persona_id;
             return (
               <article
@@ -209,10 +212,10 @@ export function Voices() {
                             changed because: {t.changed_because}
                           </p>
                         )}
-                        {t.cites.length > 0 && (
+                        {t.grounded_in.length > 0 && (
                           <p className="t3" style={{ fontSize: "var(--fs-12)", margin: "4px 0 0", color: "var(--fig-quiet)" }}>
-                            from events {t.cites.slice(0, 6).join(", ")}
-                            {t.cites.length > 6 && ` +${t.cites.length - 6}`}
+                            from facts {t.grounded_in.slice(0, 6).join(", ")}
+                            {t.grounded_in.length > 6 && ` +${t.grounded_in.length - 6}`}
                           </p>
                         )}
                       </li>
@@ -233,7 +236,7 @@ export function Voices() {
   );
 }
 
-function moved(v: PersonaVoice): number {
+function moved(v: AgentVoice): number {
   if (v.turns.length < 2) return 0;
   return v.turns[v.turns.length - 1].position - v.turns[0].position;
 }

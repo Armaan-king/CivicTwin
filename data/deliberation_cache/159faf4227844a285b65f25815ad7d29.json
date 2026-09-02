@@ -1,0 +1,198 @@
+{
+ "turns": [
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0072:f1",
+    "p_0072:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0073:f1",
+    "p_0073:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0074:f1",
+    "p_0074:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0075:f1",
+    "p_0075:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0076:f1",
+    "p_0076:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0077:f1",
+    "p_0077:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0078:f1",
+    "p_0078:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0079:f1",
+    "p_0079:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0080:f1",
+    "p_0080:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0081:f1",
+    "p_0081:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0082:f1",
+    "p_0082:f2"
+   ],
+   "absorbing_for": null
+  },
+  {
+   "round": 1,
+   "severity": "moderate",
+   "response": "adapting",
+   "position": 0.3,
+   "confidence": 0.7,
+   "reasoning": "Stub round view.",
+   "changed_because": null,
+   "influenced_by": null,
+   "grounded_in": [
+    "p_0083:f1",
+    "p_0083:f2"
+   ],
+   "absorbing_for": null
+  }
+ ],
+ "persona_ids": [
+  "p_0072",
+  "p_0073",
+  "p_0074",
+  "p_0075",
+  "p_0076",
+  "p_0077",
+  "p_0078",
+  "p_0079",
+  "p_0080",
+  "p_0081",
+  "p_0082",
+  "p_0083"
+ ]
+}

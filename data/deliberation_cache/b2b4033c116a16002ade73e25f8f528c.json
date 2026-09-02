@@ -1,0 +1,256 @@
+{
+ "voices": [
+  {
+   "persona_id": "p_0084",
+   "name": "Resident 084",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0084:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0085",
+   "name": "Resident 085",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0085:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0086",
+   "name": "Resident 086",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0086:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0087",
+   "name": "Resident 087",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0087:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0088",
+   "name": "Resident 088",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0088:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0089",
+   "name": "Resident 089",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0089:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0090",
+   "name": "Resident 090",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0090:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0091",
+   "name": "Resident 091",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0091:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0092",
+   "name": "Resident 092",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0092:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0093",
+   "name": "Resident 093",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0093:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0094",
+   "name": "Resident 094",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0094:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  },
+  {
+   "persona_id": "p_0095",
+   "name": "Resident 095",
+   "summary": "stub",
+   "turns": [
+    {
+     "round": 0,
+     "severity": "none",
+     "response": "unaffected",
+     "position": 0.6,
+     "confidence": 0.5,
+     "reasoning": "Stub opening view.",
+     "changed_because": null,
+     "influenced_by": null,
+     "grounded_in": [
+      "p_0095:f1"
+     ],
+     "absorbing_for": null
+    }
+   ]
+  }
+ ]
+}

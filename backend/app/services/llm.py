@@ -99,10 +99,14 @@ class MockCompletion:
 class BedrockCompletion:
     """Claude via Amazon Bedrock. Imported lazily so boto3 is optional for tests."""
 
-    def __init__(self, model_id: str, region: str):
+    def __init__(self, model_id: str, region: str, temperature: float = 0.0):
         self.name = model_id
         self.model_id = model_id
         self.region = region
+        #: Deliberation needs variety. At temperature 0 two thousand residents reason in
+        #: one voice, which reads as a template and defeats the point of asking them.
+        #: Interpretation still wants 0: there is one right reading of a policy.
+        self.temperature = temperature
         self._client: Any = None
 
     def _bedrock(self) -> Any:
@@ -120,7 +124,8 @@ class BedrockCompletion:
                 modelId=self.model_id,
                 system=[{"text": system}] if system else [],
                 messages=[{"role": "user", "content": [{"text": prompt}]}],
-                inferenceConfig={"maxTokens": max_tokens, "temperature": 0.0},
+                inferenceConfig={"maxTokens": max_tokens,
+                                 "temperature": self.temperature},
             )
         except Exception as exc:  # noqa: BLE001 - surfaced, never swallowed
             raise LLMError(f"Bedrock call failed: {exc}") from exc
@@ -176,16 +181,27 @@ class LLMClient:
         raise last
 
 
-def build_client() -> LLMClient:
-    """Provider comes from the environment. Default is the mock, so nothing needs AWS."""
+def build_client(temperature: float = 0.0) -> LLMClient:
+    """Provider comes from the environment. Default is the mock, so nothing needs AWS.
+
+    The mock can drive the API and the interpreter. It cannot drive a deliberation:
+    `deliberate()` refuses it outright rather than emitting text that reads like a
+    resident and is not one.
+    """
     provider = os.getenv("LLM_PROVIDER", "mock").lower()
     if provider == "bedrock":
         return LLMClient(BedrockCompletion(
             model_id=os.getenv("BEDROCK_MODEL_ID_FAST",
                                "anthropic.claude-haiku-4-5-20251001-v1:0"),
             region=os.getenv("AWS_REGION", "ap-southeast-1"),
+            temperature=temperature,
         ))
     return LLMClient(MockCompletion(_DEFAULT_MOCKS))
+
+
+def build_deliberation_client() -> LLMClient:
+    """The client the population reasons with. Warmer, and it may not be the mock."""
+    return build_client(temperature=float(os.getenv("DELIBERATION_TEMPERATURE", "0.8")))
 
 
 # The interpreter's canned answer, so the API is demoable end to end with no credentials.

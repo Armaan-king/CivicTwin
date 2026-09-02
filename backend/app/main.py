@@ -180,78 +180,92 @@ async def stream_rounds(run_id: str) -> StreamingResponse:
     return StreamingResponse(gen(), media_type="application/x-ndjson")
 
 
-# ------------------------------------------------------------------ W10 persona voices
-_voice_cache: dict[str, "VoiceRun"] = {}
+# ------------------------------------------------------------------ deliberation
+_deliberation_cache: dict[str, "DeliberationRun"] = {}
 
 
-def get_voices(run_id: str) -> "VoiceRun":
-    """Every resident's view of the policy, generated once per run and held.
+def get_deliberation(run_id: str) -> "DeliberationRun":
+    """The population reasoning about this policy.
 
-    Generation is the expensive part of the product when a model is behind it, so it
-    happens once and both the list endpoint and the stream read the same result. Without
-    that, opening the page twice would cost twice.
+    Held per run: the deliberation is the expensive part of the product, so opening the
+    page twice must not cost twice. Raises rather than substituting when no model is
+    configured, which the route turns into a 503 saying exactly what to set.
     """
-    from app.engine import EXPRESS_SAVING_MIN, study_area
+    from app.deliberate import deliberate
+    from app.engine import study_area
     from app.population import build_population
-    from app.simulation import simulate
-    from app.voices import generate_voices
+    from app.services.llm import build_deliberation_client
+    from app.social import build_social_graph
+    from app.world import build_world
 
     run = get_run(run_id)
-    if run_id not in _voice_cache:
-        geo, removed = study_area()
+    if run_id not in _deliberation_cache:
+        geo, closed = study_area()
         pop = build_population(geo)
-        sim = simulate(geo, pop, removed, EXPRESS_SAVING_MIN)
-        _voice_cache[run_id] = generate_voices(
-            pop, sim.outcomes, sim.events, geo,
-            run.policy.text or "", run.policy_version, llm=build_client(),
+        world = build_world(pop, geo, closed)
+        _deliberation_cache[run_id] = deliberate(
+            pop, world, run.policy.text or "", build_deliberation_client(),
+            social=build_social_graph(pop),
         )
-    return _voice_cache[run_id]
+    return _deliberation_cache[run_id]
 
 
 @app.get("/api/runs/{run_id}/voices")
 def list_voices(run_id: str, limit: int = 200, offset: int = 0) -> dict:
-    """Residents, most-affected first, paged.
+    """Residents, most-moved first.
 
-    `generated_by` is not decoration: it says whether these were written by a model or by
-    the offline template, and the page shows it. Presenting a template as a model output
-    would be exactly the false claim `AGENTS.md` §28 forbids.
+    There is no offline substitute. A page of text that reads like residents and is not
+    residents is worse than an empty page, so without a model this returns 503 and says
+    what to configure.
     """
-    vr = get_voices(run_id)
-    window = vr.voices[offset:offset + limit]
+    from app.deliberate import NoModelConfigured
+
+    try:
+        d = get_deliberation(run_id)
+    except NoModelConfigured as exc:
+        raise HTTPException(503, str(exc)) from exc
+
+    ordered = d.ordered()
     return {
         "run_id": run_id,
-        "generated_by": vr.generated_by,
-        "total": len(vr.voices),
+        "model": d.model,
+        "total": len(ordered),
         "offset": offset,
-        "spoke": sum(1 for v in vr.voices if len(v.turns) > 1),
-        "ungrounded_dropped": vr.ungrounded,
-        "cached_batches": vr.cached_batches,
-        "model_batches": vr.model_batches,
-        "voices": [v.model_dump() for v in window],
+        "spoke": sum(1 for v in ordered if len(v.turns) > 1),
+        "moved": sum(1 for v in ordered if abs(v.moved) > 0.05),
+        "rejected": d.rejected,
+        "calls": d.calls,
+        "cached_batches": d.cached,
+        "seconds": d.seconds,
+        "participation": d.participation,
+        "voices": [v.model_dump() for v in ordered[offset:offset + limit]],
     }
 
 
 @app.post("/api/runs/{run_id}/voices/stream")
-async def stream_voices(run_id: str, limit: int = 120) -> StreamingResponse:
-    """NDJSON, one resident per line, as they are produced.
+async def stream_voices(run_id: str, limit: int = 150) -> StreamingResponse:
+    """NDJSON, one resident per line.
 
-    The point of streaming here is not speed, it is that watching two thousand people
-    react is the thing this product does that a chart cannot.
+    Watching a town react is the thing this product does that a chart cannot, so the
+    stream exists for the watching rather than for the throughput.
     """
-    vr = get_voices(run_id)
-    voices = vr.voices[:limit]
+    from app.deliberate import NoModelConfigured
+
+    try:
+        d = get_deliberation(run_id)
+    except NoModelConfigured as exc:
+        raise HTTPException(503, str(exc)) from exc
+
+    voices = d.ordered()[:limit]
 
     async def gen():
-        yield json.dumps({"type": "start", "total": len(vr.voices),
-                          "streaming": len(voices),
-                          "generated_by": vr.generated_by}) + "\n"
+        yield json.dumps({"type": "start", "total": len(d.voices),
+                          "streaming": len(voices), "model": d.model,
+                          "participation": d.participation}) + "\n"
         for v in voices:
             yield json.dumps({"type": "voice", "voice": v.model_dump()}) + "\n"
             await asyncio.sleep(0.012)
-        yield json.dumps({
-            "type": "complete",
-            "spoke": sum(1 for v in vr.voices if len(v.turns) > 1),
-            "ungrounded_dropped": vr.ungrounded,
-        }) + "\n"
+        yield json.dumps({"type": "complete", "rejected": d.rejected,
+                          "calls": d.calls, "seconds": d.seconds}) + "\n"
 
     return StreamingResponse(gen(), media_type="application/x-ndjson")

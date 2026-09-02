@@ -79,7 +79,28 @@ def build_social_graph(pop: Population) -> nx.Graph:
                        weight=ROAD_WEIGHT if same_band else SIMILAR_WEIGHT,
                        tie="road")
 
+    _bridge_components(g, pop)
     return g
+
+
+def _bridge_components(g: nx.Graph, pop: Population) -> None:
+    """Join the islands, the way PropSim does.
+
+    Fifteen disconnected components means opinion cannot cross the town: a finding on one
+    road never reaches the next, and the deliberation is fifteen separate conversations
+    pretending to be one. Real estates are not like that -- people work together, their
+    children are at the same school -- so a few weak ties are added rather than left out.
+    """
+    components = sorted(nx.connected_components(g), key=len, reverse=True)
+    if len(components) < 2:
+        return
+    main = list(components[0])
+    for other in components[1:]:
+        rng = derived_rng(f"bridge:{min(other)}")
+        for node in list(other)[:2]:
+            partner = main[rng.randrange(len(main))]
+            g.add_edge(node, partner, weight=SIMILAR_WEIGHT, tie="bridge")
+        main.extend(other)
 
 
 def _similarity(a, b) -> float:
