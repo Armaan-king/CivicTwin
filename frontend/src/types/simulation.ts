@@ -121,9 +121,31 @@ export interface PolicyChange {
   resolved_entities: ResolvedEntity[];
 }
 
+/**
+ * Four shapes of harm that recur across policy areas. Naming the shape is what lets a
+ * finding here be recognised by someone working on clinics, benefits or catchments.
+ * Mirrors backend/app/schemas/core.py; the descriptions ship with the run so this file
+ * never has to restate them.
+ */
+export type HarmPattern =
+  | "threshold_cliff"
+  | "dependency_cascade"
+  | "capacity_displacement"
+  | "participation_gap";
+
+export interface PatternDescription {
+  pattern: HarmPattern;
+  name: string;
+  mechanism: string;
+  /** other policy areas where the same shape appears, so the finding travels */
+  also_seen_in: string[];
+}
+
 export interface SimulationRun {
   run_id: string;
   scenario_id: string;
+  /** which environment pack produced this run. transport is the only one V1 registers. */
+  environment: string;
   seed: number;
   population_version: string;
   policy_version: string;
@@ -146,6 +168,8 @@ export interface SimulationRun {
   };
   interventions: Intervention[];
   consultation: Consultation;
+  /** shipped with the run so the UI never restates a description the engine owns. */
+  harm_patterns: Record<HarmPattern, PatternDescription>;
 }
 
 /* ---------- policy reading, interventions, consultation ---------- */

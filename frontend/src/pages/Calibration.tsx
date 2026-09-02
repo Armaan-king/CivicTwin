@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PatternNote } from "@/components/PatternNote";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed, Note } from "@/components/ui";
@@ -91,6 +92,8 @@ export function Calibration() {
               </p>
             </Note>
           )}
+
+          <PatternNote run={run} pattern="participation_gap" />
 
           <div style={{ marginTop: "auto", borderTop: "1px solid var(--rule)", paddingTop: 16 }}>
             <div className="box" style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 17px", flexWrap: "wrap" }}>

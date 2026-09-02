@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PatternNote } from "@/components/PatternNote";
 import { useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
@@ -224,6 +225,8 @@ export function InterventionLab() {
               </div>
             </Note>
           )}
+
+          {tradeoff && <PatternNote run={run} pattern="capacity_displacement" />}
 
           <div
             style={{

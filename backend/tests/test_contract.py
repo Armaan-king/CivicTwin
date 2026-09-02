@@ -119,6 +119,27 @@ def test_second_order_victims_were_not_harmed_directly(run: SimulationRun):
         assert by_persona[o.persona_id].is_caregiver
 
 
+# ---------------------------------------------------------------- patterns
+def test_the_run_names_its_environment(run: SimulationRun):
+    """The seam is only honest if a reader never has to assume which one ran."""
+    from app.environments import registered
+    assert run.environment in registered()
+
+
+def test_all_four_harm_patterns_ship_with_the_run(run: SimulationRun):
+    """The breadth claim, in the payload rather than the pitch.
+
+    A number about bus stops travels only if the shape underneath it is named. These
+    descriptions are what the UI renders, so a run that omits them makes every finding
+    domain-locked.
+    """
+    from app.schemas.core import PATTERNS
+    assert set(run.harm_patterns) == set(PATTERNS)
+    for key, p in run.harm_patterns.items():
+        assert p.pattern == key
+        assert p.also_seen_in, f"{key} names no other policy area"
+
+
 # ---------------------------------------------------------------- metrics
 def test_every_reported_cohort_carries_its_n(run: SimulationRun):
     """evaluation.md 12. A rate without a denominator is not a finding."""

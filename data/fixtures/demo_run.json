@@ -1,4 +1,5 @@
 {
+ "environment": "transport",
  "run_id": "run_a91f",
  "scenario_id": "scenario_sg_bus_v1",
  "seed": 4471,
@@ -86674,6 +86675,48 @@
    "from": 0.42,
    "to": 0.29,
    "status": "awaiting_human_approval"
+  }
+ },
+ "harm_patterns": {
+  "threshold_cliff": {
+   "pattern": "threshold_cliff",
+   "name": "Threshold cliff",
+   "mechanism": "A limit is crossed and the service stops being usable, rather than simply getting worse. Averages miss this because the mean moves smoothly while individuals fall off an edge.",
+   "also_seen_in": [
+    "eligibility rule changes",
+    "appointment and queue redesign",
+    "fare and tariff restructuring"
+   ]
+  },
+  "dependency_cascade": {
+   "pattern": "dependency_cascade",
+   "name": "Dependency cascade",
+   "mechanism": "Harm lands on someone the policy never touched, because they absorb the loss for a person who depends on them. They are invisible to any analysis that looks only at who uses the service.",
+   "also_seen_in": [
+    "clinic and school consolidation",
+    "service digitisation",
+    "opening-hours reductions"
+   ]
+  },
+  "capacity_displacement": {
+   "pattern": "capacity_displacement",
+   "name": "Capacity displacement",
+   "mechanism": "Relief for one group creates load somewhere else. The total looks unchanged or improved while a different population quietly absorbs the difference.",
+   "also_seen_in": [
+    "catchment redraws",
+    "facility closures and mergers",
+    "route or caseload rebalancing"
+   ]
+  },
+  "participation_gap": {
+   "pattern": "participation_gap",
+   "name": "Participation gap",
+   "mechanism": "The people most affected are the least able to respond to a consultation, so the feedback that arrives systematically understates the harm.",
+   "also_seen_in": [
+    "any public consultation",
+    "user research and pilot recruitment",
+    "complaint-driven service review"
+   ]
   }
  }
 }

@@ -14,6 +14,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from app.schemas.core import HarmPattern, PatternDescription
 from app.schemas.policy import PolicyChange
 
 Severity = Literal["none", "moderate", "high"]
@@ -210,6 +211,9 @@ class SimulationRun(BaseModel):
     """The whole contract. Every route that returns a run returns exactly this."""
     run_id: str
     scenario_id: str
+    #: which environment pack produced this run. V1 registers transport only, but the
+    #: field is here so a reader never has to assume. app/environments/.
+    environment: str = "transport"
     seed: int
     population_version: str
     policy_version: str
@@ -226,3 +230,6 @@ class SimulationRun(BaseModel):
     metrics: RunMetrics
     interventions: list[Intervention]
     consultation: Consultation
+    #: the shapes of harm this run found, in terms that carry outside transport.
+    #: shipped with the run so the UI never hardcodes a description. core.PATTERNS.
+    harm_patterns: dict[str, PatternDescription]

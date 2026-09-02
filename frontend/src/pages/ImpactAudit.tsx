@@ -5,7 +5,8 @@ import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
 import { traceToRoot } from "@/lib/run";
-import type { SimEvent, SimulationRun } from "@/types/simulation";
+import { PatternNote } from "@/components/PatternNote";
+import type { HarmPattern, SimEvent, SimulationRun } from "@/types/simulation";
 
 /**
  * Two zones, not four.
@@ -23,6 +24,8 @@ interface Finding {
   severity: "high" | "moderate";
   n: number;
   leafKind: SimEvent["kind"];
+  /** the shape this instantiates. what makes it legible outside transport. */
+  pattern: HarmPattern;
   cohorts: { label: string; rate: number; n: number }[];
   note: string;
 }
@@ -50,6 +53,7 @@ function buildFindings(run: SimulationRun): Finding[] {
   return [
     {
       id: "carers",
+      pattern: "dependency_cascade" as HarmPattern,
       title: "Carers absorbing the loss",
       severity: "high",
       n: second.length,
@@ -63,6 +67,7 @@ function buildFindings(run: SimulationRun): Finding[] {
     },
     {
       id: "access",
+      pattern: "threshold_cliff" as HarmPattern,
       title: "Polyclinic access lost",
       severity: "high",
       n: direct.length,
@@ -75,6 +80,7 @@ function buildFindings(run: SimulationRun): Finding[] {
     },
     {
       id: "walk",
+      pattern: "threshold_cliff" as HarmPattern,
       title: "Longer walk, trip still made",
       severity: "moderate",
       n: moderate.length,
@@ -227,6 +233,8 @@ export function ImpactAudit() {
               </p>
             </div>
           )}
+
+          <PatternNote run={run} pattern={active.pattern} />
 
           <div style={{ marginTop: "auto", paddingTop: "var(--s-3)" }}>
             <button className="btn" onClick={() => navigate("/interventions")}>

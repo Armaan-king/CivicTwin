@@ -60,6 +60,17 @@ participation_gap       the most affected are the least able to respond
 Each carries an `also_seen_in` list naming other policy areas where it appears, so the
 finding travels beyond this scenario. The audit reports the pattern alongside the count.
 
+All four are shipped **in the run payload** (`harm_patterns`), sourced from
+`app/schemas/core.py`, so the UI can never describe a pattern the engine does not have.
+Each appears where it actually fires, not as a glossary:
+
+| pattern | where the user meets it |
+|---|---|
+| `dependency_cascade` | Impact Audit, on the carers finding |
+| `threshold_cliff` | Impact Audit, on the access and walk findings |
+| `capacity_displacement` | Intervention Lab, on the alternative that moves harm |
+| `participation_gap` | Calibration, on the cohort that did not respond |
+
 ## E3 — One environment implemented, and the seam is real · LOCKED
 
 `EnvironmentPack` is a Protocol and a registry, not a plugin framework

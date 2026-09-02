@@ -108,6 +108,15 @@ need(c["proposed_adjustment"]["status"] == "awaiting_human_approval",
 need(any(r["comment"] for r in c["responses"]), "Consultation: a comment to surface")
 need(bool(c["discovered_constraint"]["note"]), "Consultation: discovered constraint")
 
+# ---- the patterns, which are what carry a finding outside transport
+hp = d.get("harm_patterns", {})
+need(set(hp) == {"threshold_cliff", "dependency_cascade",
+                 "capacity_displacement", "participation_gap"},
+     "Patterns: all four shapes present")
+need(all(v["also_seen_in"] for v in hp.values()),
+     "Patterns: every pattern names where else it appears")
+need(bool(d.get("environment")), "Patterns: the run declares its environment")
+
 # ---- provenance
 need(d["is_synthetic"] is True, "Provenance: run marked synthetic")
 need(bool(d.get("study_area")), "Provenance: study_area")

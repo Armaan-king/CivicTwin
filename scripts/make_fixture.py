@@ -37,6 +37,7 @@ import json
 import math
 import pathlib
 import random
+import sys
 
 SCENARIO_SEED = 4471
 POPULATION = 2000
@@ -46,7 +47,13 @@ BASE_WALK_M = 380
 REMOVED_STOP_PENALTY_M = 860
 EXPRESS_SAVING_MIN = 7
 
-OUT = pathlib.Path(__file__).resolve().parent.parent / "data" / "fixtures" / "demo_run.json"
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+OUT = ROOT / "data" / "fixtures" / "demo_run.json"
+
+# the pattern catalogue has one home, and it is the backend. importing it here rather
+# than restating it means a fixture can never describe a pattern the engine does not have.
+sys.path.insert(0, str(ROOT / "backend"))
+from app.schemas.core import PATTERNS  # noqa: E402
 
 AGE_BANDS = ["<18", "18-34", "35-54", "55-64", "65-74", "75+"]
 AGE_WEIGHTS = [0.16, 0.21, 0.30, 0.15, 0.11, 0.07]
@@ -550,6 +557,7 @@ def main():
     consultation = build_consultation(people, outcomes)
 
     doc = {
+        "environment": "transport",
         "run_id": "run_a91f", "scenario_id": "scenario_sg_bus_v1", "seed": SCENARIO_SEED,
         "population_version": "fixture-1", "policy_version": "1", "rounds": 3,
         "generated_by": "scripts/make_fixture.py", "is_synthetic": True,
@@ -577,6 +585,7 @@ def main():
                     "subgroup_disparity_pp": disparity(sub), "operating_cost_index": 0.94},
         "interventions": alts,
         "consultation": consultation,
+        "harm_patterns": {k: v.model_dump() for k, v in PATTERNS.items()},
     }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
