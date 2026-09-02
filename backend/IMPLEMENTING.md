@@ -73,7 +73,7 @@ A sample of what it holds you to, and why each one matters:
   makes a root-cause trace unprovable, and `evaluation.md` §9's Grounded Explanation Rate
   uncomputable.
 - The second-order chain is at least 3 deep and passes through
-  `CAREGIVER_SUPPORT_TRIGGERED`. If this fails, the cascade never fired and the product's
+  `DEPENDENCY_ABSORBED`. If this fails, the cascade never fired and the product's
   central claim has no evidence.
 - Second-order victims have `mobility_level == "none"`. That is the whole claim: harmed
   through someone else, not by their own walk.

@@ -71628,7 +71628,7 @@
    "event_id": "evt_00001",
    "round": 1,
    "persona_id": "p_0003",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71641,7 +71641,7 @@
    "event_id": "evt_00002",
    "round": 1,
    "persona_id": "p_0004",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71654,7 +71654,7 @@
    "event_id": "evt_00003",
    "round": 1,
    "persona_id": "p_0005",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71667,7 +71667,7 @@
    "event_id": "evt_00004",
    "round": 1,
    "persona_id": "p_0010",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71680,7 +71680,7 @@
    "event_id": "evt_00005",
    "round": 1,
    "persona_id": "p_0012",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71693,7 +71693,7 @@
    "event_id": "evt_00006",
    "round": 1,
    "persona_id": "p_0016",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71706,7 +71706,7 @@
    "event_id": "evt_00007",
    "round": 1,
    "persona_id": "p_0017",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71719,7 +71719,7 @@
    "event_id": "evt_00008",
    "round": 1,
    "persona_id": "p_0022",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71732,7 +71732,7 @@
    "event_id": "evt_00009",
    "round": 1,
    "persona_id": "p_0024",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71745,7 +71745,7 @@
    "event_id": "evt_00010",
    "round": 1,
    "persona_id": "p_0045",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71758,7 +71758,7 @@
    "event_id": "evt_00011",
    "round": 1,
    "persona_id": "p_0046",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71771,7 +71771,7 @@
    "event_id": "evt_00012",
    "round": 1,
    "persona_id": "p_0047",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71784,7 +71784,7 @@
    "event_id": "evt_00013",
    "round": 1,
    "persona_id": "p_0047",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -71797,7 +71797,7 @@
    "event_id": "evt_00014",
    "round": 1,
    "persona_id": "p_0049",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71810,7 +71810,7 @@
    "event_id": "evt_00015",
    "round": 1,
    "persona_id": "p_0063",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71823,7 +71823,7 @@
    "event_id": "evt_00016",
    "round": 1,
    "persona_id": "p_0064",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71836,7 +71836,7 @@
    "event_id": "evt_00017",
    "round": 1,
    "persona_id": "p_0072",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71849,7 +71849,7 @@
    "event_id": "evt_00018",
    "round": 1,
    "persona_id": "p_0073",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71862,7 +71862,7 @@
    "event_id": "evt_00019",
    "round": 1,
    "persona_id": "p_0086",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71875,7 +71875,7 @@
    "event_id": "evt_00020",
    "round": 1,
    "persona_id": "p_0089",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71888,7 +71888,7 @@
    "event_id": "evt_00021",
    "round": 1,
    "persona_id": "p_0091",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71901,7 +71901,7 @@
    "event_id": "evt_00022",
    "round": 1,
    "persona_id": "p_0092",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71914,7 +71914,7 @@
    "event_id": "evt_00023",
    "round": 1,
    "persona_id": "p_0096",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71927,7 +71927,7 @@
    "event_id": "evt_00024",
    "round": 1,
    "persona_id": "p_0097",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71940,7 +71940,7 @@
    "event_id": "evt_00025",
    "round": 1,
    "persona_id": "p_0098",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71953,7 +71953,7 @@
    "event_id": "evt_00026",
    "round": 1,
    "persona_id": "p_0100",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71966,7 +71966,7 @@
    "event_id": "evt_00027",
    "round": 1,
    "persona_id": "p_0101",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71979,7 +71979,7 @@
    "event_id": "evt_00028",
    "round": 1,
    "persona_id": "p_0103",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -71992,7 +71992,7 @@
    "event_id": "evt_00029",
    "round": 1,
    "persona_id": "p_0104",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72005,7 +72005,7 @@
    "event_id": "evt_00030",
    "round": 1,
    "persona_id": "p_0106",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72018,7 +72018,7 @@
    "event_id": "evt_00031",
    "round": 1,
    "persona_id": "p_0107",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72031,7 +72031,7 @@
    "event_id": "evt_00032",
    "round": 1,
    "persona_id": "p_0111",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72044,7 +72044,7 @@
    "event_id": "evt_00033",
    "round": 1,
    "persona_id": "p_0112",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72057,7 +72057,7 @@
    "event_id": "evt_00034",
    "round": 1,
    "persona_id": "p_0113",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72070,7 +72070,7 @@
    "event_id": "evt_00035",
    "round": 1,
    "persona_id": "p_0121",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72083,7 +72083,7 @@
    "event_id": "evt_00036",
    "round": 1,
    "persona_id": "p_0126",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72096,7 +72096,7 @@
    "event_id": "evt_00037",
    "round": 1,
    "persona_id": "p_0127",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72109,7 +72109,7 @@
    "event_id": "evt_00038",
    "round": 1,
    "persona_id": "p_0128",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72122,7 +72122,7 @@
    "event_id": "evt_00039",
    "round": 1,
    "persona_id": "p_0129",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72135,7 +72135,7 @@
    "event_id": "evt_00040",
    "round": 1,
    "persona_id": "p_0133",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72148,7 +72148,7 @@
    "event_id": "evt_00041",
    "round": 1,
    "persona_id": "p_0134",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72161,7 +72161,7 @@
    "event_id": "evt_00042",
    "round": 1,
    "persona_id": "p_0134",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72174,7 +72174,7 @@
    "event_id": "evt_00043",
    "round": 1,
    "persona_id": "p_0139",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72187,7 +72187,7 @@
    "event_id": "evt_00044",
    "round": 1,
    "persona_id": "p_0142",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72200,7 +72200,7 @@
    "event_id": "evt_00045",
    "round": 1,
    "persona_id": "p_0143",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72213,7 +72213,7 @@
    "event_id": "evt_00046",
    "round": 1,
    "persona_id": "p_0147",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72226,7 +72226,7 @@
    "event_id": "evt_00047",
    "round": 1,
    "persona_id": "p_0149",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72239,7 +72239,7 @@
    "event_id": "evt_00048",
    "round": 1,
    "persona_id": "p_0150",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72252,7 +72252,7 @@
    "event_id": "evt_00049",
    "round": 1,
    "persona_id": "p_0150",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72265,7 +72265,7 @@
    "event_id": "evt_00050",
    "round": 1,
    "persona_id": "p_0151",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72278,7 +72278,7 @@
    "event_id": "evt_00051",
    "round": 1,
    "persona_id": "p_0152",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72291,7 +72291,7 @@
    "event_id": "evt_00052",
    "round": 1,
    "persona_id": "p_0153",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72304,7 +72304,7 @@
    "event_id": "evt_00053",
    "round": 1,
    "persona_id": "p_0154",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72317,7 +72317,7 @@
    "event_id": "evt_00054",
    "round": 1,
    "persona_id": "p_0154",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72330,7 +72330,7 @@
    "event_id": "evt_00055",
    "round": 1,
    "persona_id": "p_0155",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72343,7 +72343,7 @@
    "event_id": "evt_00056",
    "round": 1,
    "persona_id": "p_0155",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72356,7 +72356,7 @@
    "event_id": "evt_00057",
    "round": 1,
    "persona_id": "p_0159",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72369,7 +72369,7 @@
    "event_id": "evt_00058",
    "round": 1,
    "persona_id": "p_0162",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72382,7 +72382,7 @@
    "event_id": "evt_00059",
    "round": 1,
    "persona_id": "p_0164",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72395,7 +72395,7 @@
    "event_id": "evt_00060",
    "round": 1,
    "persona_id": "p_0168",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72408,7 +72408,7 @@
    "event_id": "evt_00061",
    "round": 1,
    "persona_id": "p_0170",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72421,7 +72421,7 @@
    "event_id": "evt_00062",
    "round": 1,
    "persona_id": "p_0170",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72434,7 +72434,7 @@
    "event_id": "evt_00063",
    "round": 1,
    "persona_id": "p_0171",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72447,7 +72447,7 @@
    "event_id": "evt_00064",
    "round": 1,
    "persona_id": "p_0173",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72460,7 +72460,7 @@
    "event_id": "evt_00065",
    "round": 1,
    "persona_id": "p_0178",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72473,7 +72473,7 @@
    "event_id": "evt_00066",
    "round": 1,
    "persona_id": "p_0179",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72486,7 +72486,7 @@
    "event_id": "evt_00067",
    "round": 1,
    "persona_id": "p_0187",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72499,7 +72499,7 @@
    "event_id": "evt_00068",
    "round": 1,
    "persona_id": "p_0188",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72512,7 +72512,7 @@
    "event_id": "evt_00069",
    "round": 1,
    "persona_id": "p_0195",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72525,7 +72525,7 @@
    "event_id": "evt_00070",
    "round": 1,
    "persona_id": "p_0196",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72538,7 +72538,7 @@
    "event_id": "evt_00071",
    "round": 1,
    "persona_id": "p_0197",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72551,7 +72551,7 @@
    "event_id": "evt_00072",
    "round": 1,
    "persona_id": "p_0205",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72564,7 +72564,7 @@
    "event_id": "evt_00073",
    "round": 1,
    "persona_id": "p_0211",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72577,7 +72577,7 @@
    "event_id": "evt_00074",
    "round": 1,
    "persona_id": "p_0214",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72590,7 +72590,7 @@
    "event_id": "evt_00075",
    "round": 1,
    "persona_id": "p_0217",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72603,7 +72603,7 @@
    "event_id": "evt_00076",
    "round": 1,
    "persona_id": "p_0222",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72616,7 +72616,7 @@
    "event_id": "evt_00077",
    "round": 1,
    "persona_id": "p_0228",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72629,7 +72629,7 @@
    "event_id": "evt_00078",
    "round": 1,
    "persona_id": "p_0229",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72642,7 +72642,7 @@
    "event_id": "evt_00079",
    "round": 1,
    "persona_id": "p_0236",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72655,7 +72655,7 @@
    "event_id": "evt_00080",
    "round": 1,
    "persona_id": "p_0243",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72668,7 +72668,7 @@
    "event_id": "evt_00081",
    "round": 1,
    "persona_id": "p_0244",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72681,7 +72681,7 @@
    "event_id": "evt_00082",
    "round": 1,
    "persona_id": "p_0249",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72694,7 +72694,7 @@
    "event_id": "evt_00083",
    "round": 1,
    "persona_id": "p_0258",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72707,7 +72707,7 @@
    "event_id": "evt_00084",
    "round": 1,
    "persona_id": "p_0259",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72720,7 +72720,7 @@
    "event_id": "evt_00085",
    "round": 1,
    "persona_id": "p_0260",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72733,7 +72733,7 @@
    "event_id": "evt_00086",
    "round": 1,
    "persona_id": "p_0262",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72746,7 +72746,7 @@
    "event_id": "evt_00087",
    "round": 1,
    "persona_id": "p_0262",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72759,7 +72759,7 @@
    "event_id": "evt_00088",
    "round": 1,
    "persona_id": "p_0263",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72772,7 +72772,7 @@
    "event_id": "evt_00089",
    "round": 1,
    "persona_id": "p_0267",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72785,7 +72785,7 @@
    "event_id": "evt_00090",
    "round": 1,
    "persona_id": "p_0268",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72798,7 +72798,7 @@
    "event_id": "evt_00091",
    "round": 1,
    "persona_id": "p_0268",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72811,7 +72811,7 @@
    "event_id": "evt_00092",
    "round": 1,
    "persona_id": "p_0269",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72824,7 +72824,7 @@
    "event_id": "evt_00093",
    "round": 1,
    "persona_id": "p_0271",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72837,7 +72837,7 @@
    "event_id": "evt_00094",
    "round": 1,
    "persona_id": "p_0272",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72850,7 +72850,7 @@
    "event_id": "evt_00095",
    "round": 1,
    "persona_id": "p_0275",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72863,7 +72863,7 @@
    "event_id": "evt_00096",
    "round": 1,
    "persona_id": "p_0276",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72876,7 +72876,7 @@
    "event_id": "evt_00097",
    "round": 1,
    "persona_id": "p_0278",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72889,7 +72889,7 @@
    "event_id": "evt_00098",
    "round": 1,
    "persona_id": "p_0279",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72902,7 +72902,7 @@
    "event_id": "evt_00099",
    "round": 1,
    "persona_id": "p_0281",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72915,7 +72915,7 @@
    "event_id": "evt_00100",
    "round": 1,
    "persona_id": "p_0281",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72928,7 +72928,7 @@
    "event_id": "evt_00101",
    "round": 1,
    "persona_id": "p_0294",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72941,7 +72941,7 @@
    "event_id": "evt_00102",
    "round": 1,
    "persona_id": "p_0300",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72954,7 +72954,7 @@
    "event_id": "evt_00103",
    "round": 1,
    "persona_id": "p_0300",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -72967,7 +72967,7 @@
    "event_id": "evt_00104",
    "round": 1,
    "persona_id": "p_0301",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72980,7 +72980,7 @@
    "event_id": "evt_00105",
    "round": 1,
    "persona_id": "p_0321",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -72993,7 +72993,7 @@
    "event_id": "evt_00106",
    "round": 1,
    "persona_id": "p_0323",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73006,7 +73006,7 @@
    "event_id": "evt_00107",
    "round": 1,
    "persona_id": "p_0323",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -73019,7 +73019,7 @@
    "event_id": "evt_00108",
    "round": 1,
    "persona_id": "p_0324",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73032,7 +73032,7 @@
    "event_id": "evt_00109",
    "round": 1,
    "persona_id": "p_0326",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73045,7 +73045,7 @@
    "event_id": "evt_00110",
    "round": 1,
    "persona_id": "p_0329",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73058,7 +73058,7 @@
    "event_id": "evt_00111",
    "round": 1,
    "persona_id": "p_0340",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73071,7 +73071,7 @@
    "event_id": "evt_00112",
    "round": 1,
    "persona_id": "p_0345",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73084,7 +73084,7 @@
    "event_id": "evt_00113",
    "round": 1,
    "persona_id": "p_0346",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73097,7 +73097,7 @@
    "event_id": "evt_00114",
    "round": 1,
    "persona_id": "p_0351",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73110,7 +73110,7 @@
    "event_id": "evt_00115",
    "round": 1,
    "persona_id": "p_0354",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73123,7 +73123,7 @@
    "event_id": "evt_00116",
    "round": 1,
    "persona_id": "p_0356",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73136,7 +73136,7 @@
    "event_id": "evt_00117",
    "round": 1,
    "persona_id": "p_0370",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73149,7 +73149,7 @@
    "event_id": "evt_00118",
    "round": 1,
    "persona_id": "p_0371",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73162,7 +73162,7 @@
    "event_id": "evt_00119",
    "round": 1,
    "persona_id": "p_0372",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73175,7 +73175,7 @@
    "event_id": "evt_00120",
    "round": 1,
    "persona_id": "p_0378",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73188,7 +73188,7 @@
    "event_id": "evt_00121",
    "round": 1,
    "persona_id": "p_0379",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73201,7 +73201,7 @@
    "event_id": "evt_00122",
    "round": 1,
    "persona_id": "p_0380",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73214,7 +73214,7 @@
    "event_id": "evt_00123",
    "round": 1,
    "persona_id": "p_0396",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73227,7 +73227,7 @@
    "event_id": "evt_00124",
    "round": 1,
    "persona_id": "p_0403",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73240,7 +73240,7 @@
    "event_id": "evt_00125",
    "round": 1,
    "persona_id": "p_0407",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73253,7 +73253,7 @@
    "event_id": "evt_00126",
    "round": 1,
    "persona_id": "p_0412",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73266,7 +73266,7 @@
    "event_id": "evt_00127",
    "round": 1,
    "persona_id": "p_0413",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73279,7 +73279,7 @@
    "event_id": "evt_00128",
    "round": 1,
    "persona_id": "p_0424",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73292,7 +73292,7 @@
    "event_id": "evt_00129",
    "round": 1,
    "persona_id": "p_0425",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73305,7 +73305,7 @@
    "event_id": "evt_00130",
    "round": 1,
    "persona_id": "p_0427",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73318,7 +73318,7 @@
    "event_id": "evt_00131",
    "round": 1,
    "persona_id": "p_0433",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73331,7 +73331,7 @@
    "event_id": "evt_00132",
    "round": 1,
    "persona_id": "p_0434",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73344,7 +73344,7 @@
    "event_id": "evt_00133",
    "round": 1,
    "persona_id": "p_0435",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73357,7 +73357,7 @@
    "event_id": "evt_00134",
    "round": 1,
    "persona_id": "p_0436",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73370,7 +73370,7 @@
    "event_id": "evt_00135",
    "round": 1,
    "persona_id": "p_0441",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73383,7 +73383,7 @@
    "event_id": "evt_00136",
    "round": 1,
    "persona_id": "p_0445",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73396,7 +73396,7 @@
    "event_id": "evt_00137",
    "round": 1,
    "persona_id": "p_0451",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73409,7 +73409,7 @@
    "event_id": "evt_00138",
    "round": 1,
    "persona_id": "p_0453",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73422,7 +73422,7 @@
    "event_id": "evt_00139",
    "round": 1,
    "persona_id": "p_0456",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73435,7 +73435,7 @@
    "event_id": "evt_00140",
    "round": 1,
    "persona_id": "p_0457",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73448,7 +73448,7 @@
    "event_id": "evt_00141",
    "round": 1,
    "persona_id": "p_0458",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73461,7 +73461,7 @@
    "event_id": "evt_00142",
    "round": 1,
    "persona_id": "p_0459",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73474,7 +73474,7 @@
    "event_id": "evt_00143",
    "round": 1,
    "persona_id": "p_0461",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73487,7 +73487,7 @@
    "event_id": "evt_00144",
    "round": 1,
    "persona_id": "p_0463",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73500,7 +73500,7 @@
    "event_id": "evt_00145",
    "round": 1,
    "persona_id": "p_0464",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73513,7 +73513,7 @@
    "event_id": "evt_00146",
    "round": 1,
    "persona_id": "p_0465",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73526,7 +73526,7 @@
    "event_id": "evt_00147",
    "round": 1,
    "persona_id": "p_0466",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73539,7 +73539,7 @@
    "event_id": "evt_00148",
    "round": 1,
    "persona_id": "p_0467",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73552,7 +73552,7 @@
    "event_id": "evt_00149",
    "round": 1,
    "persona_id": "p_0473",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73565,7 +73565,7 @@
    "event_id": "evt_00150",
    "round": 1,
    "persona_id": "p_0477",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73578,7 +73578,7 @@
    "event_id": "evt_00151",
    "round": 1,
    "persona_id": "p_0479",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73591,7 +73591,7 @@
    "event_id": "evt_00152",
    "round": 1,
    "persona_id": "p_0483",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73604,7 +73604,7 @@
    "event_id": "evt_00153",
    "round": 1,
    "persona_id": "p_0484",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73617,7 +73617,7 @@
    "event_id": "evt_00154",
    "round": 1,
    "persona_id": "p_0485",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73630,7 +73630,7 @@
    "event_id": "evt_00155",
    "round": 1,
    "persona_id": "p_0490",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73643,7 +73643,7 @@
    "event_id": "evt_00156",
    "round": 1,
    "persona_id": "p_0495",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73656,7 +73656,7 @@
    "event_id": "evt_00157",
    "round": 1,
    "persona_id": "p_0496",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73669,7 +73669,7 @@
    "event_id": "evt_00158",
    "round": 1,
    "persona_id": "p_0497",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73682,7 +73682,7 @@
    "event_id": "evt_00159",
    "round": 1,
    "persona_id": "p_0498",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73695,7 +73695,7 @@
    "event_id": "evt_00160",
    "round": 1,
    "persona_id": "p_0498",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -73708,7 +73708,7 @@
    "event_id": "evt_00161",
    "round": 1,
    "persona_id": "p_0499",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73721,7 +73721,7 @@
    "event_id": "evt_00162",
    "round": 1,
    "persona_id": "p_0500",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73734,7 +73734,7 @@
    "event_id": "evt_00163",
    "round": 1,
    "persona_id": "p_0509",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73747,7 +73747,7 @@
    "event_id": "evt_00164",
    "round": 1,
    "persona_id": "p_0509",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -73760,7 +73760,7 @@
    "event_id": "evt_00165",
    "round": 1,
    "persona_id": "p_0510",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73773,7 +73773,7 @@
    "event_id": "evt_00166",
    "round": 1,
    "persona_id": "p_0511",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73786,7 +73786,7 @@
    "event_id": "evt_00167",
    "round": 1,
    "persona_id": "p_0512",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73799,7 +73799,7 @@
    "event_id": "evt_00168",
    "round": 1,
    "persona_id": "p_0514",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73812,7 +73812,7 @@
    "event_id": "evt_00169",
    "round": 1,
    "persona_id": "p_0515",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73825,7 +73825,7 @@
    "event_id": "evt_00170",
    "round": 1,
    "persona_id": "p_0517",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73838,7 +73838,7 @@
    "event_id": "evt_00171",
    "round": 1,
    "persona_id": "p_0518",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73851,7 +73851,7 @@
    "event_id": "evt_00172",
    "round": 1,
    "persona_id": "p_0519",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73864,7 +73864,7 @@
    "event_id": "evt_00173",
    "round": 1,
    "persona_id": "p_0520",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73877,7 +73877,7 @@
    "event_id": "evt_00174",
    "round": 1,
    "persona_id": "p_0522",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73890,7 +73890,7 @@
    "event_id": "evt_00175",
    "round": 1,
    "persona_id": "p_0522",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -73903,7 +73903,7 @@
    "event_id": "evt_00176",
    "round": 1,
    "persona_id": "p_0523",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73916,7 +73916,7 @@
    "event_id": "evt_00177",
    "round": 1,
    "persona_id": "p_0524",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73929,7 +73929,7 @@
    "event_id": "evt_00178",
    "round": 1,
    "persona_id": "p_0531",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73942,7 +73942,7 @@
    "event_id": "evt_00179",
    "round": 1,
    "persona_id": "p_0531",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -73955,7 +73955,7 @@
    "event_id": "evt_00180",
    "round": 1,
    "persona_id": "p_0535",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73968,7 +73968,7 @@
    "event_id": "evt_00181",
    "round": 1,
    "persona_id": "p_0536",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73981,7 +73981,7 @@
    "event_id": "evt_00182",
    "round": 1,
    "persona_id": "p_0539",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -73994,7 +73994,7 @@
    "event_id": "evt_00183",
    "round": 1,
    "persona_id": "p_0541",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74007,7 +74007,7 @@
    "event_id": "evt_00184",
    "round": 1,
    "persona_id": "p_0541",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -74020,7 +74020,7 @@
    "event_id": "evt_00185",
    "round": 1,
    "persona_id": "p_0544",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74033,7 +74033,7 @@
    "event_id": "evt_00186",
    "round": 1,
    "persona_id": "p_0545",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74046,7 +74046,7 @@
    "event_id": "evt_00187",
    "round": 1,
    "persona_id": "p_0545",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -74059,7 +74059,7 @@
    "event_id": "evt_00188",
    "round": 1,
    "persona_id": "p_0546",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74072,7 +74072,7 @@
    "event_id": "evt_00189",
    "round": 1,
    "persona_id": "p_0548",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74085,7 +74085,7 @@
    "event_id": "evt_00190",
    "round": 1,
    "persona_id": "p_0549",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74098,7 +74098,7 @@
    "event_id": "evt_00191",
    "round": 1,
    "persona_id": "p_0550",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74111,7 +74111,7 @@
    "event_id": "evt_00192",
    "round": 1,
    "persona_id": "p_0552",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74124,7 +74124,7 @@
    "event_id": "evt_00193",
    "round": 1,
    "persona_id": "p_0553",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74137,7 +74137,7 @@
    "event_id": "evt_00194",
    "round": 1,
    "persona_id": "p_0566",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74150,7 +74150,7 @@
    "event_id": "evt_00195",
    "round": 1,
    "persona_id": "p_0566",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -74163,7 +74163,7 @@
    "event_id": "evt_00196",
    "round": 1,
    "persona_id": "p_0569",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74176,7 +74176,7 @@
    "event_id": "evt_00197",
    "round": 1,
    "persona_id": "p_0576",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74189,7 +74189,7 @@
    "event_id": "evt_00198",
    "round": 1,
    "persona_id": "p_0577",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74202,7 +74202,7 @@
    "event_id": "evt_00199",
    "round": 1,
    "persona_id": "p_0578",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74215,7 +74215,7 @@
    "event_id": "evt_00200",
    "round": 1,
    "persona_id": "p_0580",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74228,7 +74228,7 @@
    "event_id": "evt_00201",
    "round": 1,
    "persona_id": "p_0584",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74241,7 +74241,7 @@
    "event_id": "evt_00202",
    "round": 1,
    "persona_id": "p_0586",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74254,7 +74254,7 @@
    "event_id": "evt_00203",
    "round": 1,
    "persona_id": "p_0587",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74267,7 +74267,7 @@
    "event_id": "evt_00204",
    "round": 1,
    "persona_id": "p_0591",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74280,7 +74280,7 @@
    "event_id": "evt_00205",
    "round": 1,
    "persona_id": "p_0596",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74293,7 +74293,7 @@
    "event_id": "evt_00206",
    "round": 1,
    "persona_id": "p_0600",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74306,7 +74306,7 @@
    "event_id": "evt_00207",
    "round": 1,
    "persona_id": "p_0603",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74319,7 +74319,7 @@
    "event_id": "evt_00208",
    "round": 1,
    "persona_id": "p_0604",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74332,7 +74332,7 @@
    "event_id": "evt_00209",
    "round": 1,
    "persona_id": "p_0606",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74345,7 +74345,7 @@
    "event_id": "evt_00210",
    "round": 1,
    "persona_id": "p_0612",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74358,7 +74358,7 @@
    "event_id": "evt_00211",
    "round": 1,
    "persona_id": "p_0615",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74371,7 +74371,7 @@
    "event_id": "evt_00212",
    "round": 1,
    "persona_id": "p_0616",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74384,7 +74384,7 @@
    "event_id": "evt_00213",
    "round": 1,
    "persona_id": "p_0617",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74397,7 +74397,7 @@
    "event_id": "evt_00214",
    "round": 1,
    "persona_id": "p_0619",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74410,7 +74410,7 @@
    "event_id": "evt_00215",
    "round": 1,
    "persona_id": "p_0622",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74423,7 +74423,7 @@
    "event_id": "evt_00216",
    "round": 1,
    "persona_id": "p_0630",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74436,7 +74436,7 @@
    "event_id": "evt_00217",
    "round": 1,
    "persona_id": "p_0631",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74449,7 +74449,7 @@
    "event_id": "evt_00218",
    "round": 1,
    "persona_id": "p_0635",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74462,7 +74462,7 @@
    "event_id": "evt_00219",
    "round": 1,
    "persona_id": "p_0642",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74475,7 +74475,7 @@
    "event_id": "evt_00220",
    "round": 1,
    "persona_id": "p_0642",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -74488,7 +74488,7 @@
    "event_id": "evt_00221",
    "round": 1,
    "persona_id": "p_0643",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74501,7 +74501,7 @@
    "event_id": "evt_00222",
    "round": 1,
    "persona_id": "p_0662",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74514,7 +74514,7 @@
    "event_id": "evt_00223",
    "round": 1,
    "persona_id": "p_0666",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74527,7 +74527,7 @@
    "event_id": "evt_00224",
    "round": 1,
    "persona_id": "p_0667",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74540,7 +74540,7 @@
    "event_id": "evt_00225",
    "round": 1,
    "persona_id": "p_0668",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74553,7 +74553,7 @@
    "event_id": "evt_00226",
    "round": 1,
    "persona_id": "p_0672",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74566,7 +74566,7 @@
    "event_id": "evt_00227",
    "round": 1,
    "persona_id": "p_0673",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74579,7 +74579,7 @@
    "event_id": "evt_00228",
    "round": 1,
    "persona_id": "p_0673",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -74592,7 +74592,7 @@
    "event_id": "evt_00229",
    "round": 1,
    "persona_id": "p_0675",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74605,7 +74605,7 @@
    "event_id": "evt_00230",
    "round": 1,
    "persona_id": "p_0681",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74618,7 +74618,7 @@
    "event_id": "evt_00231",
    "round": 1,
    "persona_id": "p_0682",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74631,7 +74631,7 @@
    "event_id": "evt_00232",
    "round": 1,
    "persona_id": "p_0683",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74644,7 +74644,7 @@
    "event_id": "evt_00233",
    "round": 1,
    "persona_id": "p_0686",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74657,7 +74657,7 @@
    "event_id": "evt_00234",
    "round": 1,
    "persona_id": "p_0687",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74670,7 +74670,7 @@
    "event_id": "evt_00235",
    "round": 1,
    "persona_id": "p_0688",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74683,7 +74683,7 @@
    "event_id": "evt_00236",
    "round": 1,
    "persona_id": "p_0689",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74696,7 +74696,7 @@
    "event_id": "evt_00237",
    "round": 1,
    "persona_id": "p_0690",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74709,7 +74709,7 @@
    "event_id": "evt_00238",
    "round": 1,
    "persona_id": "p_0691",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74722,7 +74722,7 @@
    "event_id": "evt_00239",
    "round": 1,
    "persona_id": "p_0692",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74735,7 +74735,7 @@
    "event_id": "evt_00240",
    "round": 1,
    "persona_id": "p_0693",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74748,7 +74748,7 @@
    "event_id": "evt_00241",
    "round": 1,
    "persona_id": "p_0694",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74761,7 +74761,7 @@
    "event_id": "evt_00242",
    "round": 1,
    "persona_id": "p_0695",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74774,7 +74774,7 @@
    "event_id": "evt_00243",
    "round": 1,
    "persona_id": "p_0705",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74787,7 +74787,7 @@
    "event_id": "evt_00244",
    "round": 1,
    "persona_id": "p_0706",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74800,7 +74800,7 @@
    "event_id": "evt_00245",
    "round": 1,
    "persona_id": "p_0706",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -74813,7 +74813,7 @@
    "event_id": "evt_00246",
    "round": 1,
    "persona_id": "p_0707",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74826,7 +74826,7 @@
    "event_id": "evt_00247",
    "round": 1,
    "persona_id": "p_0710",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74839,7 +74839,7 @@
    "event_id": "evt_00248",
    "round": 1,
    "persona_id": "p_0711",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74852,7 +74852,7 @@
    "event_id": "evt_00249",
    "round": 1,
    "persona_id": "p_0712",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74865,7 +74865,7 @@
    "event_id": "evt_00250",
    "round": 1,
    "persona_id": "p_0714",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74878,7 +74878,7 @@
    "event_id": "evt_00251",
    "round": 1,
    "persona_id": "p_0723",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74891,7 +74891,7 @@
    "event_id": "evt_00252",
    "round": 1,
    "persona_id": "p_0727",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74904,7 +74904,7 @@
    "event_id": "evt_00253",
    "round": 1,
    "persona_id": "p_0728",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74917,7 +74917,7 @@
    "event_id": "evt_00254",
    "round": 1,
    "persona_id": "p_0735",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74930,7 +74930,7 @@
    "event_id": "evt_00255",
    "round": 1,
    "persona_id": "p_0736",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74943,7 +74943,7 @@
    "event_id": "evt_00256",
    "round": 1,
    "persona_id": "p_0744",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74956,7 +74956,7 @@
    "event_id": "evt_00257",
    "round": 1,
    "persona_id": "p_0745",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74969,7 +74969,7 @@
    "event_id": "evt_00258",
    "round": 1,
    "persona_id": "p_0746",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74982,7 +74982,7 @@
    "event_id": "evt_00259",
    "round": 1,
    "persona_id": "p_0748",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -74995,7 +74995,7 @@
    "event_id": "evt_00260",
    "round": 1,
    "persona_id": "p_0748",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -75008,7 +75008,7 @@
    "event_id": "evt_00261",
    "round": 1,
    "persona_id": "p_0750",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75021,7 +75021,7 @@
    "event_id": "evt_00262",
    "round": 1,
    "persona_id": "p_0755",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75034,7 +75034,7 @@
    "event_id": "evt_00263",
    "round": 1,
    "persona_id": "p_0756",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75047,7 +75047,7 @@
    "event_id": "evt_00264",
    "round": 1,
    "persona_id": "p_0757",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75060,7 +75060,7 @@
    "event_id": "evt_00265",
    "round": 1,
    "persona_id": "p_0758",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75073,7 +75073,7 @@
    "event_id": "evt_00266",
    "round": 1,
    "persona_id": "p_0766",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75086,7 +75086,7 @@
    "event_id": "evt_00267",
    "round": 1,
    "persona_id": "p_0771",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75099,7 +75099,7 @@
    "event_id": "evt_00268",
    "round": 1,
    "persona_id": "p_0776",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75112,7 +75112,7 @@
    "event_id": "evt_00269",
    "round": 1,
    "persona_id": "p_0779",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75125,7 +75125,7 @@
    "event_id": "evt_00270",
    "round": 1,
    "persona_id": "p_0782",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75138,7 +75138,7 @@
    "event_id": "evt_00271",
    "round": 1,
    "persona_id": "p_0797",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75151,7 +75151,7 @@
    "event_id": "evt_00272",
    "round": 1,
    "persona_id": "p_0809",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75164,7 +75164,7 @@
    "event_id": "evt_00273",
    "round": 1,
    "persona_id": "p_0812",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75177,7 +75177,7 @@
    "event_id": "evt_00274",
    "round": 1,
    "persona_id": "p_0813",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75190,7 +75190,7 @@
    "event_id": "evt_00275",
    "round": 1,
    "persona_id": "p_0817",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75203,7 +75203,7 @@
    "event_id": "evt_00276",
    "round": 1,
    "persona_id": "p_0819",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75216,7 +75216,7 @@
    "event_id": "evt_00277",
    "round": 1,
    "persona_id": "p_0820",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75229,7 +75229,7 @@
    "event_id": "evt_00278",
    "round": 1,
    "persona_id": "p_0821",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75242,7 +75242,7 @@
    "event_id": "evt_00279",
    "round": 1,
    "persona_id": "p_0826",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75255,7 +75255,7 @@
    "event_id": "evt_00280",
    "round": 1,
    "persona_id": "p_0827",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75268,7 +75268,7 @@
    "event_id": "evt_00281",
    "round": 1,
    "persona_id": "p_0834",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75281,7 +75281,7 @@
    "event_id": "evt_00282",
    "round": 1,
    "persona_id": "p_0836",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75294,7 +75294,7 @@
    "event_id": "evt_00283",
    "round": 1,
    "persona_id": "p_0842",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75307,7 +75307,7 @@
    "event_id": "evt_00284",
    "round": 1,
    "persona_id": "p_0846",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75320,7 +75320,7 @@
    "event_id": "evt_00285",
    "round": 1,
    "persona_id": "p_0850",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75333,7 +75333,7 @@
    "event_id": "evt_00286",
    "round": 1,
    "persona_id": "p_0857",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75346,7 +75346,7 @@
    "event_id": "evt_00287",
    "round": 1,
    "persona_id": "p_0858",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75359,7 +75359,7 @@
    "event_id": "evt_00288",
    "round": 1,
    "persona_id": "p_0860",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75372,7 +75372,7 @@
    "event_id": "evt_00289",
    "round": 1,
    "persona_id": "p_0865",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75385,7 +75385,7 @@
    "event_id": "evt_00290",
    "round": 1,
    "persona_id": "p_0866",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75398,7 +75398,7 @@
    "event_id": "evt_00291",
    "round": 1,
    "persona_id": "p_0869",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75411,7 +75411,7 @@
    "event_id": "evt_00292",
    "round": 1,
    "persona_id": "p_0870",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75424,7 +75424,7 @@
    "event_id": "evt_00293",
    "round": 1,
    "persona_id": "p_0872",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75437,7 +75437,7 @@
    "event_id": "evt_00294",
    "round": 1,
    "persona_id": "p_0884",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75450,7 +75450,7 @@
    "event_id": "evt_00295",
    "round": 1,
    "persona_id": "p_0884",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -75463,7 +75463,7 @@
    "event_id": "evt_00296",
    "round": 1,
    "persona_id": "p_0886",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75476,7 +75476,7 @@
    "event_id": "evt_00297",
    "round": 1,
    "persona_id": "p_0891",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75489,7 +75489,7 @@
    "event_id": "evt_00298",
    "round": 1,
    "persona_id": "p_0894",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75502,7 +75502,7 @@
    "event_id": "evt_00299",
    "round": 1,
    "persona_id": "p_0895",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75515,7 +75515,7 @@
    "event_id": "evt_00300",
    "round": 1,
    "persona_id": "p_0899",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75528,7 +75528,7 @@
    "event_id": "evt_00301",
    "round": 1,
    "persona_id": "p_0900",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75541,7 +75541,7 @@
    "event_id": "evt_00302",
    "round": 1,
    "persona_id": "p_0908",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75554,7 +75554,7 @@
    "event_id": "evt_00303",
    "round": 1,
    "persona_id": "p_0915",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75567,7 +75567,7 @@
    "event_id": "evt_00304",
    "round": 1,
    "persona_id": "p_0922",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75580,7 +75580,7 @@
    "event_id": "evt_00305",
    "round": 1,
    "persona_id": "p_0927",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75593,7 +75593,7 @@
    "event_id": "evt_00306",
    "round": 1,
    "persona_id": "p_0929",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75606,7 +75606,7 @@
    "event_id": "evt_00307",
    "round": 1,
    "persona_id": "p_0935",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75619,7 +75619,7 @@
    "event_id": "evt_00308",
    "round": 1,
    "persona_id": "p_0936",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75632,7 +75632,7 @@
    "event_id": "evt_00309",
    "round": 1,
    "persona_id": "p_0938",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75645,7 +75645,7 @@
    "event_id": "evt_00310",
    "round": 1,
    "persona_id": "p_0939",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75658,7 +75658,7 @@
    "event_id": "evt_00311",
    "round": 1,
    "persona_id": "p_0939",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -75671,7 +75671,7 @@
    "event_id": "evt_00312",
    "round": 1,
    "persona_id": "p_0940",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75684,7 +75684,7 @@
    "event_id": "evt_00313",
    "round": 1,
    "persona_id": "p_0947",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75697,7 +75697,7 @@
    "event_id": "evt_00314",
    "round": 1,
    "persona_id": "p_0950",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75710,7 +75710,7 @@
    "event_id": "evt_00315",
    "round": 1,
    "persona_id": "p_0958",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75723,7 +75723,7 @@
    "event_id": "evt_00316",
    "round": 1,
    "persona_id": "p_0959",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75736,7 +75736,7 @@
    "event_id": "evt_00317",
    "round": 1,
    "persona_id": "p_0960",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75749,7 +75749,7 @@
    "event_id": "evt_00318",
    "round": 1,
    "persona_id": "p_0961",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75762,7 +75762,7 @@
    "event_id": "evt_00319",
    "round": 1,
    "persona_id": "p_0962",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75775,7 +75775,7 @@
    "event_id": "evt_00320",
    "round": 1,
    "persona_id": "p_0968",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75788,7 +75788,7 @@
    "event_id": "evt_00321",
    "round": 1,
    "persona_id": "p_0978",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75801,7 +75801,7 @@
    "event_id": "evt_00322",
    "round": 1,
    "persona_id": "p_0979",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75814,7 +75814,7 @@
    "event_id": "evt_00323",
    "round": 1,
    "persona_id": "p_0980",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75827,7 +75827,7 @@
    "event_id": "evt_00324",
    "round": 1,
    "persona_id": "p_0985",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75840,7 +75840,7 @@
    "event_id": "evt_00325",
    "round": 1,
    "persona_id": "p_0993",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75853,7 +75853,7 @@
    "event_id": "evt_00326",
    "round": 1,
    "persona_id": "p_0993",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -75866,7 +75866,7 @@
    "event_id": "evt_00327",
    "round": 1,
    "persona_id": "p_0994",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75879,7 +75879,7 @@
    "event_id": "evt_00328",
    "round": 1,
    "persona_id": "p_0995",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75892,7 +75892,7 @@
    "event_id": "evt_00329",
    "round": 1,
    "persona_id": "p_0996",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75905,7 +75905,7 @@
    "event_id": "evt_00330",
    "round": 1,
    "persona_id": "p_0997",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75918,7 +75918,7 @@
    "event_id": "evt_00331",
    "round": 1,
    "persona_id": "p_1002",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75931,7 +75931,7 @@
    "event_id": "evt_00332",
    "round": 1,
    "persona_id": "p_1003",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75944,7 +75944,7 @@
    "event_id": "evt_00333",
    "round": 1,
    "persona_id": "p_1005",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75957,7 +75957,7 @@
    "event_id": "evt_00334",
    "round": 1,
    "persona_id": "p_1006",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75970,7 +75970,7 @@
    "event_id": "evt_00335",
    "round": 1,
    "persona_id": "p_1007",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75983,7 +75983,7 @@
    "event_id": "evt_00336",
    "round": 1,
    "persona_id": "p_1008",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -75996,7 +75996,7 @@
    "event_id": "evt_00337",
    "round": 1,
    "persona_id": "p_1020",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76009,7 +76009,7 @@
    "event_id": "evt_00338",
    "round": 1,
    "persona_id": "p_1023",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76022,7 +76022,7 @@
    "event_id": "evt_00339",
    "round": 1,
    "persona_id": "p_1031",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76035,7 +76035,7 @@
    "event_id": "evt_00340",
    "round": 1,
    "persona_id": "p_1031",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76048,7 +76048,7 @@
    "event_id": "evt_00341",
    "round": 1,
    "persona_id": "p_1032",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76061,7 +76061,7 @@
    "event_id": "evt_00342",
    "round": 1,
    "persona_id": "p_1034",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76074,7 +76074,7 @@
    "event_id": "evt_00343",
    "round": 1,
    "persona_id": "p_1035",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76087,7 +76087,7 @@
    "event_id": "evt_00344",
    "round": 1,
    "persona_id": "p_1037",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76100,7 +76100,7 @@
    "event_id": "evt_00345",
    "round": 1,
    "persona_id": "p_1038",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76113,7 +76113,7 @@
    "event_id": "evt_00346",
    "round": 1,
    "persona_id": "p_1039",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76126,7 +76126,7 @@
    "event_id": "evt_00347",
    "round": 1,
    "persona_id": "p_1048",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76139,7 +76139,7 @@
    "event_id": "evt_00348",
    "round": 1,
    "persona_id": "p_1050",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76152,7 +76152,7 @@
    "event_id": "evt_00349",
    "round": 1,
    "persona_id": "p_1051",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76165,7 +76165,7 @@
    "event_id": "evt_00350",
    "round": 1,
    "persona_id": "p_1053",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76178,7 +76178,7 @@
    "event_id": "evt_00351",
    "round": 1,
    "persona_id": "p_1053",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76191,7 +76191,7 @@
    "event_id": "evt_00352",
    "round": 1,
    "persona_id": "p_1055",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76204,7 +76204,7 @@
    "event_id": "evt_00353",
    "round": 1,
    "persona_id": "p_1058",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76217,7 +76217,7 @@
    "event_id": "evt_00354",
    "round": 1,
    "persona_id": "p_1058",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76230,7 +76230,7 @@
    "event_id": "evt_00355",
    "round": 1,
    "persona_id": "p_1065",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76243,7 +76243,7 @@
    "event_id": "evt_00356",
    "round": 1,
    "persona_id": "p_1066",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76256,7 +76256,7 @@
    "event_id": "evt_00357",
    "round": 1,
    "persona_id": "p_1067",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76269,7 +76269,7 @@
    "event_id": "evt_00358",
    "round": 1,
    "persona_id": "p_1069",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76282,7 +76282,7 @@
    "event_id": "evt_00359",
    "round": 1,
    "persona_id": "p_1070",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76295,7 +76295,7 @@
    "event_id": "evt_00360",
    "round": 1,
    "persona_id": "p_1071",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76308,7 +76308,7 @@
    "event_id": "evt_00361",
    "round": 1,
    "persona_id": "p_1072",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76321,7 +76321,7 @@
    "event_id": "evt_00362",
    "round": 1,
    "persona_id": "p_1073",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76334,7 +76334,7 @@
    "event_id": "evt_00363",
    "round": 1,
    "persona_id": "p_1077",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76347,7 +76347,7 @@
    "event_id": "evt_00364",
    "round": 1,
    "persona_id": "p_1079",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76360,7 +76360,7 @@
    "event_id": "evt_00365",
    "round": 1,
    "persona_id": "p_1083",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76373,7 +76373,7 @@
    "event_id": "evt_00366",
    "round": 1,
    "persona_id": "p_1084",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76386,7 +76386,7 @@
    "event_id": "evt_00367",
    "round": 1,
    "persona_id": "p_1085",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76399,7 +76399,7 @@
    "event_id": "evt_00368",
    "round": 1,
    "persona_id": "p_1086",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76412,7 +76412,7 @@
    "event_id": "evt_00369",
    "round": 1,
    "persona_id": "p_1090",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76425,7 +76425,7 @@
    "event_id": "evt_00370",
    "round": 1,
    "persona_id": "p_1091",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76438,7 +76438,7 @@
    "event_id": "evt_00371",
    "round": 1,
    "persona_id": "p_1092",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76451,7 +76451,7 @@
    "event_id": "evt_00372",
    "round": 1,
    "persona_id": "p_1094",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76464,7 +76464,7 @@
    "event_id": "evt_00373",
    "round": 1,
    "persona_id": "p_1098",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76477,7 +76477,7 @@
    "event_id": "evt_00374",
    "round": 1,
    "persona_id": "p_1099",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76490,7 +76490,7 @@
    "event_id": "evt_00375",
    "round": 1,
    "persona_id": "p_1100",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76503,7 +76503,7 @@
    "event_id": "evt_00376",
    "round": 1,
    "persona_id": "p_1104",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76516,7 +76516,7 @@
    "event_id": "evt_00377",
    "round": 1,
    "persona_id": "p_1105",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76529,7 +76529,7 @@
    "event_id": "evt_00378",
    "round": 1,
    "persona_id": "p_1106",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76542,7 +76542,7 @@
    "event_id": "evt_00379",
    "round": 1,
    "persona_id": "p_1110",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76555,7 +76555,7 @@
    "event_id": "evt_00380",
    "round": 1,
    "persona_id": "p_1113",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76568,7 +76568,7 @@
    "event_id": "evt_00381",
    "round": 1,
    "persona_id": "p_1116",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76581,7 +76581,7 @@
    "event_id": "evt_00382",
    "round": 1,
    "persona_id": "p_1117",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76594,7 +76594,7 @@
    "event_id": "evt_00383",
    "round": 1,
    "persona_id": "p_1118",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76607,7 +76607,7 @@
    "event_id": "evt_00384",
    "round": 1,
    "persona_id": "p_1121",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76620,7 +76620,7 @@
    "event_id": "evt_00385",
    "round": 1,
    "persona_id": "p_1124",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76633,7 +76633,7 @@
    "event_id": "evt_00386",
    "round": 1,
    "persona_id": "p_1125",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76646,7 +76646,7 @@
    "event_id": "evt_00387",
    "round": 1,
    "persona_id": "p_1126",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76659,7 +76659,7 @@
    "event_id": "evt_00388",
    "round": 1,
    "persona_id": "p_1127",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76672,7 +76672,7 @@
    "event_id": "evt_00389",
    "round": 1,
    "persona_id": "p_1128",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76685,7 +76685,7 @@
    "event_id": "evt_00390",
    "round": 1,
    "persona_id": "p_1131",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76698,7 +76698,7 @@
    "event_id": "evt_00391",
    "round": 1,
    "persona_id": "p_1140",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76711,7 +76711,7 @@
    "event_id": "evt_00392",
    "round": 1,
    "persona_id": "p_1141",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76724,7 +76724,7 @@
    "event_id": "evt_00393",
    "round": 1,
    "persona_id": "p_1143",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76737,7 +76737,7 @@
    "event_id": "evt_00394",
    "round": 1,
    "persona_id": "p_1144",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76750,7 +76750,7 @@
    "event_id": "evt_00395",
    "round": 1,
    "persona_id": "p_1146",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76763,7 +76763,7 @@
    "event_id": "evt_00396",
    "round": 1,
    "persona_id": "p_1150",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76776,7 +76776,7 @@
    "event_id": "evt_00397",
    "round": 1,
    "persona_id": "p_1151",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76789,7 +76789,7 @@
    "event_id": "evt_00398",
    "round": 1,
    "persona_id": "p_1151",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76802,7 +76802,7 @@
    "event_id": "evt_00399",
    "round": 1,
    "persona_id": "p_1158",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76815,7 +76815,7 @@
    "event_id": "evt_00400",
    "round": 1,
    "persona_id": "p_1159",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76828,7 +76828,7 @@
    "event_id": "evt_00401",
    "round": 1,
    "persona_id": "p_1170",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76841,7 +76841,7 @@
    "event_id": "evt_00402",
    "round": 1,
    "persona_id": "p_1170",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76854,7 +76854,7 @@
    "event_id": "evt_00403",
    "round": 1,
    "persona_id": "p_1171",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76867,7 +76867,7 @@
    "event_id": "evt_00404",
    "round": 1,
    "persona_id": "p_1171",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76880,7 +76880,7 @@
    "event_id": "evt_00405",
    "round": 1,
    "persona_id": "p_1172",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76893,7 +76893,7 @@
    "event_id": "evt_00406",
    "round": 1,
    "persona_id": "p_1173",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76906,7 +76906,7 @@
    "event_id": "evt_00407",
    "round": 1,
    "persona_id": "p_1174",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76919,7 +76919,7 @@
    "event_id": "evt_00408",
    "round": 1,
    "persona_id": "p_1175",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76932,7 +76932,7 @@
    "event_id": "evt_00409",
    "round": 1,
    "persona_id": "p_1176",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76945,7 +76945,7 @@
    "event_id": "evt_00410",
    "round": 1,
    "persona_id": "p_1177",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76958,7 +76958,7 @@
    "event_id": "evt_00411",
    "round": 1,
    "persona_id": "p_1177",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -76971,7 +76971,7 @@
    "event_id": "evt_00412",
    "round": 1,
    "persona_id": "p_1179",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76984,7 +76984,7 @@
    "event_id": "evt_00413",
    "round": 1,
    "persona_id": "p_1180",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -76997,7 +76997,7 @@
    "event_id": "evt_00414",
    "round": 1,
    "persona_id": "p_1185",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77010,7 +77010,7 @@
    "event_id": "evt_00415",
    "round": 1,
    "persona_id": "p_1186",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77023,7 +77023,7 @@
    "event_id": "evt_00416",
    "round": 1,
    "persona_id": "p_1187",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77036,7 +77036,7 @@
    "event_id": "evt_00417",
    "round": 1,
    "persona_id": "p_1194",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77049,7 +77049,7 @@
    "event_id": "evt_00418",
    "round": 1,
    "persona_id": "p_1201",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77062,7 +77062,7 @@
    "event_id": "evt_00419",
    "round": 1,
    "persona_id": "p_1205",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77075,7 +77075,7 @@
    "event_id": "evt_00420",
    "round": 1,
    "persona_id": "p_1212",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77088,7 +77088,7 @@
    "event_id": "evt_00421",
    "round": 1,
    "persona_id": "p_1212",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -77101,7 +77101,7 @@
    "event_id": "evt_00422",
    "round": 1,
    "persona_id": "p_1213",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77114,7 +77114,7 @@
    "event_id": "evt_00423",
    "round": 1,
    "persona_id": "p_1214",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77127,7 +77127,7 @@
    "event_id": "evt_00424",
    "round": 1,
    "persona_id": "p_1215",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77140,7 +77140,7 @@
    "event_id": "evt_00425",
    "round": 1,
    "persona_id": "p_1215",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -77153,7 +77153,7 @@
    "event_id": "evt_00426",
    "round": 1,
    "persona_id": "p_1216",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77166,7 +77166,7 @@
    "event_id": "evt_00427",
    "round": 1,
    "persona_id": "p_1218",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77179,7 +77179,7 @@
    "event_id": "evt_00428",
    "round": 1,
    "persona_id": "p_1222",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77192,7 +77192,7 @@
    "event_id": "evt_00429",
    "round": 1,
    "persona_id": "p_1223",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77205,7 +77205,7 @@
    "event_id": "evt_00430",
    "round": 1,
    "persona_id": "p_1225",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77218,7 +77218,7 @@
    "event_id": "evt_00431",
    "round": 1,
    "persona_id": "p_1232",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77231,7 +77231,7 @@
    "event_id": "evt_00432",
    "round": 1,
    "persona_id": "p_1233",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77244,7 +77244,7 @@
    "event_id": "evt_00433",
    "round": 1,
    "persona_id": "p_1234",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77257,7 +77257,7 @@
    "event_id": "evt_00434",
    "round": 1,
    "persona_id": "p_1235",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77270,7 +77270,7 @@
    "event_id": "evt_00435",
    "round": 1,
    "persona_id": "p_1237",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77283,7 +77283,7 @@
    "event_id": "evt_00436",
    "round": 1,
    "persona_id": "p_1239",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77296,7 +77296,7 @@
    "event_id": "evt_00437",
    "round": 1,
    "persona_id": "p_1240",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77309,7 +77309,7 @@
    "event_id": "evt_00438",
    "round": 1,
    "persona_id": "p_1244",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77322,7 +77322,7 @@
    "event_id": "evt_00439",
    "round": 1,
    "persona_id": "p_1245",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77335,7 +77335,7 @@
    "event_id": "evt_00440",
    "round": 1,
    "persona_id": "p_1246",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77348,7 +77348,7 @@
    "event_id": "evt_00441",
    "round": 1,
    "persona_id": "p_1247",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77361,7 +77361,7 @@
    "event_id": "evt_00442",
    "round": 1,
    "persona_id": "p_1250",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77374,7 +77374,7 @@
    "event_id": "evt_00443",
    "round": 1,
    "persona_id": "p_1250",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -77387,7 +77387,7 @@
    "event_id": "evt_00444",
    "round": 1,
    "persona_id": "p_1251",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77400,7 +77400,7 @@
    "event_id": "evt_00445",
    "round": 1,
    "persona_id": "p_1252",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77413,7 +77413,7 @@
    "event_id": "evt_00446",
    "round": 1,
    "persona_id": "p_1255",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77426,7 +77426,7 @@
    "event_id": "evt_00447",
    "round": 1,
    "persona_id": "p_1257",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77439,7 +77439,7 @@
    "event_id": "evt_00448",
    "round": 1,
    "persona_id": "p_1258",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77452,7 +77452,7 @@
    "event_id": "evt_00449",
    "round": 1,
    "persona_id": "p_1259",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77465,7 +77465,7 @@
    "event_id": "evt_00450",
    "round": 1,
    "persona_id": "p_1259",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -77478,7 +77478,7 @@
    "event_id": "evt_00451",
    "round": 1,
    "persona_id": "p_1270",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77491,7 +77491,7 @@
    "event_id": "evt_00452",
    "round": 1,
    "persona_id": "p_1276",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77504,7 +77504,7 @@
    "event_id": "evt_00453",
    "round": 1,
    "persona_id": "p_1280",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77517,7 +77517,7 @@
    "event_id": "evt_00454",
    "round": 1,
    "persona_id": "p_1282",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77530,7 +77530,7 @@
    "event_id": "evt_00455",
    "round": 1,
    "persona_id": "p_1283",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77543,7 +77543,7 @@
    "event_id": "evt_00456",
    "round": 1,
    "persona_id": "p_1284",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77556,7 +77556,7 @@
    "event_id": "evt_00457",
    "round": 1,
    "persona_id": "p_1285",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77569,7 +77569,7 @@
    "event_id": "evt_00458",
    "round": 1,
    "persona_id": "p_1287",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77582,7 +77582,7 @@
    "event_id": "evt_00459",
    "round": 1,
    "persona_id": "p_1288",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77595,7 +77595,7 @@
    "event_id": "evt_00460",
    "round": 1,
    "persona_id": "p_1289",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77608,7 +77608,7 @@
    "event_id": "evt_00461",
    "round": 1,
    "persona_id": "p_1291",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77621,7 +77621,7 @@
    "event_id": "evt_00462",
    "round": 1,
    "persona_id": "p_1294",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77634,7 +77634,7 @@
    "event_id": "evt_00463",
    "round": 1,
    "persona_id": "p_1300",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77647,7 +77647,7 @@
    "event_id": "evt_00464",
    "round": 1,
    "persona_id": "p_1302",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77660,7 +77660,7 @@
    "event_id": "evt_00465",
    "round": 1,
    "persona_id": "p_1303",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77673,7 +77673,7 @@
    "event_id": "evt_00466",
    "round": 1,
    "persona_id": "p_1305",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77686,7 +77686,7 @@
    "event_id": "evt_00467",
    "round": 1,
    "persona_id": "p_1306",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77699,7 +77699,7 @@
    "event_id": "evt_00468",
    "round": 1,
    "persona_id": "p_1311",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77712,7 +77712,7 @@
    "event_id": "evt_00469",
    "round": 1,
    "persona_id": "p_1318",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77725,7 +77725,7 @@
    "event_id": "evt_00470",
    "round": 1,
    "persona_id": "p_1319",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77738,7 +77738,7 @@
    "event_id": "evt_00471",
    "round": 1,
    "persona_id": "p_1320",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77751,7 +77751,7 @@
    "event_id": "evt_00472",
    "round": 1,
    "persona_id": "p_1343",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77764,7 +77764,7 @@
    "event_id": "evt_00473",
    "round": 1,
    "persona_id": "p_1343",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -77777,7 +77777,7 @@
    "event_id": "evt_00474",
    "round": 1,
    "persona_id": "p_1347",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77790,7 +77790,7 @@
    "event_id": "evt_00475",
    "round": 1,
    "persona_id": "p_1348",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77803,7 +77803,7 @@
    "event_id": "evt_00476",
    "round": 1,
    "persona_id": "p_1352",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77816,7 +77816,7 @@
    "event_id": "evt_00477",
    "round": 1,
    "persona_id": "p_1353",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77829,7 +77829,7 @@
    "event_id": "evt_00478",
    "round": 1,
    "persona_id": "p_1353",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -77842,7 +77842,7 @@
    "event_id": "evt_00479",
    "round": 1,
    "persona_id": "p_1354",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77855,7 +77855,7 @@
    "event_id": "evt_00480",
    "round": 1,
    "persona_id": "p_1355",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77868,7 +77868,7 @@
    "event_id": "evt_00481",
    "round": 1,
    "persona_id": "p_1356",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77881,7 +77881,7 @@
    "event_id": "evt_00482",
    "round": 1,
    "persona_id": "p_1357",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77894,7 +77894,7 @@
    "event_id": "evt_00483",
    "round": 1,
    "persona_id": "p_1358",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77907,7 +77907,7 @@
    "event_id": "evt_00484",
    "round": 1,
    "persona_id": "p_1360",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77920,7 +77920,7 @@
    "event_id": "evt_00485",
    "round": 1,
    "persona_id": "p_1361",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77933,7 +77933,7 @@
    "event_id": "evt_00486",
    "round": 1,
    "persona_id": "p_1362",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77946,7 +77946,7 @@
    "event_id": "evt_00487",
    "round": 1,
    "persona_id": "p_1364",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77959,7 +77959,7 @@
    "event_id": "evt_00488",
    "round": 1,
    "persona_id": "p_1365",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77972,7 +77972,7 @@
    "event_id": "evt_00489",
    "round": 1,
    "persona_id": "p_1366",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77985,7 +77985,7 @@
    "event_id": "evt_00490",
    "round": 1,
    "persona_id": "p_1368",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -77998,7 +77998,7 @@
    "event_id": "evt_00491",
    "round": 1,
    "persona_id": "p_1369",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78011,7 +78011,7 @@
    "event_id": "evt_00492",
    "round": 1,
    "persona_id": "p_1369",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -78024,7 +78024,7 @@
    "event_id": "evt_00493",
    "round": 1,
    "persona_id": "p_1371",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78037,7 +78037,7 @@
    "event_id": "evt_00494",
    "round": 1,
    "persona_id": "p_1372",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78050,7 +78050,7 @@
    "event_id": "evt_00495",
    "round": 1,
    "persona_id": "p_1373",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78063,7 +78063,7 @@
    "event_id": "evt_00496",
    "round": 1,
    "persona_id": "p_1374",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78076,7 +78076,7 @@
    "event_id": "evt_00497",
    "round": 1,
    "persona_id": "p_1375",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78089,7 +78089,7 @@
    "event_id": "evt_00498",
    "round": 1,
    "persona_id": "p_1376",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78102,7 +78102,7 @@
    "event_id": "evt_00499",
    "round": 1,
    "persona_id": "p_1378",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78115,7 +78115,7 @@
    "event_id": "evt_00500",
    "round": 1,
    "persona_id": "p_1379",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78128,7 +78128,7 @@
    "event_id": "evt_00501",
    "round": 1,
    "persona_id": "p_1392",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78141,7 +78141,7 @@
    "event_id": "evt_00502",
    "round": 1,
    "persona_id": "p_1393",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78154,7 +78154,7 @@
    "event_id": "evt_00503",
    "round": 1,
    "persona_id": "p_1393",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -78167,7 +78167,7 @@
    "event_id": "evt_00504",
    "round": 1,
    "persona_id": "p_1394",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78180,7 +78180,7 @@
    "event_id": "evt_00505",
    "round": 1,
    "persona_id": "p_1396",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78193,7 +78193,7 @@
    "event_id": "evt_00506",
    "round": 1,
    "persona_id": "p_1396",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -78206,7 +78206,7 @@
    "event_id": "evt_00507",
    "round": 1,
    "persona_id": "p_1397",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78219,7 +78219,7 @@
    "event_id": "evt_00508",
    "round": 1,
    "persona_id": "p_1398",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78232,7 +78232,7 @@
    "event_id": "evt_00509",
    "round": 1,
    "persona_id": "p_1399",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78245,7 +78245,7 @@
    "event_id": "evt_00510",
    "round": 1,
    "persona_id": "p_1400",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78258,7 +78258,7 @@
    "event_id": "evt_00511",
    "round": 1,
    "persona_id": "p_1402",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78271,7 +78271,7 @@
    "event_id": "evt_00512",
    "round": 1,
    "persona_id": "p_1405",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78284,7 +78284,7 @@
    "event_id": "evt_00513",
    "round": 1,
    "persona_id": "p_1406",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78297,7 +78297,7 @@
    "event_id": "evt_00514",
    "round": 1,
    "persona_id": "p_1416",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78310,7 +78310,7 @@
    "event_id": "evt_00515",
    "round": 1,
    "persona_id": "p_1418",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78323,7 +78323,7 @@
    "event_id": "evt_00516",
    "round": 1,
    "persona_id": "p_1426",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78336,7 +78336,7 @@
    "event_id": "evt_00517",
    "round": 1,
    "persona_id": "p_1427",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78349,7 +78349,7 @@
    "event_id": "evt_00518",
    "round": 1,
    "persona_id": "p_1438",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78362,7 +78362,7 @@
    "event_id": "evt_00519",
    "round": 1,
    "persona_id": "p_1439",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78375,7 +78375,7 @@
    "event_id": "evt_00520",
    "round": 1,
    "persona_id": "p_1439",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -78388,7 +78388,7 @@
    "event_id": "evt_00521",
    "round": 1,
    "persona_id": "p_1444",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78401,7 +78401,7 @@
    "event_id": "evt_00522",
    "round": 1,
    "persona_id": "p_1444",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -78414,7 +78414,7 @@
    "event_id": "evt_00523",
    "round": 1,
    "persona_id": "p_1449",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78427,7 +78427,7 @@
    "event_id": "evt_00524",
    "round": 1,
    "persona_id": "p_1450",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78440,7 +78440,7 @@
    "event_id": "evt_00525",
    "round": 1,
    "persona_id": "p_1455",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78453,7 +78453,7 @@
    "event_id": "evt_00526",
    "round": 1,
    "persona_id": "p_1456",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78466,7 +78466,7 @@
    "event_id": "evt_00527",
    "round": 1,
    "persona_id": "p_1457",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78479,7 +78479,7 @@
    "event_id": "evt_00528",
    "round": 1,
    "persona_id": "p_1461",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78492,7 +78492,7 @@
    "event_id": "evt_00529",
    "round": 1,
    "persona_id": "p_1464",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78505,7 +78505,7 @@
    "event_id": "evt_00530",
    "round": 1,
    "persona_id": "p_1466",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78518,7 +78518,7 @@
    "event_id": "evt_00531",
    "round": 1,
    "persona_id": "p_1467",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78531,7 +78531,7 @@
    "event_id": "evt_00532",
    "round": 1,
    "persona_id": "p_1470",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78544,7 +78544,7 @@
    "event_id": "evt_00533",
    "round": 1,
    "persona_id": "p_1471",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78557,7 +78557,7 @@
    "event_id": "evt_00534",
    "round": 1,
    "persona_id": "p_1473",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78570,7 +78570,7 @@
    "event_id": "evt_00535",
    "round": 1,
    "persona_id": "p_1474",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78583,7 +78583,7 @@
    "event_id": "evt_00536",
    "round": 1,
    "persona_id": "p_1475",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78596,7 +78596,7 @@
    "event_id": "evt_00537",
    "round": 1,
    "persona_id": "p_1478",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78609,7 +78609,7 @@
    "event_id": "evt_00538",
    "round": 1,
    "persona_id": "p_1492",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78622,7 +78622,7 @@
    "event_id": "evt_00539",
    "round": 1,
    "persona_id": "p_1496",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78635,7 +78635,7 @@
    "event_id": "evt_00540",
    "round": 1,
    "persona_id": "p_1503",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78648,7 +78648,7 @@
    "event_id": "evt_00541",
    "round": 1,
    "persona_id": "p_1506",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78661,7 +78661,7 @@
    "event_id": "evt_00542",
    "round": 1,
    "persona_id": "p_1508",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78674,7 +78674,7 @@
    "event_id": "evt_00543",
    "round": 1,
    "persona_id": "p_1525",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78687,7 +78687,7 @@
    "event_id": "evt_00544",
    "round": 1,
    "persona_id": "p_1534",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78700,7 +78700,7 @@
    "event_id": "evt_00545",
    "round": 1,
    "persona_id": "p_1535",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78713,7 +78713,7 @@
    "event_id": "evt_00546",
    "round": 1,
    "persona_id": "p_1536",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78726,7 +78726,7 @@
    "event_id": "evt_00547",
    "round": 1,
    "persona_id": "p_1537",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78739,7 +78739,7 @@
    "event_id": "evt_00548",
    "round": 1,
    "persona_id": "p_1542",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78752,7 +78752,7 @@
    "event_id": "evt_00549",
    "round": 1,
    "persona_id": "p_1544",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78765,7 +78765,7 @@
    "event_id": "evt_00550",
    "round": 1,
    "persona_id": "p_1550",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78778,7 +78778,7 @@
    "event_id": "evt_00551",
    "round": 1,
    "persona_id": "p_1555",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78791,7 +78791,7 @@
    "event_id": "evt_00552",
    "round": 1,
    "persona_id": "p_1557",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78804,7 +78804,7 @@
    "event_id": "evt_00553",
    "round": 1,
    "persona_id": "p_1559",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78817,7 +78817,7 @@
    "event_id": "evt_00554",
    "round": 1,
    "persona_id": "p_1561",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78830,7 +78830,7 @@
    "event_id": "evt_00555",
    "round": 1,
    "persona_id": "p_1563",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78843,7 +78843,7 @@
    "event_id": "evt_00556",
    "round": 1,
    "persona_id": "p_1564",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78856,7 +78856,7 @@
    "event_id": "evt_00557",
    "round": 1,
    "persona_id": "p_1565",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78869,7 +78869,7 @@
    "event_id": "evt_00558",
    "round": 1,
    "persona_id": "p_1566",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78882,7 +78882,7 @@
    "event_id": "evt_00559",
    "round": 1,
    "persona_id": "p_1568",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78895,7 +78895,7 @@
    "event_id": "evt_00560",
    "round": 1,
    "persona_id": "p_1570",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78908,7 +78908,7 @@
    "event_id": "evt_00561",
    "round": 1,
    "persona_id": "p_1574",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78921,7 +78921,7 @@
    "event_id": "evt_00562",
    "round": 1,
    "persona_id": "p_1577",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78934,7 +78934,7 @@
    "event_id": "evt_00563",
    "round": 1,
    "persona_id": "p_1580",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78947,7 +78947,7 @@
    "event_id": "evt_00564",
    "round": 1,
    "persona_id": "p_1583",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78960,7 +78960,7 @@
    "event_id": "evt_00565",
    "round": 1,
    "persona_id": "p_1587",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78973,7 +78973,7 @@
    "event_id": "evt_00566",
    "round": 1,
    "persona_id": "p_1587",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -78986,7 +78986,7 @@
    "event_id": "evt_00567",
    "round": 1,
    "persona_id": "p_1589",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -78999,7 +78999,7 @@
    "event_id": "evt_00568",
    "round": 1,
    "persona_id": "p_1599",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79012,7 +79012,7 @@
    "event_id": "evt_00569",
    "round": 1,
    "persona_id": "p_1600",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79025,7 +79025,7 @@
    "event_id": "evt_00570",
    "round": 1,
    "persona_id": "p_1601",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79038,7 +79038,7 @@
    "event_id": "evt_00571",
    "round": 1,
    "persona_id": "p_1604",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79051,7 +79051,7 @@
    "event_id": "evt_00572",
    "round": 1,
    "persona_id": "p_1608",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79064,7 +79064,7 @@
    "event_id": "evt_00573",
    "round": 1,
    "persona_id": "p_1610",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79077,7 +79077,7 @@
    "event_id": "evt_00574",
    "round": 1,
    "persona_id": "p_1611",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79090,7 +79090,7 @@
    "event_id": "evt_00575",
    "round": 1,
    "persona_id": "p_1612",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79103,7 +79103,7 @@
    "event_id": "evt_00576",
    "round": 1,
    "persona_id": "p_1615",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79116,7 +79116,7 @@
    "event_id": "evt_00577",
    "round": 1,
    "persona_id": "p_1616",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79129,7 +79129,7 @@
    "event_id": "evt_00578",
    "round": 1,
    "persona_id": "p_1618",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79142,7 +79142,7 @@
    "event_id": "evt_00579",
    "round": 1,
    "persona_id": "p_1623",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79155,7 +79155,7 @@
    "event_id": "evt_00580",
    "round": 1,
    "persona_id": "p_1625",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79168,7 +79168,7 @@
    "event_id": "evt_00581",
    "round": 1,
    "persona_id": "p_1629",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79181,7 +79181,7 @@
    "event_id": "evt_00582",
    "round": 1,
    "persona_id": "p_1632",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79194,7 +79194,7 @@
    "event_id": "evt_00583",
    "round": 1,
    "persona_id": "p_1633",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79207,7 +79207,7 @@
    "event_id": "evt_00584",
    "round": 1,
    "persona_id": "p_1634",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79220,7 +79220,7 @@
    "event_id": "evt_00585",
    "round": 1,
    "persona_id": "p_1639",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79233,7 +79233,7 @@
    "event_id": "evt_00586",
    "round": 1,
    "persona_id": "p_1640",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79246,7 +79246,7 @@
    "event_id": "evt_00587",
    "round": 1,
    "persona_id": "p_1646",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79259,7 +79259,7 @@
    "event_id": "evt_00588",
    "round": 1,
    "persona_id": "p_1653",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79272,7 +79272,7 @@
    "event_id": "evt_00589",
    "round": 1,
    "persona_id": "p_1655",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79285,7 +79285,7 @@
    "event_id": "evt_00590",
    "round": 1,
    "persona_id": "p_1657",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79298,7 +79298,7 @@
    "event_id": "evt_00591",
    "round": 1,
    "persona_id": "p_1663",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79311,7 +79311,7 @@
    "event_id": "evt_00592",
    "round": 1,
    "persona_id": "p_1670",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79324,7 +79324,7 @@
    "event_id": "evt_00593",
    "round": 1,
    "persona_id": "p_1671",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79337,7 +79337,7 @@
    "event_id": "evt_00594",
    "round": 1,
    "persona_id": "p_1681",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79350,7 +79350,7 @@
    "event_id": "evt_00595",
    "round": 1,
    "persona_id": "p_1681",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -79363,7 +79363,7 @@
    "event_id": "evt_00596",
    "round": 1,
    "persona_id": "p_1682",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79376,7 +79376,7 @@
    "event_id": "evt_00597",
    "round": 1,
    "persona_id": "p_1686",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79389,7 +79389,7 @@
    "event_id": "evt_00598",
    "round": 1,
    "persona_id": "p_1687",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79402,7 +79402,7 @@
    "event_id": "evt_00599",
    "round": 1,
    "persona_id": "p_1698",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79415,7 +79415,7 @@
    "event_id": "evt_00600",
    "round": 1,
    "persona_id": "p_1701",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79428,7 +79428,7 @@
    "event_id": "evt_00601",
    "round": 1,
    "persona_id": "p_1702",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79441,7 +79441,7 @@
    "event_id": "evt_00602",
    "round": 1,
    "persona_id": "p_1703",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79454,7 +79454,7 @@
    "event_id": "evt_00603",
    "round": 1,
    "persona_id": "p_1719",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79467,7 +79467,7 @@
    "event_id": "evt_00604",
    "round": 1,
    "persona_id": "p_1720",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79480,7 +79480,7 @@
    "event_id": "evt_00605",
    "round": 1,
    "persona_id": "p_1721",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79493,7 +79493,7 @@
    "event_id": "evt_00606",
    "round": 1,
    "persona_id": "p_1725",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79506,7 +79506,7 @@
    "event_id": "evt_00607",
    "round": 1,
    "persona_id": "p_1726",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79519,7 +79519,7 @@
    "event_id": "evt_00608",
    "round": 1,
    "persona_id": "p_1727",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79532,7 +79532,7 @@
    "event_id": "evt_00609",
    "round": 1,
    "persona_id": "p_1729",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79545,7 +79545,7 @@
    "event_id": "evt_00610",
    "round": 1,
    "persona_id": "p_1730",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79558,7 +79558,7 @@
    "event_id": "evt_00611",
    "round": 1,
    "persona_id": "p_1730",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -79571,7 +79571,7 @@
    "event_id": "evt_00612",
    "round": 1,
    "persona_id": "p_1731",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79584,7 +79584,7 @@
    "event_id": "evt_00613",
    "round": 1,
    "persona_id": "p_1732",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79597,7 +79597,7 @@
    "event_id": "evt_00614",
    "round": 1,
    "persona_id": "p_1737",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79610,7 +79610,7 @@
    "event_id": "evt_00615",
    "round": 1,
    "persona_id": "p_1737",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -79623,7 +79623,7 @@
    "event_id": "evt_00616",
    "round": 1,
    "persona_id": "p_1739",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79636,7 +79636,7 @@
    "event_id": "evt_00617",
    "round": 1,
    "persona_id": "p_1740",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79649,7 +79649,7 @@
    "event_id": "evt_00618",
    "round": 1,
    "persona_id": "p_1742",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79662,7 +79662,7 @@
    "event_id": "evt_00619",
    "round": 1,
    "persona_id": "p_1747",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79675,7 +79675,7 @@
    "event_id": "evt_00620",
    "round": 1,
    "persona_id": "p_1748",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79688,7 +79688,7 @@
    "event_id": "evt_00621",
    "round": 1,
    "persona_id": "p_1749",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79701,7 +79701,7 @@
    "event_id": "evt_00622",
    "round": 1,
    "persona_id": "p_1751",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79714,7 +79714,7 @@
    "event_id": "evt_00623",
    "round": 1,
    "persona_id": "p_1755",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79727,7 +79727,7 @@
    "event_id": "evt_00624",
    "round": 1,
    "persona_id": "p_1756",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79740,7 +79740,7 @@
    "event_id": "evt_00625",
    "round": 1,
    "persona_id": "p_1757",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79753,7 +79753,7 @@
    "event_id": "evt_00626",
    "round": 1,
    "persona_id": "p_1761",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79766,7 +79766,7 @@
    "event_id": "evt_00627",
    "round": 1,
    "persona_id": "p_1762",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79779,7 +79779,7 @@
    "event_id": "evt_00628",
    "round": 1,
    "persona_id": "p_1763",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79792,7 +79792,7 @@
    "event_id": "evt_00629",
    "round": 1,
    "persona_id": "p_1766",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79805,7 +79805,7 @@
    "event_id": "evt_00630",
    "round": 1,
    "persona_id": "p_1771",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79818,7 +79818,7 @@
    "event_id": "evt_00631",
    "round": 1,
    "persona_id": "p_1772",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79831,7 +79831,7 @@
    "event_id": "evt_00632",
    "round": 1,
    "persona_id": "p_1775",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79844,7 +79844,7 @@
    "event_id": "evt_00633",
    "round": 1,
    "persona_id": "p_1777",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79857,7 +79857,7 @@
    "event_id": "evt_00634",
    "round": 1,
    "persona_id": "p_1787",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79870,7 +79870,7 @@
    "event_id": "evt_00635",
    "round": 1,
    "persona_id": "p_1797",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79883,7 +79883,7 @@
    "event_id": "evt_00636",
    "round": 1,
    "persona_id": "p_1798",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79896,7 +79896,7 @@
    "event_id": "evt_00637",
    "round": 1,
    "persona_id": "p_1801",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79909,7 +79909,7 @@
    "event_id": "evt_00638",
    "round": 1,
    "persona_id": "p_1806",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79922,7 +79922,7 @@
    "event_id": "evt_00639",
    "round": 1,
    "persona_id": "p_1807",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79935,7 +79935,7 @@
    "event_id": "evt_00640",
    "round": 1,
    "persona_id": "p_1808",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79948,7 +79948,7 @@
    "event_id": "evt_00641",
    "round": 1,
    "persona_id": "p_1814",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79961,7 +79961,7 @@
    "event_id": "evt_00642",
    "round": 1,
    "persona_id": "p_1816",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79974,7 +79974,7 @@
    "event_id": "evt_00643",
    "round": 1,
    "persona_id": "p_1817",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -79987,7 +79987,7 @@
    "event_id": "evt_00644",
    "round": 1,
    "persona_id": "p_1818",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80000,7 +80000,7 @@
    "event_id": "evt_00645",
    "round": 1,
    "persona_id": "p_1819",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80013,7 +80013,7 @@
    "event_id": "evt_00646",
    "round": 1,
    "persona_id": "p_1820",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80026,7 +80026,7 @@
    "event_id": "evt_00647",
    "round": 1,
    "persona_id": "p_1821",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80039,7 +80039,7 @@
    "event_id": "evt_00648",
    "round": 1,
    "persona_id": "p_1844",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80052,7 +80052,7 @@
    "event_id": "evt_00649",
    "round": 1,
    "persona_id": "p_1848",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80065,7 +80065,7 @@
    "event_id": "evt_00650",
    "round": 1,
    "persona_id": "p_1849",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80078,7 +80078,7 @@
    "event_id": "evt_00651",
    "round": 1,
    "persona_id": "p_1851",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80091,7 +80091,7 @@
    "event_id": "evt_00652",
    "round": 1,
    "persona_id": "p_1852",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80104,7 +80104,7 @@
    "event_id": "evt_00653",
    "round": 1,
    "persona_id": "p_1852",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -80117,7 +80117,7 @@
    "event_id": "evt_00654",
    "round": 1,
    "persona_id": "p_1853",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80130,7 +80130,7 @@
    "event_id": "evt_00655",
    "round": 1,
    "persona_id": "p_1854",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80143,7 +80143,7 @@
    "event_id": "evt_00656",
    "round": 1,
    "persona_id": "p_1855",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80156,7 +80156,7 @@
    "event_id": "evt_00657",
    "round": 1,
    "persona_id": "p_1860",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80169,7 +80169,7 @@
    "event_id": "evt_00658",
    "round": 1,
    "persona_id": "p_1861",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80182,7 +80182,7 @@
    "event_id": "evt_00659",
    "round": 1,
    "persona_id": "p_1870",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80195,7 +80195,7 @@
    "event_id": "evt_00660",
    "round": 1,
    "persona_id": "p_1872",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80208,7 +80208,7 @@
    "event_id": "evt_00661",
    "round": 1,
    "persona_id": "p_1872",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -80221,7 +80221,7 @@
    "event_id": "evt_00662",
    "round": 1,
    "persona_id": "p_1881",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80234,7 +80234,7 @@
    "event_id": "evt_00663",
    "round": 1,
    "persona_id": "p_1883",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80247,7 +80247,7 @@
    "event_id": "evt_00664",
    "round": 1,
    "persona_id": "p_1884",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80260,7 +80260,7 @@
    "event_id": "evt_00665",
    "round": 1,
    "persona_id": "p_1888",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80273,7 +80273,7 @@
    "event_id": "evt_00666",
    "round": 1,
    "persona_id": "p_1889",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80286,7 +80286,7 @@
    "event_id": "evt_00667",
    "round": 1,
    "persona_id": "p_1890",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80299,7 +80299,7 @@
    "event_id": "evt_00668",
    "round": 1,
    "persona_id": "p_1895",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80312,7 +80312,7 @@
    "event_id": "evt_00669",
    "round": 1,
    "persona_id": "p_1900",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80325,7 +80325,7 @@
    "event_id": "evt_00670",
    "round": 1,
    "persona_id": "p_1909",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80338,7 +80338,7 @@
    "event_id": "evt_00671",
    "round": 1,
    "persona_id": "p_1911",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80351,7 +80351,7 @@
    "event_id": "evt_00672",
    "round": 1,
    "persona_id": "p_1936",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80364,7 +80364,7 @@
    "event_id": "evt_00673",
    "round": 1,
    "persona_id": "p_1937",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80377,7 +80377,7 @@
    "event_id": "evt_00674",
    "round": 1,
    "persona_id": "p_1940",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80390,7 +80390,7 @@
    "event_id": "evt_00675",
    "round": 1,
    "persona_id": "p_1941",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80403,7 +80403,7 @@
    "event_id": "evt_00676",
    "round": 1,
    "persona_id": "p_1942",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80416,7 +80416,7 @@
    "event_id": "evt_00677",
    "round": 1,
    "persona_id": "p_1942",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -80429,7 +80429,7 @@
    "event_id": "evt_00678",
    "round": 1,
    "persona_id": "p_1943",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80442,7 +80442,7 @@
    "event_id": "evt_00679",
    "round": 1,
    "persona_id": "p_1944",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80455,7 +80455,7 @@
    "event_id": "evt_00680",
    "round": 1,
    "persona_id": "p_1945",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80468,7 +80468,7 @@
    "event_id": "evt_00681",
    "round": 1,
    "persona_id": "p_1946",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80481,7 +80481,7 @@
    "event_id": "evt_00682",
    "round": 1,
    "persona_id": "p_1948",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80494,7 +80494,7 @@
    "event_id": "evt_00683",
    "round": 1,
    "persona_id": "p_1953",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80507,7 +80507,7 @@
    "event_id": "evt_00684",
    "round": 1,
    "persona_id": "p_1953",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -80520,7 +80520,7 @@
    "event_id": "evt_00685",
    "round": 1,
    "persona_id": "p_1955",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80533,7 +80533,7 @@
    "event_id": "evt_00686",
    "round": 1,
    "persona_id": "p_1962",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80546,7 +80546,7 @@
    "event_id": "evt_00687",
    "round": 1,
    "persona_id": "p_1965",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80559,7 +80559,7 @@
    "event_id": "evt_00688",
    "round": 1,
    "persona_id": "p_1966",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80572,7 +80572,7 @@
    "event_id": "evt_00689",
    "round": 1,
    "persona_id": "p_1967",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80585,7 +80585,7 @@
    "event_id": "evt_00690",
    "round": 1,
    "persona_id": "p_1972",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80598,7 +80598,7 @@
    "event_id": "evt_00691",
    "round": 1,
    "persona_id": "p_1972",
-   "kind": "ESSENTIAL_ACCESS_DEGRADED",
+   "kind": "ESSENTIAL_ACCESS_LOST",
    "before": {
     "accessibility_status": "ok"
    },
@@ -80611,7 +80611,7 @@
    "event_id": "evt_00692",
    "round": 1,
    "persona_id": "p_1980",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80624,7 +80624,7 @@
    "event_id": "evt_00693",
    "round": 1,
    "persona_id": "p_1990",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80637,7 +80637,7 @@
    "event_id": "evt_00694",
    "round": 1,
    "persona_id": "p_1991",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80650,7 +80650,7 @@
    "event_id": "evt_00695",
    "round": 1,
    "persona_id": "p_1997",
-   "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+   "kind": "THRESHOLD_EXCEEDED",
    "before": {
     "walk_distance_m": 380
    },
@@ -80663,7 +80663,7 @@
    "event_id": "evt_00696",
    "round": 2,
    "persona_id": "p_0153",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80676,7 +80676,7 @@
    "event_id": "evt_00697",
    "round": 3,
    "persona_id": "p_0153",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80689,7 +80689,7 @@
    "event_id": "evt_00698",
    "round": 2,
    "persona_id": "p_0267",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80702,7 +80702,7 @@
    "event_id": "evt_00699",
    "round": 3,
    "persona_id": "p_0267",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80715,7 +80715,7 @@
    "event_id": "evt_00700",
    "round": 2,
    "persona_id": "p_0301",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80728,7 +80728,7 @@
    "event_id": "evt_00701",
    "round": 3,
    "persona_id": "p_0301",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80741,7 +80741,7 @@
    "event_id": "evt_00702",
    "round": 2,
    "persona_id": "p_0507",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80754,7 +80754,7 @@
    "event_id": "evt_00703",
    "round": 3,
    "persona_id": "p_0507",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80767,7 +80767,7 @@
    "event_id": "evt_00704",
    "round": 2,
    "persona_id": "p_0564",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80780,7 +80780,7 @@
    "event_id": "evt_00705",
    "round": 3,
    "persona_id": "p_0564",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80793,7 +80793,7 @@
    "event_id": "evt_00706",
    "round": 2,
    "persona_id": "p_0747",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80806,7 +80806,7 @@
    "event_id": "evt_00707",
    "round": 3,
    "persona_id": "p_0747",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80819,7 +80819,7 @@
    "event_id": "evt_00708",
    "round": 2,
    "persona_id": "p_0941",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80832,7 +80832,7 @@
    "event_id": "evt_00709",
    "round": 3,
    "persona_id": "p_0941",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80845,7 +80845,7 @@
    "event_id": "evt_00710",
    "round": 2,
    "persona_id": "p_1054",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80858,7 +80858,7 @@
    "event_id": "evt_00711",
    "round": 3,
    "persona_id": "p_1054",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80871,7 +80871,7 @@
    "event_id": "evt_00712",
    "round": 2,
    "persona_id": "p_1056",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80884,7 +80884,7 @@
    "event_id": "evt_00713",
    "round": 3,
    "persona_id": "p_1056",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80897,7 +80897,7 @@
    "event_id": "evt_00714",
    "round": 2,
    "persona_id": "p_1149",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80910,7 +80910,7 @@
    "event_id": "evt_00715",
    "round": 3,
    "persona_id": "p_1149",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80923,7 +80923,7 @@
    "event_id": "evt_00716",
    "round": 2,
    "persona_id": "p_1172",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80936,7 +80936,7 @@
    "event_id": "evt_00717",
    "round": 3,
    "persona_id": "p_1172",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80949,7 +80949,7 @@
    "event_id": "evt_00718",
    "round": 2,
    "persona_id": "p_1172",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80962,7 +80962,7 @@
    "event_id": "evt_00719",
    "round": 3,
    "persona_id": "p_1172",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -80975,7 +80975,7 @@
    "event_id": "evt_00720",
    "round": 2,
    "persona_id": "p_1217",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -80988,7 +80988,7 @@
    "event_id": "evt_00721",
    "round": 3,
    "persona_id": "p_1217",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81001,7 +81001,7 @@
    "event_id": "evt_00722",
    "round": 2,
    "persona_id": "p_1249",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81014,7 +81014,7 @@
    "event_id": "evt_00723",
    "round": 3,
    "persona_id": "p_1249",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81027,7 +81027,7 @@
    "event_id": "evt_00724",
    "round": 2,
    "persona_id": "p_1342",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81040,7 +81040,7 @@
    "event_id": "evt_00725",
    "round": 3,
    "persona_id": "p_1342",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81053,7 +81053,7 @@
    "event_id": "evt_00726",
    "round": 2,
    "persona_id": "p_1395",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81066,7 +81066,7 @@
    "event_id": "evt_00727",
    "round": 3,
    "persona_id": "p_1395",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81079,7 +81079,7 @@
    "event_id": "evt_00728",
    "round": 2,
    "persona_id": "p_1437",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81092,7 +81092,7 @@
    "event_id": "evt_00729",
    "round": 3,
    "persona_id": "p_1437",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81105,7 +81105,7 @@
    "event_id": "evt_00730",
    "round": 2,
    "persona_id": "p_1728",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81118,7 +81118,7 @@
    "event_id": "evt_00731",
    "round": 3,
    "persona_id": "p_1728",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81131,7 +81131,7 @@
    "event_id": "evt_00732",
    "round": 2,
    "persona_id": "p_1738",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81144,7 +81144,7 @@
    "event_id": "evt_00733",
    "round": 3,
    "persona_id": "p_1738",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81157,7 +81157,7 @@
    "event_id": "evt_00734",
    "round": 2,
    "persona_id": "p_1873",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81170,7 +81170,7 @@
    "event_id": "evt_00735",
    "round": 3,
    "persona_id": "p_1873",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },
@@ -81183,7 +81183,7 @@
    "event_id": "evt_00736",
    "round": 2,
    "persona_id": "p_1971",
-   "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+   "kind": "DEPENDENCY_ABSORBED",
    "before": {
     "providing_transport": false
    },
@@ -81196,7 +81196,7 @@
    "event_id": "evt_00737",
    "round": 3,
    "persona_id": "p_1971",
-   "kind": "WORK_ARRIVAL_MISSED",
+   "kind": "OBLIGATION_MISSED",
    "before": {
     "arrival": "08:44"
    },

@@ -42,8 +42,8 @@ need(isinstance(p["modifications"]["remove_stops"], list), "PolicyInput: remove_
 
 # ---- Simulation: the trace must actually chain
 by_id = {e["event_id"]: e for e in d["events"]}
-leaf = next((e for e in d["events"] if e["kind"] == "WORK_ARRIVAL_MISSED"), None)
-need(leaf is not None, "Simulation: a WORK_ARRIVAL_MISSED leaf exists")
+leaf = next((e for e in d["events"] if e["kind"] == "OBLIGATION_MISSED"), None)
+need(leaf is not None, "Simulation: a OBLIGATION_MISSED leaf exists")
 if leaf:
     chain, cur, guard = [], leaf, set()
     while cur and cur["event_id"] not in guard:
@@ -52,7 +52,7 @@ if leaf:
         cur = by_id.get(cur["cause"]) if cur["cause"] else None
     need(len(chain) >= 3, f"Simulation: chain depth >= 3 (got {len(chain)})")
     kinds = [e["kind"] for e in reversed(chain)]
-    need("CAREGIVER_SUPPORT_TRIGGERED" in kinds, "Simulation: chain passes through the carer")
+    need("DEPENDENCY_ABSORBED" in kinds, "Simulation: chain passes through the carer")
     need(all(e["cause"] is None or e["cause"] in by_id for e in d["events"]),
          "Simulation: every cause id resolves")
 

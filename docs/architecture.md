@@ -277,9 +277,9 @@ POST /api/runs/{run_id}/rounds/stream
 
 {"type":"round_start","round":1,"active":["p_0184", "..."]}
 {"type":"event","round":1,"persona_id":"p_0184",
- "event":"ACCESSIBILITY_THRESHOLD_EXCEEDED","before":{},"after":{},"cause":null}
+ "event":"THRESHOLD_EXCEEDED","before":{},"after":{},"cause":null}
 {"type":"event","round":2,"persona_id":"p_0921",
- "event":"CAREGIVER_SUPPORT_TRIGGERED","before":{},"after":{},"cause":"evt_00417"}
+ "event":"DEPENDENCY_ABSORBED","before":{},"after":{},"cause":"evt_00417"}
 {"type":"assessment","round":1,"persona_id":"p_0184","outcome_category":"abandon_trip",
  "support":2,"explanation":"...","contributing_factors":["walk 1240m","max 500m"],"cached":false}
 {"type":"round_complete","round":1,"changed":["p_0184"],"snapshot":{}}

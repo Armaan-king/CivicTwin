@@ -14,15 +14,15 @@ export type AccessibilityStatus = "ok" | "degraded" | "unreachable";
 
 /** Nine kinds, no more. scenario-v1.md H2. */
 export type EventKind =
-  | "ROUTE_UNAVAILABLE"
-  | "WALK_DISTANCE_INCREASED"
-  | "TRANSFER_ADDED"
-  | "TRAVEL_TIME_INCREASED"
-  | "ACCESSIBILITY_THRESHOLD_EXCEEDED"
-  | "ESSENTIAL_ACCESS_DEGRADED"
-  | "CAREGIVER_SUPPORT_TRIGGERED"
-  | "WORK_ARRIVAL_MISSED"
-  | "TRIP_ABANDONED";
+  | "PATH_UNAVAILABLE"
+  | "EFFORT_INCREASED"
+  | "FRICTION_ADDED"
+  | "DURATION_INCREASED"
+  | "THRESHOLD_EXCEEDED"
+  | "ESSENTIAL_ACCESS_LOST"
+  | "DEPENDENCY_ABSORBED"
+  | "OBLIGATION_MISSED"
+  | "SERVICE_ABANDONED";
 
 export type EdgeKind =
   | "LIVES_IN" | "MEMBER_OF" | "USES" | "WORKS_AT"

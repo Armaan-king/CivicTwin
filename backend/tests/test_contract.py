@@ -94,7 +94,7 @@ def test_causes_point_backwards_in_round_order(run: SimulationRun):
 def test_the_second_order_chain_exists_and_is_deep(run: SimulationRun):
     """The finding the product exists to surface. B1 depth, F3 clause 4."""
     by_id = {e.event_id: e for e in run.events}
-    leaves = [e for e in run.events if e.kind == "WORK_ARRIVAL_MISSED"]
+    leaves = [e for e in run.events if e.kind == "OBLIGATION_MISSED"]
     assert leaves, "no carer ever missed their shift; the cascade did not fire"
 
     chain, cursor, seen = [], leaves[0], set()
@@ -105,8 +105,8 @@ def test_the_second_order_chain_exists_and_is_deep(run: SimulationRun):
 
     assert len(chain) >= 3, f"chain only {len(chain)} deep"
     kinds = {e.kind for e in chain}
-    assert "CAREGIVER_SUPPORT_TRIGGERED" in kinds
-    assert "ACCESSIBILITY_THRESHOLD_EXCEEDED" in kinds
+    assert "DEPENDENCY_ABSORBED" in kinds
+    assert "THRESHOLD_EXCEEDED" in kinds
 
 
 def test_second_order_victims_were_not_harmed_directly(run: SimulationRun):

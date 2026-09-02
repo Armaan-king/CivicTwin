@@ -18,6 +18,58 @@ Decision identifiers (`A1`, `F3`, `N2`, …) are stable and referenced from the 
 
 ---
 
+# 0. What this is an instance of
+
+CivicTwin is not a transport tool. It detects a mechanism that recurs wherever an
+institution optimises an aggregate:
+
+> **a threshold, a dependency, and someone who absorbs a loss that was not theirs.**
+
+Change the nouns and it is clinic consolidation, benefits digitisation, catchment redraws,
+appointment systems, tariff restructuring. Transport is how V1 proves the mechanism. It is
+the evidence, not the product.
+
+## E1 — The core vocabulary is domain-neutral · LOCKED
+
+The nine event kinds name the mechanism, not the domain. An environment pack supplies the
+words a policy area puts on them.
+
+| core | transport says |
+|---|---|
+| `THRESHOLD_EXCEEDED` | walk passed what they can manage |
+| `ESSENTIAL_ACCESS_LOST` | the polyclinic became unreachable |
+| `DEPENDENCY_ABSORBED` | a household member took over the journey |
+| `OBLIGATION_MISSED` | they arrived after their shift started |
+| `SERVICE_ABANDONED` | they stopped making the trip |
+
+They were always these. They were wearing transport clothes. `app/schemas/core.py` holds
+the neutral vocabulary; `app/environments/transport.py` holds the labels and the rules.
+
+## E2 — Four harm patterns, named and carried on every finding · LOCKED
+
+Naming the shape is what lets a finding in transport be recognised by someone working on
+clinics or benefits.
+
+```text
+threshold_cliff         a limit crossed, so the service stops being usable
+dependency_cascade      harm lands on someone the policy never touched
+capacity_displacement   relief for one group becomes load on another
+participation_gap       the most affected are the least able to respond
+```
+
+Each carries an `also_seen_in` list naming other policy areas where it appears, so the
+finding travels beyond this scenario. The audit reports the pattern alongside the count.
+
+## E3 — One environment implemented, and the seam is real · LOCKED
+
+`EnvironmentPack` is a Protocol and a registry, not a plugin framework
+(`architecture.md` §7 asked for exactly this distinction). V1 registers **transport only**.
+
+The test of whether the seam is honest is simple: a second policy area should be an added
+module, not an edit to the core. It is not built, and V1 does not claim it is.
+
+---
+
 # 1. Status, scope, and rulings
 
 ## 1.1 What is locked
@@ -121,9 +173,9 @@ wall-clock time, no daily cycle.
 round 0   structural, deterministic, no randomness
           recompute paths, walk distances, transfers, arrival times
 
-round 1   persona thresholds breach          → ACCESSIBILITY_THRESHOLD_EXCEEDED
-round 2   dependants absorb the breach       → CAREGIVER_SUPPORT_TRIGGERED
-round 3   dependants' own constraints breach → WORK_ARRIVAL_MISSED
+round 1   persona thresholds breach          → THRESHOLD_EXCEEDED
+round 2   dependants absorb the breach       → DEPENDENCY_ABSORBED
+round 3   dependants' own constraints breach → OBLIGATION_MISSED
 ```
 
 Three is not arbitrary: it is the exact depth of the canonical harm chain in `goal.md` §14
@@ -333,8 +385,8 @@ F1.1  shortest path per (person, essential destination)   dijkstra on travel_tim
 F1.2  walk distance to assigned stop                      haversine × 1.35 detour factor
 F1.3  transfer count on chosen path
 F1.4  door-to-door journey = walk + wait + ride + transfer
-F1.5  arrival vs work_start_time                          → WORK_ARRIVAL_MISSED
-F1.6  walk_m > max_walk_m                                 → ACCESSIBILITY_THRESHOLD_EXCEEDED
+F1.5  arrival vs work_start_time                          → OBLIGATION_MISSED
+F1.6  walk_m > max_walk_m                                 → THRESHOLD_EXCEEDED
 F1.7  transfers > transfer_tolerance                      → enters G1 abandonment check
 ```
 
@@ -448,11 +500,11 @@ Material changes only. **Nine typed event kinds**, each carrying `before`, `afte
 `cause`.
 
 ```text
-ROUTE_UNAVAILABLE                 WALK_DISTANCE_INCREASED
-TRANSFER_ADDED                    TRAVEL_TIME_INCREASED
-ACCESSIBILITY_THRESHOLD_EXCEEDED  ESSENTIAL_ACCESS_DEGRADED
-CAREGIVER_SUPPORT_TRIGGERED       WORK_ARRIVAL_MISSED
-TRIP_ABANDONED
+PATH_UNAVAILABLE                 EFFORT_INCREASED
+FRICTION_ADDED                    DURATION_INCREASED
+THRESHOLD_EXCEEDED  ESSENTIAL_ACCESS_LOST
+DEPENDENCY_ABSORBED       OBLIGATION_MISSED
+SERVICE_ABANDONED
 ```
 
 (`STOP_CAPACITY_EXCEEDED` is deferred with **F2**.)

@@ -28,13 +28,13 @@ interface Finding {
 }
 
 const STEP: Record<string, (e: SimEvent) => string> = {
-  ACCESSIBILITY_THRESHOLD_EXCEEDED: (e) =>
+  THRESHOLD_EXCEEDED: (e) =>
     `The walk to a usable stop rises to ${(e.after as { walk_distance_m: number }).walk_distance_m} m, past what this resident said they manage.`,
-  ESSENTIAL_ACCESS_DEGRADED: () =>
+  ESSENTIAL_ACCESS_LOST: () =>
     "Their weekly polyclinic trip stops being reachable. It is marked essential, so this counts as severe rather than inconvenient.",
-  CAREGIVER_SUPPORT_TRIGGERED: () =>
+  DEPENDENCY_ABSORBED: () =>
     "Someone in their household takes over the journey, along a CARES_FOR link.",
-  WORK_ARRIVAL_MISSED: () =>
+  OBLIGATION_MISSED: () =>
     "That person now arrives after their own shift starts. They have no mobility limitation, and do not live near a removed stop.",
 };
 
@@ -54,7 +54,7 @@ function buildFindings(run: SimulationRun): Finding[] {
       severity: "high",
       n: second.length,
       body: "They drive a household member to the clinic, and miss their own shift.",
-      leafKind: "WORK_ARRIVAL_MISSED",
+      leafKind: "OBLIGATION_MISSED",
       cohorts: [
         { label: "Is a carer", rate: carers.True.severe_harm_rate, n: carers.True.n },
         { label: "Not a carer", rate: carers.False.severe_harm_rate, n: carers.False.n },
@@ -67,7 +67,7 @@ function buildFindings(run: SimulationRun): Finding[] {
       severity: "high",
       n: direct.length,
       body: "They can no longer reach the polyclinic inside their time budget.",
-      leafKind: "ESSENTIAL_ACCESS_DEGRADED",
+      leafKind: "ESSENTIAL_ACCESS_LOST",
       cohorts: (["75+", "65-74", "55-64", "35-54", "18-34"] as const)
         .filter((b) => ages[b])
         .map((b) => ({ label: b, rate: ages[b].severe_harm_rate, n: ages[b].n })),
@@ -79,7 +79,7 @@ function buildFindings(run: SimulationRun): Finding[] {
       severity: "moderate",
       n: moderate.length,
       body: "They walk past their stated tolerance, but complete the journey.",
-      leafKind: "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+      leafKind: "THRESHOLD_EXCEEDED",
       cohorts: [],
       note: "Inconvenience rather than exclusion. Reported separately so it is not mistaken for either.",
     },

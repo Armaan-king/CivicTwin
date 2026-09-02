@@ -186,13 +186,13 @@ def simulate(people, care_edges, variant="baseline", record_events=False):
         if record_events and severity != "none":
             eid += 1
             events.append({"event_id": f"evt_{eid:05d}", "round": 1, "persona_id": p["persona_id"],
-                           "kind": "ACCESSIBILITY_THRESHOLD_EXCEEDED",
+                           "kind": "THRESHOLD_EXCEEDED",
                            "before": {"walk_distance_m": BASE_WALK_M},
                            "after": {"walk_distance_m": walk}, "cause": None})
             if p["needs_clinic"] and severity == "high":
                 eid += 1
                 events.append({"event_id": f"evt_{eid:05d}", "round": 1, "persona_id": p["persona_id"],
-                               "kind": "ESSENTIAL_ACCESS_DEGRADED",
+                               "kind": "ESSENTIAL_ACCESS_LOST",
                                "before": {"accessibility_status": "ok"},
                                "after": {"accessibility_status": status},
                                "cause": events[-1]["event_id"]})
@@ -204,10 +204,10 @@ def simulate(people, care_edges, variant="baseline", record_events=False):
         carer, co = by_id[e["source"]], outcomes[e["source"]]
         if record_events:
             trigger = next((ev for ev in events if ev["persona_id"] == e["target"]
-                            and ev["kind"] == "ESSENTIAL_ACCESS_DEGRADED"), None)
+                            and ev["kind"] == "ESSENTIAL_ACCESS_LOST"), None)
             eid += 1
             events.append({"event_id": f"evt_{eid:05d}", "round": 2, "persona_id": e["source"],
-                           "kind": "CAREGIVER_SUPPORT_TRIGGERED",
+                           "kind": "DEPENDENCY_ABSORBED",
                            "before": {"providing_transport": False},
                            "after": {"providing_transport": True},
                            "cause": trigger["event_id"] if trigger else None})
@@ -215,7 +215,7 @@ def simulate(people, care_edges, variant="baseline", record_events=False):
             if record_events:
                 eid += 1
                 events.append({"event_id": f"evt_{eid:05d}", "round": 3, "persona_id": e["source"],
-                               "kind": "WORK_ARRIVAL_MISSED",
+                               "kind": "OBLIGATION_MISSED",
                                "before": {"arrival": "08:44"}, "after": {"arrival": "09:26"},
                                "cause": events[-1]["event_id"]})
             co["severity"] = "high"
