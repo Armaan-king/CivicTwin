@@ -3,14 +3,14 @@ import { Crt } from "@/components/Crt";
 import { Boundary, hasWebGL } from "@/components/Boundary";
 import { Suspense, lazy, useEffect, useState } from "react";
 // three.js is ~450 kB and only the hero needs it, so it never reaches the other routes
-const PolicyNetwork = lazy(() =>
-  import("@/components/PolicyNetwork").then((m) => ({ default: m.PolicyNetwork }))
+const PolicyLattice = lazy(() =>
+  import("@/components/PolicyLattice").then((m) => ({ default: m.PolicyLattice }))
 );
 import { useRun } from "@/lib/useRun";
 import { secondOrderVictims } from "@/lib/run";
 
 export function Hero() {
-  const { run, outcomes, error } = useRun();
+  const { run, error } = useRun();
 
   // The canvas needs a pixel height, and a window that changes size must not leave a
   // field sized for the old one. Reading it once at module scope also broke server-side
@@ -36,14 +36,14 @@ export function Hero() {
           letting the canvas centre itself is both simpler and correct at any height. */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "flex",
                     alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-        {run && hasWebGL() && (
-          <Boundary label="The population field" fallback={null}>
+        {hasWebGL() && (
+          <Boundary label="The policy lattice" fallback={null}>
           <Suspense fallback={null}>
-          <PolicyNetwork
-            personas={run.personas}
-            outcomes={outcomes}
-            edges={run.graph.edges}
+          <PolicyLattice
             height={viewport}
+            harmed={severe}
+            secondOrder={second}
+            population={run?.personas.length ?? null}
           />
           </Suspense>
           </Boundary>
