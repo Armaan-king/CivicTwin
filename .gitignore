@@ -26,3 +26,8 @@ frontend/public/fixtures/
 
 # reference checkouts. read-only: neither repo is licensed for reuse (AGENTS.md 10B)
 testing/
+
+# Model output cached by content hash. Machine-local: it is a record of what this machine
+# paid for, not part of the project, and committing stub output would pass a test double's
+# text off as a run.
+data/deliberation_cache/
