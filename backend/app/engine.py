@@ -45,7 +45,7 @@ GEOGRAPHY = os.environ.get("GEOGRAPHY", "real")
 #: codes on Ang Mo Kio Ave 3, and the policy is a closure rather than a service change:
 #: each is served by eleven services, so removing them from one bus would be absorbed by
 #: the other ten. That is a finding rather than an inconvenience, and it is in the reading.
-CLOSURES = {"synthetic": {"55079", "55081"}, "real": {"54231", "54239"}}
+CLOSURES = {"synthetic": {"55079", "55081"}}
 
 #: what through-riders gain from the express run. The trade the policy is making.
 EXPRESS_SAVING_MIN = 2.4
@@ -54,49 +54,72 @@ EXPRESS_SAVING_MIN = 2.4
 def study_area():
     """The geography and the stops the policy takes out, as one choice."""
     if GEOGRAPHY == "real":
-        from app.geography_real import build_real_geography
-        return build_real_geography(), set(CLOSURES["real"])
+        from app.geography_real import build_real_geography, pick_closures
+        geo = build_real_geography()
+        return geo, pick_closures(geo)
     return build_geography(), set(CLOSURES["synthetic"])
 
-POLICY_TEXT = (
-    "Remove the two stops on Ang Mo Kio Avenue 3 from bus service 265 and run the service "
-    "express between the interchange and Ave 8, without increasing the fleet."
-)
+def _policy_dict(geo, removed: set[str]) -> dict:
+    """The policy, described in the town's own words.
 
-READING = [
-    {"n": "01", "claim": "Two stops are removed from service 265",
-     "why": "Named explicitly: the two on Ang Mo Kio Avenue 3.", "assumed": False},
-    {"n": "02", "claim": "The express segment runs interchange to Ave 8",
-     "why": "Stated in the policy text.", "assumed": False},
-    {"n": "03", "claim": "Through-riders save about 2.4 minutes",
-     "why": "Derived from the skipped dwell time at two stops plus the faster running. "
-            "Not stated in the policy; assumed.", "assumed": True},
-    {"n": "04", "claim": "No additional vehicles are available",
-     "why": "The text says without increasing the fleet, so any option needing new "
-            "vehicles is out of scope.", "assumed": False},
-    {"n": "05", "claim": "Feeder service 162 is unchanged",
-     "why": "The policy does not mention it. Assumed to keep running as today.",
-     "assumed": True},
-]
+    Every name here comes from the study area rather than from a constant, because a
+    policy that says "Ang Mo Kio" while the engine simulates Bedok is worse than one that
+    says nothing: it reads as a result.
+    """
+    names = [geo.stops[s].name for s in sorted(removed)]
+    roads = sorted({_road_of(geo, s) for s in removed})
+    feeder = geo.feeder_service
+    gateway = geo.stops[geo.work_gateway].name
+    dest = geo.stops[geo.clinic_stops[0]].name if geo.clinic_stops else "the essential destination"
 
+    text = (f"Close the {len(names)} stops on {roads[0]} "
+            f"({', '.join(names)}) and run service {feeder} express through the "
+            f"segment, without increasing the fleet.")
 
-def _policy_dict() -> dict:
+    reading = [
+        {"n": "01", "claim": f"{len(names)} stops close on {roads[0]}",
+         "why": f"Named in the policy: {', '.join(names)}.", "assumed": False},
+        {"n": "02", "claim": "This is a closure, not a service change",
+         "why": (f"Each of these stops is served by several routes. Removing them from "
+                 f"service {feeder} alone would be absorbed by the others, so the policy "
+                 f"only bites if the stops themselves shut."), "assumed": False},
+        {"n": "03", "claim": "Through-riders save about 2.4 minutes",
+         "why": ("Derived from the skipped dwell time plus faster running. Not stated in "
+                 "the policy; assumed."), "assumed": True},
+        {"n": "04", "claim": "No additional vehicles are available",
+         "why": ("The text says without increasing the fleet, so any option needing new "
+                 "vehicles is out of scope."), "assumed": False},
+        {"n": "05", "claim": f"{dest} is the essential destination",
+         "why": (f"Taken from the stop names in the study area. Residents who depend on it "
+                 f"are the ones a closure can cut off, so it decides who counts as "
+                 f"severely harmed."), "assumed": True},
+    ]
     return {
-        "objective": "Reduce end-to-end journey time on service 265 without new vehicles",
-        "text": POLICY_TEXT,
+        "objective": f"Reduce end-to-end journey time on service {feeder} without new vehicles",
+        "text": text,
         "modifications": {
-            "remove_stops": sorted(CLOSURES[GEOGRAPHY]),
-            "add_express_segment": {"from_stop": "55007", "to_stop": "55139"},
+            "remove_stops": sorted(removed),
+            "add_express_segment": {"from_stop": geo.work_gateway,
+                                    "to_stop": sorted(removed)[-1]},
             "frequency_delta_pct": 0,
         },
         "constraints": {"fleet_increase_allowed": False, "operating_budget_delta_pct": 8},
-        "reading": READING,
-        "resolved_entities": [
-            {"kind": "service", "id": "265", "label": "265 Trunk"},
-            {"kind": "stop", "id": "55079", "label": "Ang Mo Kio Ave 3"},
-            {"kind": "stop", "id": "55081", "label": "Blk 226"},
-        ],
+        "reading": reading,
+        "resolved_entities": (
+            [{"kind": "service", "id": feeder, "label": f"Service {feeder}"}]
+            + [{"kind": "stop", "id": s, "label": geo.stops[s].name} for s in sorted(removed)]
+            + [{"kind": "interchange", "id": geo.work_gateway, "label": gateway}]
+        ),
     }
+
+
+def _road_of(geo, stop_id: str) -> str:
+    """The road a stop sits on, if the study area knows; otherwise the stop's own name."""
+    try:
+        from app.geography_real import _road_name
+        return _road_name(geo.stops[stop_id].name)
+    except Exception:
+        return geo.stops[stop_id].name
 
 
 def _outcome_dicts(pop, result) -> list[dict]:
@@ -185,7 +208,9 @@ def build_run(run_id: str = "run_a91f") -> dict:
         ivs.append(row)
 
     # ------------------------------------------------------------------ consultation
-    con = build_consultation(pop, policy.outcomes)
+    # the blind spot lands on the road the policy touches, whichever town this is
+    terrain_road = _road_of(geo, sorted(removed)[0])
+    con = build_consultation(pop, policy.outcomes, terrain_road)
     flagged = next((r for r in con.calibration if r.flagged), None)
 
     return {
@@ -200,7 +225,7 @@ def build_run(run_id: str = "run_a91f") -> dict:
         "generated_by": "backend/app/engine.py",
         "is_synthetic": True,
         "study_area": STUDY_AREA,
-        "policy": _policy_dict(),
+        "policy": _policy_dict(geo, removed),
         "personas": _persona_dicts(pop),
         "graph": {"edges": _graph_edges(pop, geo)},
         "geography": display_dict(geo),
@@ -246,7 +271,7 @@ def build_run(run_id: str = "run_a91f") -> dict:
             ],
             "discovered_constraint": {
                 "type": "walk_quality",
-                "location": flagged.cohort_value if flagged else "n/a",
+                "location": flagged.cohort_value if flagged else terrain_road,
                 "affects": ["walk_distance_m", "inconvenience_tolerance"],
                 "source": "consultation free-text, corroborated by the cohort error",
                 "note": "The covered walkway ends partway and there is a slope. The model "

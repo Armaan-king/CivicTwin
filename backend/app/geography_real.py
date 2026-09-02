@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import pathlib
 from collections import defaultdict
 
@@ -28,24 +29,73 @@ from app.geography import Geography, Service, Stop
 
 DATA = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "lta"
 
-#: Ang Mo Kio Community Hospital, Ave 9. Real, named in the source data, and the essential
-#: destination for the V1 scenario. The polyclinic is not identifiable in the bus feed by
-#: name, so it is not used rather than guessed at.
-CLINIC_STOPS = ["55151", "55159"]
+#: Which town the engine runs on. A town is a folder under data/lta/, produced by
+#: `scripts/fetch_lta.py <town>`. Nothing below is specific to Ang Mo Kio.
+TOWN = os.environ.get("TOWN", "ang-mo-kio")
 
-#: the two stops the V1 policy closes. Real codes on Ang Mo Kio Ave 3.
-CLOSED_STOPS = {"54231", "54239"}
-
-#: Ang Mo Kio Interchange, the real gateway out of the estate.
-WORK_GATEWAY = "54009"
-
-#: 265 is a real feeder: a 16.1 km loop inside the estate calling at Ang Mo Kio Ave 3 and
-#: at the Community Hospital. It is the service an intervention would realistically move.
-FEEDER_SERVICE = "265"
+#: What an essential destination looks like in stop names. The point of deriving this
+#: rather than declaring stop codes is that it is the same question in every town: where
+#: is the healthcare people cannot skip.
+#: "hosp" rather than "hospital", because the feed abbreviates: Ang Mo Kio publishes
+#: "Ang Mo Kio Community Hosp" and "Opp Ang Mo Kio Cmty Hosp". Matching the long word
+#: found one of the two and silently halved the destination.
+ESSENTIAL_KEYWORDS = ("polyclinic", "hosp", "medical centre", "health c")
 
 BUS_SPEED_M_PER_MIN = 340.0
 #: fallback when a service publishes no frequency for the band
 DEFAULT_HEADWAY_MIN = 12.0
+
+
+def town_dir(town: str = "") -> pathlib.Path:
+    d = DATA / (town or TOWN)
+    if not d.exists():
+        available = sorted(p.name for p in DATA.iterdir() if p.is_dir()) if DATA.exists() else []
+        raise FileNotFoundError(
+            f"No LTA extract for town {d.name!r}. Available: {available or 'none'}. "
+            f"Fetch one with: python scripts/fetch_lta.py {d.name}"
+        )
+    return d
+
+
+def derive_gateway(routes: list[dict], stops: dict) -> str:
+    """The interchange, which is simply the stop the most services call at.
+
+    Declaring a stop code per town would be four more constants to get wrong. An
+    interchange is not a category in the feed; it is a shape in it.
+    """
+    services_at: dict[str, set[str]] = defaultdict(set)
+    for r in routes:
+        if r["BusStopCode"] in stops:
+            services_at[r["BusStopCode"]].add(r["ServiceNo"])
+
+    # The feed names interchanges: "Ang Mo Kio Int", "Bedok Int". Trust the name first.
+    # Busiest-stop alone picked Blk 700B, a roadside stop on a busy avenue, over the
+    # actual Ang Mo Kio Interchange -- and then the closure logic proposed shutting it.
+    named = [sid for sid in services_at
+             if stops[sid].name.lower().endswith(" int")]
+    pool = named or list(services_at)
+    return max(pool, key=lambda s: len(services_at[s]))
+
+
+def derive_essential_stops(stops: dict) -> list[str]:
+    """Stops at healthcare people cannot skip, found by name.
+
+    Falls back to the two busiest stops rather than raising: a town with no hospital in
+    the bus feed still has an essential-trip story, and a silent empty list would make
+    every journey trivially reachable and every harm number zero.
+    """
+    named = [sid for sid, s in sorted(stops.items())
+             if any(k in s.name.lower() for k in ESSENTIAL_KEYWORDS)]
+    return named[:4]
+
+
+def derive_feeder(services: dict) -> str:
+    """The local service an intervention can move: the one calling at the most stops here.
+
+    A trunk route passing through has few stops inside the box; a feeder that loops the
+    town has many. That difference is what picks it out, in any town.
+    """
+    return max(services, key=lambda k: len(services[k].stops))
 
 
 def _project(lat: float, lon: float, lat0: float, lon0: float) -> tuple[float, float]:
@@ -71,12 +121,18 @@ def parse_headway(raw: str | None) -> float:
     return round(sum(values) / len(values), 1)
 
 
-def build_real_geography(closed: set[str] | None = None) -> Geography:
-    """The real network. `closed` stops are dropped from every service that calls there."""
+def build_real_geography(closed: set[str] | None = None, town: str = "") -> Geography:
+    """The real network for one town. `closed` stops are dropped from every service.
+
+    Nothing in this function knows which town it is building. The town supplies stops,
+    routes and frequencies; the interchange, the essential destinations and the local
+    feeder are all read out of that data rather than declared.
+    """
     closed = closed or set()
-    raw_stops = json.loads((DATA / "stops.json").read_text(encoding="utf-8"))
-    raw_routes = json.loads((DATA / "routes.json").read_text(encoding="utf-8"))
-    raw_services = json.loads((DATA / "services.json").read_text(encoding="utf-8"))
+    d = town_dir(town)
+    raw_stops = json.loads((d / "stops.json").read_text(encoding="utf-8"))
+    raw_routes = json.loads((d / "routes.json").read_text(encoding="utf-8"))
+    raw_services = json.loads((d / "services.json").read_text(encoding="utf-8"))
 
     lat0 = max(float(s["Latitude"]) for s in raw_stops)
     lon0 = min(float(s["Longitude"]) for s in raw_stops)
@@ -126,16 +182,19 @@ def build_real_geography(closed: set[str] | None = None) -> Geography:
             if gap > 0:
                 distances[(sid, a["BusStopCode"], b["BusStopCode"])] = gap
 
-    clinic = stops[CLINIC_STOPS[0]]
+    gateway = derive_gateway(raw_routes, stops)
+    essential = derive_essential_stops(stops) or [gateway]
+    feeder = derive_feeder(services)
+    clinic = stops[essential[0]]
     geo = Geography(
         span=(max(s.x for s in stops.values()) + 100,
               max(s.y for s in stops.values()) + 100),
         blocks=[], roads=[], stops=stops, services=services,
         polyclinic=(clinic.x + 30.0, clinic.y + 40.0),
-        clinic_stops=list(CLINIC_STOPS),
+        clinic_stops=essential,
         ride_distances=distances,
-        work_gateway=WORK_GATEWAY,
-        feeder_service=FEEDER_SERVICE,
+        work_gateway=gateway,
+        feeder_service=feeder,
     )
     geo.blocks = residential_clusters(geo)
     return geo
@@ -220,6 +279,43 @@ def _road_name(description: str) -> str:
 
 
 _ROADS: dict[str, str] = {}
+
+
+def pick_closures(geo: Geography, n: int = 2) -> set[str]:
+    """The stops the V1 scenario closes, chosen the way the scenario describes them.
+
+    The locked scenario says "two stops on the main avenue". In Ang Mo Kio that resolves
+    to Blk 129 and Blk 209 on Ang Mo Kio Ave 3; in another town it resolves to whatever
+    the equivalent pair is. Picking them by shape rather than by code is what makes the
+    scenario portable, and the shape is: adjacent stops on the busiest road, both served
+    by the local feeder, both a long way from the essential destination.
+
+    A real policy names its own stops. This exists so a town with no policy attached still
+    has something to simulate.
+    """
+    road_count: dict[str, int] = {}
+    for s in geo.stops.values():
+        road_count[_road_name(s.name)] = road_count.get(_road_name(s.name), 0) + 1
+    busiest_road = max(road_count, key=lambda r: road_count[r])
+
+    feeder = geo.services[geo.feeder_service]
+    dest = geo.stops[geo.clinic_stops[0]]
+    # never the interchange and never the destination: closing either is not a policy,
+    # it is a different scenario, and proposing it makes the whole comparison absurd.
+    off_limits = {geo.work_gateway, *geo.clinic_stops}
+    on_road = [s for s in dict.fromkeys(feeder.stops)
+               if s in geo.stops and s not in off_limits
+               and _road_name(geo.stops[s].name) == busiest_road]
+    if len(on_road) < n:
+        on_road = [s for s in geo.stops if s not in off_limits
+                   and _road_name(geo.stops[s].name) == busiest_road]
+    # furthest from the destination: closing a stop next to the hospital would be absurd
+    on_road.sort(key=lambda s: -distance_from(geo.stops[s], dest))
+    return set(on_road[:n])
+
+
+def distance_from(a: Stop, b: Stop) -> float:
+    return math.hypot(a.x - b.x, a.y - b.y)
 
 
 def summarise(geo: Geography) -> str:

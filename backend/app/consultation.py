@@ -26,10 +26,13 @@ from app.rng import derived_rng
 from app.simulation import Outcome
 
 #: the subzone where the walk is worse than its distance suggests. The model does not know.
-#: the real road name, as it appears in the LTA stop data. It was "AMK Ave 3"
-#: while the estate was invented, so the penalty silently applied to nobody
-#: once the cohorts became real roads.
-TERRAIN_SUBZONE = "Ang Mo Kio Ave 3"
+#: The road whose walk is worse than its distance suggests, and which the model does not
+#: know about. It is **the road the closures are on**, passed in by the caller rather than
+#: named here: the story is that a planner's model costed a distance and not a walk, and
+#: that is true of whichever road the policy touches. Naming one road made the penalty
+#: apply to nobody in every other town, so calibration flagged nothing and the screen
+#: quietly proved that the model was perfect.
+DEFAULT_TERRAIN_ROAD = ""
 #: points of support lost, on the 1-5 scale, at a full-length walk. The covered walkway
 #: ends partway and there is a slope, so the penalty scales with how far someone actually
 #: walks rather than switching on at a threshold: 200 m of it is an irritation, 600 m in
@@ -107,11 +110,12 @@ def predicted_support(p: Persona, o: Outcome) -> float:
     return max(1.0, min(5.0, base))
 
 
-def observed_support(p: Persona, o: Outcome, predicted: float) -> float:
+def observed_support(p: Persona, o: Outcome, predicted: float,
+                     terrain_road: str = DEFAULT_TERRAIN_ROAD) -> float:
     """What residents actually say. Prediction, plus what the model did not know."""
     rng = derived_rng(f"{p.persona_id}:support")
     value = predicted + rng.gauss(0, 0.45)
-    if p.home_subzone == TERRAIN_SUBZONE:
+    if terrain_road and p.home_subzone == terrain_road:
         share = min(1.0, o.walk_distance_m / TERRAIN_FULL_EFFECT_M)
         value -= TERRAIN_PENALTY * share
     return max(1.0, min(5.0, value))
@@ -155,7 +159,8 @@ COMMENTS = {
 }
 
 
-def build_consultation(pop: Population, outcomes: dict[str, Outcome]) -> ConsultationResult:
+def build_consultation(pop: Population, outcomes: dict[str, Outcome],
+                       terrain_road: str = DEFAULT_TERRAIN_ROAD) -> ConsultationResult:
     by_id = pop.by_id()
     responses: list[Response] = []
 
@@ -165,7 +170,7 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome]) -> Consult
         if rng.random() > response_probability(p, o):
             continue
         pred = predicted_support(p, o)
-        obs = observed_support(p, o, pred)
+        obs = observed_support(p, o, pred, terrain_road)
         pool = COMMENTS[o.severity if o.severity in COMMENTS else "none"]
         responses.append(Response(
             response_id=f"r_{len(responses):04d}",
