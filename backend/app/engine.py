@@ -23,6 +23,7 @@ go to zero.
 """
 from __future__ import annotations
 
+import os
 from dataclasses import replace
 
 from app.consultation import build_consultation
@@ -35,9 +36,27 @@ from app.scenario import POPULATION_SIZE, ROUNDS, SCENARIO_ID, SCENARIO_SEED, ST
 from app.schemas.core import PATTERNS
 from app.simulation import simulate
 
-REMOVED_STOPS = {"55079", "55081"}
+#: Which study area the engine runs on. `real` reads the LTA extract in data/lta/;
+#: `synthetic` uses the invented estate in geography.py. Both produce the same Geography,
+#: so nothing downstream knows which one it got.
+GEOGRAPHY = os.environ.get("GEOGRAPHY", "synthetic")
+
+#: The two stops the policy closes, per study area. On the real network these are real
+#: codes on Ang Mo Kio Ave 3, and the policy is a closure rather than a service change:
+#: each is served by eleven services, so removing them from one bus would be absorbed by
+#: the other ten. That is a finding rather than an inconvenience, and it is in the reading.
+CLOSURES = {"synthetic": {"55079", "55081"}, "real": {"54231", "54239"}}
+
 #: what through-riders gain from the express run. The trade the policy is making.
 EXPRESS_SAVING_MIN = 2.4
+
+
+def study_area():
+    """The geography and the stops the policy takes out, as one choice."""
+    if GEOGRAPHY == "real":
+        from app.geography_real import build_real_geography
+        return build_real_geography(), set(CLOSURES["real"])
+    return build_geography(), set(CLOSURES["synthetic"])
 
 POLICY_TEXT = (
     "Remove the two stops on Ang Mo Kio Avenue 3 from bus service 265 and run the service "
@@ -66,7 +85,7 @@ def _policy_dict() -> dict:
         "objective": "Reduce end-to-end journey time on service 265 without new vehicles",
         "text": POLICY_TEXT,
         "modifications": {
-            "remove_stops": sorted(REMOVED_STOPS),
+            "remove_stops": sorted(CLOSURES[GEOGRAPHY]),
             "add_express_segment": {"from_stop": "55007", "to_stop": "55139"},
             "frequency_delta_pct": 0,
         },
@@ -132,17 +151,17 @@ def _graph_edges(pop, geo) -> list[dict]:
 
 
 def build_run(run_id: str = "run_a91f") -> dict:
-    geo = build_geography()
+    geo, removed = study_area()
     pop = build_population(geo, POPULATION_SIZE)
     graph = build_graph(geo, pop)
 
-    policy = simulate(geo, pop, REMOVED_STOPS, EXPRESS_SAVING_MIN)
+    policy = simulate(geo, pop, removed, EXPRESS_SAVING_MIN)
     outcomes = list(policy.outcomes.values())
     sub = subgroup_metrics(pop, policy.outcomes)
 
     # ------------------------------------------------------------------ interventions
     ivs: list[dict] = []
-    for c in candidates(REMOVED_STOPS, pop):
+    for c in candidates(removed, pop, geo):
         validate(c, fleet_increase_allowed=False)
         row = {
             "intervention_id": c.intervention_id, "kind": c.kind, "name": c.name,
@@ -153,7 +172,7 @@ def build_run(run_id: str = "run_a91f") -> dict:
             "newly_harmed_elsewhere": None, "subgroup_disparity_pp": None,
         }
         if c.valid:
-            r = run_candidate(c, geo, pop, REMOVED_STOPS, EXPRESS_SAVING_MIN)
+            r = run_candidate(c, geo, pop, removed, EXPRESS_SAVING_MIN)
             row["metrics"] = metrics_for(list(r.outcomes.values()))
             row["carers_harmed"] = sum(
                 1 for p in pop.personas
@@ -173,6 +192,7 @@ def build_run(run_id: str = "run_a91f") -> dict:
         "run_id": run_id,
         "scenario_id": SCENARIO_ID,
         "environment": "transport",
+        "study_area_source": GEOGRAPHY,
         "seed": SCENARIO_SEED,
         "population_version": "engine-1",
         "policy_version": "1",
@@ -250,12 +270,12 @@ def ablation_second_order() -> tuple[int, int]:
     The only honest way to claim the graph does work. Same seeds, same population, no
     `CARES_FOR`: second-order harm should be N with the edges and 0 without.
     """
-    geo = build_geography()
+    geo, removed = study_area()
     pop = build_population(geo, POPULATION_SIZE)
-    with_graph = simulate(geo, pop, REMOVED_STOPS, EXPRESS_SAVING_MIN, record_events=False)
+    with_graph = simulate(geo, pop, removed, EXPRESS_SAVING_MIN, record_events=False)
     n_with = sum(1 for o in with_graph.outcomes.values() if o.second_order)
 
     cut = replace(pop, care_edges=[])
-    without = simulate(geo, cut, REMOVED_STOPS, EXPRESS_SAVING_MIN, record_events=False)
+    without = simulate(geo, cut, removed, EXPRESS_SAVING_MIN, record_events=False)
     n_without = sum(1 for o in without.outcomes.values() if o.second_order)
     return n_with, n_without

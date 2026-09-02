@@ -128,7 +128,9 @@ class TransitNetwork:
             for a, b in zip(live, live[1:]):
                 if a == b:
                     continue
-                t = distance_m(geo.stops[a].xy, geo.stops[b].xy) / BUS_SPEED_M_PER_MIN
+                metres = geo.ride_distances.get(
+                    (svc.service_id, a, b), distance_m(geo.stops[a].xy, geo.stops[b].xy))
+                t = metres / BUS_SPEED_M_PER_MIN
                 self.g.add_edge((a, svc.service_id), (b, svc.service_id),
                                 weight=t, transfer=0)
                 self.g.add_edge((b, svc.service_id), (a, svc.service_id),

@@ -36,6 +36,13 @@ CLINIC_STOPS = ["55151", "55159"]
 #: the two stops the V1 policy closes. Real codes on Ang Mo Kio Ave 3.
 CLOSED_STOPS = {"54231", "54239"}
 
+#: Ang Mo Kio Interchange, the real gateway out of the estate.
+WORK_GATEWAY = "54009"
+
+#: 265 is a real feeder: a 16.1 km loop inside the estate calling at Ang Mo Kio Ave 3 and
+#: at the Community Hospital. It is the service an intervention would realistically move.
+FEEDER_SERVICE = "265"
+
 BUS_SPEED_M_PER_MIN = 340.0
 #: fallback when a service publishes no frequency for the band
 DEFAULT_HEADWAY_MIN = 12.0
@@ -73,6 +80,10 @@ def build_real_geography(closed: set[str] | None = None) -> Geography:
 
     lat0 = max(float(s["Latitude"]) for s in raw_stops)
     lon0 = min(float(s["Longitude"]) for s in raw_stops)
+
+    _ROADS.clear()
+    for s in raw_stops:
+        _ROADS[s["Description"]] = s.get("RoadName") or "Other Ang Mo Kio"
 
     stops: dict[str, Stop] = {}
     for s in raw_stops:
@@ -122,9 +133,80 @@ def build_real_geography(closed: set[str] | None = None) -> Geography:
         blocks=[], roads=[], stops=stops, services=services,
         polyclinic=(clinic.x + 30.0, clinic.y + 40.0),
         clinic_stops=list(CLINIC_STOPS),
+        ride_distances=distances,
+        work_gateway=WORK_GATEWAY,
+        feeder_service=FEEDER_SERVICE,
     )
-    geo.ride_distances = distances       # type: ignore[attr-defined]
+    geo.blocks = residential_clusters(geo)
     return geo
+
+
+#: how far from a stop a residential cluster sits. HDB blocks in Ang Mo Kio sit between a
+#: short walk and a few minutes from the nearest stop; this band is that, and it is an
+#: assumption rather than a measurement.
+CLUSTER_MIN_M, CLUSTER_MAX_M = 40.0, 260.0
+
+#: roads with fewer residents than this are folded into a catch-all, so no cohort is
+#: reported on a handful of people. The same n floor governs calibration (L2).
+MIN_COHORT_STOPS = 3
+
+
+def residential_clusters(geo: Geography) -> list[dict]:
+    """Where the synthetic residents live, placed against real stops.
+
+    LTA publishes where the buses go, not who lives there, so this is the one place the
+    real network still needs an assumption. Ang Mo Kio was planned around its bus network,
+    so households are clustered near stops and weighted by how many services call there:
+    a stop with eleven services is a busier place to live than one with two.
+
+    The cohort label is the stop's **real road name**, not an invented subzone. That makes
+    "Ang Mo Kio Ave 3" a cohort the audit can report on, which matters because Ave 3 is the
+    road the policy acts on.
+    """
+    from app.rng import derived_rng
+
+    calls: dict[str, int] = {}
+    for svc in geo.services.values():
+        for sid in set(svc.stops):
+            calls[sid] = calls.get(sid, 0) + 1
+
+    road_of = {sid: _road_name(s.name) for sid, s in geo.stops.items()}
+    counts: dict[str, int] = {}
+    for sid in geo.stops:
+        counts[road_of[sid]] = counts.get(road_of[sid], 0) + 1
+    label = {sid: (road_of[sid] if counts[road_of[sid]] >= MIN_COHORT_STOPS
+                   else "Other Ang Mo Kio")
+             for sid in geo.stops}
+
+    blocks: list[dict] = []
+    for sid, stop in sorted(geo.stops.items()):
+        weight = calls.get(sid, 0)
+        if weight == 0:
+            continue
+        rng = derived_rng(f"cluster:{sid}")
+        for i in range(max(1, min(4, weight // 3))):
+            angle = rng.uniform(0, 6.283185)
+            radius = rng.uniform(CLUSTER_MIN_M, CLUSTER_MAX_M)
+            blocks.append({
+                "block_id": f"b_{sid}_{i}",
+                "subzone": label[sid],
+                "x": round(stop.x + radius * math.cos(angle), 1),
+                "y": round(stop.y + radius * math.sin(angle), 1),
+                "w": 0.0, "h": 0.0,
+                "storeys": rng.choice([8, 10, 10, 12, 12, 14, 16, 18]),
+                "population": 0,
+                "near_stop": sid,
+                "services": weight,
+            })
+    return blocks
+
+
+def _road_name(description: str) -> str:
+    """The road a stop sits on, from the raw stop data loaded alongside it."""
+    return _ROADS.get(description, "Other Ang Mo Kio")
+
+
+_ROADS: dict[str, str] = {}
 
 
 def summarise(geo: Geography) -> str:

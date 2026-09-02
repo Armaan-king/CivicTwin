@@ -39,10 +39,6 @@ from app.scenario import (
     SEVERE_WALK_MULTIPLIER,
 )
 
-#: the gateway out of the estate. work trips are journeys to here, not to the CBD, because
-#: what a local stop removal changes is how you reach the interchange.
-WORK_GATEWAY = "55007"
-
 #: door-to-door assisted transport, from booking to arrival. Used by `targeted_support`.
 ASSISTED_TRIP_MIN = 22.0
 
@@ -128,7 +124,8 @@ def _destinations(geo: Geography, p: Persona) -> dict[str, tuple[tuple[float, fl
     if p.needs_clinic:
         trips["clinic"] = (geo.polyclinic, geo.clinic_stops, True)
     if p.employment_status == "employed":
-        trips["work"] = (geo.stops[WORK_GATEWAY].xy, [WORK_GATEWAY], False)
+        gw = geo.work_gateway
+        trips["work"] = (geo.stops[gw].xy, [gw], False)
     return trips
 
 

@@ -62,8 +62,21 @@ class Geography:
     stops: dict[str, Stop]
     services: dict[str, Service]
     polyclinic: tuple[float, float]
-    #: stop ids from which the polyclinic is a short walk
+    #: stop ids from which the essential destination is a short walk
     clinic_stops: list[str] = field(default_factory=list)
+    #: the interchange. Commutes are modelled as journeys to here rather than to the CBD,
+    #: because what a local stop closure changes is how you reach the interchange, not
+    #: what happens after it. Which stop that is belongs to the study area.
+    work_gateway: str = ""
+    #: the local service an intervention can reroute. Which one that is belongs to the
+    #: study area, not to interventions.py: hardcoding "162" there meant every candidate
+    #: silently referred to a service the real network has never heard of.
+    feeder_service: str = ""
+    #: (service, from_stop, to_stop) -> real metres along the route. Empty for the
+    #: synthetic estate, where straight-line is the truth. When present it wins: a bus
+    #: that leaves the study area and comes back costs what it actually costs, and
+    #: straight-line would make that hop look short enough to route people onto it.
+    ride_distances: dict[tuple[str, str, str], float] = field(default_factory=dict)
 
     def serving(self, stop_id: str) -> list[Service]:
         return [s for s in self.services.values() if stop_id in s.stops]
@@ -151,6 +164,7 @@ def build_geography() -> Geography:
     return Geography(
         span=(span_x, span_y), blocks=blocks, roads=roads, stops=stops,
         services=services, polyclinic=polyclinic, clinic_stops=clinic_stops,
+        work_gateway="55007", feeder_service="162",
     )
 
 

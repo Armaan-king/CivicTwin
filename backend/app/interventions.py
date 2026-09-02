@@ -18,7 +18,7 @@ from __future__ import annotations
 import copy
 from dataclasses import dataclass, field
 
-from app.geography import Geography, Service
+from app.geography import Geography, Service, distance_m
 from app.population import Population
 from app.simulation import SimResult, simulate
 
@@ -51,7 +51,7 @@ def _with_service(geo: Geography, service: Service) -> Geography:
     return g
 
 
-def candidates(removed: set[str], pop: Population) -> list[Candidate]:
+def candidates(removed: set[str], pop: Population, geo: Geography) -> list[Candidate]:
     """The five, parameterised for this scenario.
 
     `reroute_feeder` is here because an alternative that only ever looks good is not a
@@ -61,6 +61,14 @@ def candidates(removed: set[str], pop: Population) -> list[Candidate]:
     """
     assisted = [p.persona_id for p in pop.personas
                 if p.needs_clinic and p.mobility_level in ("moderate", "severe")]
+    clinic = geo.clinic_stops[0]
+    feeder = geo.services[geo.feeder_service]
+    # the two stops on the feeder furthest from the destination it is being moved toward:
+    # rerouting has to cost somebody their service, and this names who.
+    dropped = sorted(
+        (s for s in dict.fromkeys(feeder.stops) if s not in removed),
+        key=lambda s: -distance_m(geo.stops[s].xy, geo.stops[clinic].xy),
+    )[:2]
     return [
         Candidate(
             intervention_id="iv_retain_peak",
@@ -75,16 +83,17 @@ def candidates(removed: set[str], pop: Population) -> list[Candidate]:
             intervention_id="iv_shuttle",
             kind="add_shuttle_feeder",
             name="Clinic shuttle on the affected corridor",
-            params={"serves": [*sorted(removed), "55237", "55007"], "headway_min": 20},
-            rationale="A small vehicle linking the two removed stops to the polyclinic and "
-                      "the interchange, sized for the trips the policy actually broke.",
+            params={"serves": [*sorted(removed), clinic, geo.work_gateway],
+                    "headway_min": 20},
+            rationale="A small vehicle linking the two closed stops to the hospital and the "
+                      "interchange, sized for the trips the policy actually broke.",
             estimated_cost_index=1.06,
         ),
         Candidate(
             intervention_id="iv_reroute",
             kind="reroute_feeder",
-            name="Reroute service 162 onto the corridor",
-            params={"add": sorted(removed), "drop": ["55251", "55263"]},
+            name=f"Reroute service {geo.feeder_service} onto the corridor",
+            params={"add": sorted(removed), "drop": dropped},
             rationale="No new vehicles. The feeder covers the affected corridor instead of "
                       "the eastern loop.",
             estimated_cost_index=0.95,
@@ -151,7 +160,7 @@ def run_candidate(
         return simulate(g, pop, removed - set(serves), express_saving_min)
 
     if c.kind == "reroute_feeder":
-        old = geo.services["162"]
+        old = geo.services[geo.feeder_service]
         kept = [s for s in old.stops if s not in c.params["drop"]]
         insert_at = max(1, len(kept) - 1)
         stops = kept[:insert_at] + list(c.params["add"]) + kept[insert_at:]
