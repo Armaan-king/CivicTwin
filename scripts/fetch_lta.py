@@ -31,11 +31,12 @@ OUT = pathlib.Path(__file__).resolve().parent.parent / "data" / "lta"
 #: and the stops just outside the estate that people actually transfer at.
 BBOX = {"lat_min": 1.355, "lat_max": 1.395, "lon_min": 103.830, "lon_max": 103.870}
 
-#: services that run through the estate. 265 is the one the scenario acts on.
-SERVICES_OF_INTEREST = {"265", "262", "261", "266", "268", "269", "22", "24", "72", "76"}
+#: Services are **discovered**, not listed. Picking them by name left 119 of 244 stops
+#: with no service attached, so the router treated them as unusable and overstated harm.
+#: Any service that calls at a stop inside the box is part of this network.
 
 
-def fetch_all(endpoint: str, cap: int = 20000) -> list[dict]:
+def fetch_all(endpoint: str, cap: int = 60000) -> list[dict]:
     """DataMall pages 500 records at a time via $skip. Stop at a short page."""
     key = os.environ.get("LTA_ACCOUNT_KEY")
     if not key:
@@ -101,15 +102,21 @@ def main() -> None:
 
     local_stops = [s for s in stops if in_bbox(s)]
     local_codes = {s.get("BusStopCode") for s in local_stops}
+    #: every service that calls anywhere inside the box
+    local_service_nos = {r["ServiceNo"] for r in routes if r.get("BusStopCode") in local_codes}
     local_routes = [r for r in routes
-                    if r.get("ServiceNo") in SERVICES_OF_INTEREST
+                    if r.get("ServiceNo") in local_service_nos
                     and r.get("BusStopCode") in local_codes]
-    local_services = [s for s in services if s.get("ServiceNo") in SERVICES_OF_INTEREST]
+    local_services = [s for s in services if s.get("ServiceNo") in local_service_nos]
 
     print(f"\ntrimmed to the study area:")
     print(f"  stops    {len(local_stops):5d} of {len(stops)}")
-    print(f"  routes   {len(local_routes):5d} of {len(routes)}  "
-          f"(services {sorted({r.get('ServiceNo') for r in local_routes})})")
+    print(f"  routes   {len(local_routes):5d} of {len(routes)}")
+    print(f"  services {len(local_service_nos):5d} discovered: "
+          f"{' '.join(sorted(local_service_nos))}")
+    unserved = local_codes - {r['BusStopCode'] for r in local_routes}
+    print(f"  stops with no service calling: {len(unserved)} "
+          f"(these are unusable to the router, so this number should be small)")
     print(f"  services {len(local_services):5d} of {len(services)}")
 
     if not local_stops:
@@ -135,7 +142,8 @@ def main() -> None:
 ## What was trimmed
 
 Bounding box {BBOX["lat_min"]}-{BBOX["lat_max"]} N, {BBOX["lon_min"]}-{BBOX["lon_max"]} E,
-which is Ang Mo Kio plus a margin, and services {sorted(SERVICES_OF_INTEREST)}.
+which is Ang Mo Kio plus a margin. Every service calling at a stop inside the box is
+kept: {len(local_service_nos)} of them, discovered rather than listed by hand.
 
 - `stops.json` {len(local_stops)} of {len(stops)} stops nationwide
 - `routes.json` {len(local_routes)} of {len(routes)} route rows
