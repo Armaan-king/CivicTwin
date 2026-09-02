@@ -3,8 +3,8 @@ import { Crt } from "@/components/Crt";
 import { Boundary, hasWebGL } from "@/components/Boundary";
 import { Suspense, lazy, useEffect, useState } from "react";
 // three.js is ~450 kB and only the hero needs it, so it never reaches the other routes
-const PolicyAssembly = lazy(() =>
-  import("@/components/PolicyAssembly").then((m) => ({ default: m.PolicyAssembly }))
+const PopulationField = lazy(() =>
+  import("@/components/PopulationField").then((m) => ({ default: m.PopulationField }))
 );
 import { useRun } from "@/lib/useRun";
 import { secondOrderVictims } from "@/lib/run";
@@ -37,12 +37,11 @@ export function Hero() {
       <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "flex",
                     alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         {run && hasWebGL() && (
-          <Boundary label="The assembly" fallback={null}>
+          <Boundary label="The population" fallback={null}>
           <Suspense fallback={null}>
-          <PolicyAssembly
+          <PopulationField
             personas={run.personas}
             outcomes={outcomes}
-            edges={run.graph.edges}
             height={viewport}
           />
           </Suspense>
