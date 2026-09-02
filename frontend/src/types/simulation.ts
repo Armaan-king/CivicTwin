@@ -284,10 +284,19 @@ export interface Stop {
   name: string;
 }
 
+/** A real bus route, as a polyline through real stop positions. */
+export interface ServiceLine {
+  service_id: string;
+  points: [number, number][];
+}
+
 export interface Geography {
   span: [number, number];
   blocks: CityBlock[];
+  /** empty on the real network: LTA publishes where buses go, not where streets are */
   roads: Road[];
+  /** the busiest routes, drawn in place of a street plan */
+  service_lines: ServiceLine[];
   stops: Stop[];
   route: [number, number][];
   polyclinic: { x: number; y: number };

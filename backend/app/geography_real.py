@@ -203,7 +203,9 @@ def residential_clusters(geo: Geography) -> list[dict]:
                 "subzone": label[sid],
                 "x": round(stop.x + radius * math.cos(angle), 1),
                 "y": round(stop.y + radius * math.sin(angle), 1),
-                "w": 0.0, "h": 0.0,
+                # a real HDB slab footprint, in metres, at the real scale of the estate
+                "w": float(rng.choice([38, 44, 52, 60])),
+                "h": float(rng.choice([14, 16, 20])),
                 "storeys": rng.choice([8, 10, 10, 12, 12, 14, 16, 18]),
                 "population": 0,
                 "near_stop": sid,

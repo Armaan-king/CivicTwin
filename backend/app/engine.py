@@ -39,7 +39,7 @@ from app.simulation import simulate
 #: Which study area the engine runs on. `real` reads the LTA extract in data/lta/;
 #: `synthetic` uses the invented estate in geography.py. Both produce the same Geography,
 #: so nothing downstream knows which one it got.
-GEOGRAPHY = os.environ.get("GEOGRAPHY", "synthetic")
+GEOGRAPHY = os.environ.get("GEOGRAPHY", "real")
 
 #: The two stops the policy closes, per study area. On the real network these are real
 #: codes on Ang Mo Kio Ave 3, and the policy is a closure rather than a service change:

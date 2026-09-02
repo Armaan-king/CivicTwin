@@ -185,16 +185,33 @@ def with_headway(geo: Geography, service_id: str, delta_pct: float) -> Geography
     return g
 
 
+#: how many services the map draws. All 104 directions is noise; the busiest dozen reads
+#: as the shape of the network.
+MAP_SERVICE_LIMIT = 12
+
+
 def display_dict(geo: Geography) -> dict:
-    """The shape the frontend map reads. Display only; no rule consults it."""
+    """The shape the frontend map reads. Display only; no rule consults it.
+
+    `service_lines` carries real route geometry. LTA publishes where buses go, not where
+    streets are, so on the real network the bus routes *are* the street plan: drawing them
+    is both the honest thing available and a better picture than an invented grid.
+    """
+    busiest = sorted(geo.services.values(), key=lambda s: -len(s.stops))[:MAP_SERVICE_LIMIT]
     return {
+        "service_lines": [
+            {"service_id": s.service_id,
+             "points": [[geo.stops[i].x, geo.stops[i].y] for i in s.stops if i in geo.stops]}
+            for s in busiest
+        ],
         "study_area": STUDY_AREA,
         "span": list(geo.span),
         "blocks": geo.blocks,
         "roads": geo.roads,
         "stops": [{"stop_id": s.stop_id, "x": s.x, "y": s.y,
                    "removed": s.removed, "name": s.name} for s in geo.stops.values()],
-        "route": [[geo.stops[i].x, geo.stops[i].y] for i in geo.services["265"].stops],
-        "feeder": [[geo.stops[i].x, geo.stops[i].y] for i in geo.services["162"].stops],
+        # the service the policy acts on, drawn on top of the rest
+        "route": [[geo.stops[i].x, geo.stops[i].y]
+                  for i in geo.services[geo.feeder_service].stops if i in geo.stops],
         "polyclinic": {"x": geo.polyclinic[0], "y": geo.polyclinic[1]},
     }

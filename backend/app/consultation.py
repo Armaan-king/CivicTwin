@@ -26,7 +26,10 @@ from app.rng import derived_rng
 from app.simulation import Outcome
 
 #: the subzone where the walk is worse than its distance suggests. The model does not know.
-TERRAIN_SUBZONE = "AMK Ave 3"
+#: the real road name, as it appears in the LTA stop data. It was "AMK Ave 3"
+#: while the estate was invented, so the penalty silently applied to nobody
+#: once the cohorts became real roads.
+TERRAIN_SUBZONE = "Ang Mo Kio Ave 3"
 #: points of support lost, on the 1-5 scale, at a full-length walk. The covered walkway
 #: ends partway and there is a slope, so the penalty scales with how far someone actually
 #: walks rather than switching on at a threshold: 200 m of it is an irritation, 600 m in

@@ -102,6 +102,21 @@ export function CityMap({
         />
       ))}
 
+      {/* Real bus routes, standing in for the street plan. On the real network LTA gives
+          us where buses go and not where streets are, so this is both the honest thing
+          available and a truer picture of the estate than an invented grid. */}
+      {(geography.service_lines ?? []).map((s) => (
+        <polyline
+          key={s.service_id}
+          points={s.points.map(([x, y]) => `${x},${y}`).join(" ")}
+          fill="none"
+          stroke="#241f19"
+          strokeWidth={13}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      ))}
+
       {geography.blocks.map((b) => {
         const rec = harmNow.get(b.block_id);
         const rate = rec && rec.total ? rec.severe / rec.total : 0;

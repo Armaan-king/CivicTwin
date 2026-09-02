@@ -63,10 +63,15 @@ def candidates(removed: set[str], pop: Population, geo: Geography) -> list[Candi
                 if p.needs_clinic and p.mobility_level in ("moderate", "severe")]
     clinic = geo.clinic_stops[0]
     feeder = geo.services[geo.feeder_service]
+    # An alternative serves the stops *around* a closure, never the closure itself. Letting
+    # a shuttle call at a closed stop makes every such candidate a quiet undo of the
+    # policy: harm goes to exactly zero, which looks like a brilliant intervention and is
+    # really just the baseline wearing a hat.
+    nearby = _nearest_surviving(geo, removed, per_closure=2)
     # the two stops on the feeder furthest from the destination it is being moved toward:
     # rerouting has to cost somebody their service, and this names who.
     dropped = sorted(
-        (s for s in dict.fromkeys(feeder.stops) if s not in removed),
+        (s for s in dict.fromkeys(feeder.stops) if s not in removed and s not in nearby),
         key=lambda s: -distance_m(geo.stops[s].xy, geo.stops[clinic].xy),
     )[:2]
     return [
@@ -83,19 +88,18 @@ def candidates(removed: set[str], pop: Population, geo: Geography) -> list[Candi
             intervention_id="iv_shuttle",
             kind="add_shuttle_feeder",
             name="Clinic shuttle on the affected corridor",
-            params={"serves": [*sorted(removed), clinic, geo.work_gateway],
-                    "headway_min": 20},
-            rationale="A small vehicle linking the two closed stops to the hospital and the "
-                      "interchange, sized for the trips the policy actually broke.",
+            params={"serves": [*nearby, clinic, geo.work_gateway], "headway_min": 20},
+            rationale="A small vehicle linking the stops either side of the closure to the "
+                      "hospital and the interchange, sized for the trips the policy broke.",
             estimated_cost_index=1.06,
         ),
         Candidate(
             intervention_id="iv_reroute",
             kind="reroute_feeder",
             name=f"Reroute service {geo.feeder_service} onto the corridor",
-            params={"add": sorted(removed), "drop": dropped},
-            rationale="No new vehicles. The feeder covers the affected corridor instead of "
-                      "the eastern loop.",
+            params={"add": nearby, "drop": dropped},
+            rationale="No new vehicles. The feeder calls at the stops either side of the "
+                      "closure instead of the far end of its loop.",
             estimated_cost_index=0.95,
         ),
         Candidate(
@@ -109,6 +113,15 @@ def candidates(removed: set[str], pop: Population, geo: Geography) -> list[Candi
             estimated_cost_index=1.05,
         ),
         Candidate(
+            intervention_id="iv_phase",
+            kind="phase_rollout",
+            name="Close one stop, keep the other",
+            params={"close_now": sorted(removed)[:1], "defer": sorted(removed)[1:]},
+            rationale="Half the closure. The remaining stop keeps the corridor within reach "
+                      "of the residents who cannot walk to the next one.",
+            estimated_cost_index=0.97,
+        ),
+        Candidate(
             intervention_id="iv_fleet",
             kind="add_shuttle_feeder",
             name="Full shuttle network, 10-minute headway",
@@ -117,6 +130,19 @@ def candidates(removed: set[str], pop: Population, geo: Geography) -> list[Candi
             estimated_cost_index=1.34,
         ),
     ]
+
+
+def _nearest_surviving(geo: Geography, removed: set[str], per_closure: int) -> list[str]:
+    """The stops a closure pushes people onto. Never a closed stop."""
+    out: list[str] = []
+    for closed in sorted(removed):
+        here = geo.stops[closed].xy
+        alts = sorted((s for s in geo.stops.values() if s.stop_id not in removed),
+                      key=lambda s: distance_m(s.xy, here))
+        for s in alts[:per_closure]:
+            if s.stop_id not in out:
+                out.append(s.stop_id)
+    return out
 
 
 def validate(c: Candidate, fleet_increase_allowed: bool) -> Candidate:
@@ -155,9 +181,9 @@ def run_candidate(
         serves = [s for s in c.params["serves"]] if isinstance(c.params["serves"], list) else []
         shuttle = Service("S1", "S1 Clinic Shuttle",
                           headway_min=float(c.params["headway_min"]), stops=serves)
-        # the shuttle serves the removed stops, so they are live again on its route only
+        # the closure stands. the shuttle is an extra service through the stops around it.
         g = _with_service(geo, shuttle)
-        return simulate(g, pop, removed - set(serves), express_saving_min)
+        return simulate(g, pop, removed, express_saving_min)
 
     if c.kind == "reroute_feeder":
         old = geo.services[geo.feeder_service]
@@ -165,7 +191,7 @@ def run_candidate(
         insert_at = max(1, len(kept) - 1)
         stops = kept[:insert_at] + list(c.params["add"]) + kept[insert_at:]
         g = _with_service(geo, Service(old.service_id, old.name, old.headway_min, stops))
-        return simulate(g, pop, removed - set(c.params["add"]), express_saving_min)
+        return simulate(g, pop, removed, express_saving_min)
 
     if c.kind == "phase_rollout":
         return simulate(geo, pop, set(sorted(removed)[:1]), express_saving_min)
