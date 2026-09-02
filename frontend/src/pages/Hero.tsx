@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { Boundary, hasWebGL } from "@/components/Boundary";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 // three.js is ~450 kB and only the hero needs it, so it never reaches the other routes
 const PolicyNetwork = lazy(() =>
   import("@/components/PolicyNetwork").then((m) => ({ default: m.PolicyNetwork }))
@@ -12,13 +12,30 @@ import { secondOrderVictims } from "@/lib/run";
 export function Hero() {
   const { run, outcomes, error } = useRun();
 
+  // The canvas needs a pixel height, and a window that changes size must not leave a
+  // field sized for the old one. Reading it once at module scope also broke server-side
+  // and first-paint sizing, which is why this is state rather than an inline expression.
+  const [viewport, setViewport] = useState(
+    typeof window !== "undefined" ? window.innerHeight : 860
+  );
+  useEffect(() => {
+    const onResize = () => setViewport(window.innerHeight);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   const severe = run?.metrics.overall.severe_harm_count ?? null;
   const second = run ? secondOrderVictims(run).length : null;
   const delta = run?.metrics.overall.avg_journey_time_delta ?? null;
 
   return (
     <Crt>
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "flex", alignItems: "flex-start", paddingTop: "14vh" }}>
+      {/* The visual is inset rather than pushed down. It used to sit 14vh from the top at
+          92vh tall, which is 106% of the viewport: the bottom of the field was always
+          below the fold, and on a short window most of it was. Filling the space and
+          letting the canvas centre itself is both simpler and correct at any height. */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "flex",
+                    alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         {run && hasWebGL() && (
           <Boundary label="The population field" fallback={null}>
           <Suspense fallback={null}>
@@ -26,7 +43,7 @@ export function Hero() {
             personas={run.personas}
             outcomes={outcomes}
             edges={run.graph.edges}
-            height={typeof window !== "undefined" ? Math.round(window.innerHeight * 0.92) : 860}
+            height={viewport}
           />
           </Suspense>
           </Boundary>

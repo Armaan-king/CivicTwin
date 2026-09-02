@@ -79,6 +79,21 @@ export function PolicyNetwork({
     const dist = new Float32Array(plotted.length);
     const index = new Map<string, number>();
 
+    // Normalise the home coordinates against their own bounds before using them.
+    // The scatter terms below multiply (xy - 0.5), which only means anything if xy runs
+    // 0 to 1. It never has: these are plan coordinates, and once the study area became
+    // real they are metres, so 3,474 became 243,000 units of scatter in a scene whose
+    // disc is 420 across. Deriving the bounds keeps this correct whatever the units are
+    // -- display units, metres, or whatever a future study area brings.
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const p of plotted) {
+      minX = Math.min(minX, p.xy[0]); maxX = Math.max(maxX, p.xy[0]);
+      minY = Math.min(minY, p.xy[1]); maxY = Math.max(maxY, p.xy[1]);
+    }
+    const spanX = Math.max(1, maxX - minX);
+    const spanY = Math.max(1, maxY - minY);
+    const unit = (v: number, lo: number, span: number) => (v - lo) / span;
+
     // the policy enters here: the removed stop, at one end of the corridor
     const origin = new THREE.Vector3(-210, 0, -60);
     const c = new THREE.Color();
@@ -88,9 +103,11 @@ export function PolicyNetwork({
       // a wide shallow disc with a little vertical scatter reads as a population
       const a = (i / plotted.length) * Math.PI * 2 * 11.6;
       const r = 40 + Math.sqrt(i / plotted.length) * 380;
-      const x = Math.cos(a) * r + (p.xy[0] - 0.5) * 70;
-      const z = Math.sin(a) * r * 0.62 + (p.xy[1] - 0.5) * 70;
-      const y = (p.xy[1] - 0.5) * 54;
+      const nx = unit(p.xy[0], minX, spanX);
+      const ny = unit(p.xy[1], minY, spanY);
+      const x = Math.cos(a) * r + (nx - 0.5) * 70;
+      const z = Math.sin(a) * r * 0.62 + (ny - 0.5) * 70;
+      const y = (ny - 0.5) * 54;
 
       pos.set([x, y, z], i * 3);
       dist[i] = new THREE.Vector3(x, y, z).distanceTo(origin);
