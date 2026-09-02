@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import replace
+from typing import TYPE_CHECKING
 
 from app.consultation import build_consultation
 from app.geography import build_geography, display_dict
@@ -36,30 +37,51 @@ from app.scenario import POPULATION_SIZE, ROUNDS, SCENARIO_ID, SCENARIO_SEED, ST
 from app.schemas.core import PATTERNS
 from app.simulation import simulate
 
-#: Which study area the engine runs on. `real` reads the LTA extract in data/lta/;
-#: `synthetic` uses the invented estate in geography.py. Both produce the same Geography,
-#: so nothing downstream knows which one it got.
-GEOGRAPHY = os.environ.get("GEOGRAPHY", "real")
+if TYPE_CHECKING:
+    from app.schemas.policy import PolicyChange
 
-#: The two stops the policy closes, per study area. On the real network these are real
-#: codes on Ang Mo Kio Ave 3, and the policy is a closure rather than a service change:
-#: each is served by eleven services, so removing them from one bus would be absorbed by
-#: the other ten. That is a finding rather than an inconvenience, and it is in the reading.
-CLOSURES = {"synthetic": {"55079", "55081"}}
+#: Fallback study area, used only when no policy has been submitted -- the demo run the
+#: frontend loads before anyone has typed anything. A real policy decides its own town.
+DEFAULT_TOWN = os.environ.get("TOWN", "ang-mo-kio")
+GEOGRAPHY = os.environ.get("GEOGRAPHY", "real")
 
 #: what through-riders gain from the express run. The trade the policy is making.
 EXPRESS_SAVING_MIN = 2.4
 
 
-def study_area():
-    """The geography and the stops the policy takes out, as one choice."""
-    if GEOGRAPHY == "real":
-        from app.geography_real import build_real_geography, pick_closures
-        geo = build_real_geography()
-        return geo, pick_closures(geo)
-    return build_geography(), set(CLOSURES["synthetic"])
+def study_area(policy: "PolicyChange | None" = None, text: str = ""):
+    """The geography and the stops to close, decided by the policy that was submitted.
 
-def _policy_dict(geo, removed: set[str]) -> dict:
+    This used to read a town from the environment, guess two stops, and then generate a
+    policy description to match. The planner's own words were parsed and discarded, so
+    every number downstream described a guess rather than their proposal.
+
+    With no policy -- the demo run loaded before anyone has typed anything -- it falls back
+    to the default town and the derived closures, and the reading says so.
+    """
+    if GEOGRAPHY != "real":
+        return build_geography(), {"55079", "55081"}, None
+
+    from app.geography_real import build_real_geography, pick_closures
+
+    resolution = None
+    town = DEFAULT_TOWN
+    if policy is not None:
+        from app.resolve import resolve_study_area
+        resolution = resolve_study_area(policy, text)
+        town = resolution.town
+
+    geo = build_real_geography(town=town)
+
+    if resolution and resolution.closures:
+        return geo, set(resolution.closures), resolution
+
+    # A policy that names a road but not the stops on it. Pick, and mark it assumed:
+    # that is what the reading is for, and it is a question a planner can answer.
+    return geo, pick_closures(geo), resolution
+
+
+def _policy_dict(geo, removed: set[str], resolution=None, text: str = "") -> dict:
     """The policy, described in the town's own words.
 
     Every name here comes from the study area rather than from a constant, because a
@@ -72,13 +94,22 @@ def _policy_dict(geo, removed: set[str]) -> dict:
     gateway = geo.stops[geo.work_gateway].name
     dest = geo.stops[geo.clinic_stops[0]].name if geo.clinic_stops else "the essential destination"
 
-    text = (f"Close the {len(names)} stops on {roads[0]} "
-            f"({', '.join(names)}) and run service {feeder} express through the "
-            f"segment, without increasing the fleet.")
+    # The planner's own words when there are any. Only when nobody has submitted a policy
+    # -- the demo run -- is a description generated, and the reading says which it is.
+    stated = bool(text and text.strip())
+    policy_text = text.strip() if stated else (
+        f"Close the {len(names)} stops on {roads[0]} ({', '.join(names)}) and run service "
+        f"{feeder} express through the segment, without increasing the fleet."
+    )
 
+    named = bool(resolution and resolution.closures)
     reading = [
         {"n": "01", "claim": f"{len(names)} stops close on {roads[0]}",
-         "why": f"Named in the policy: {', '.join(names)}.", "assumed": False},
+         "why": (f"Named in the policy: {', '.join(names)}." if named else
+                 f"The policy did not say which stops. Assumed the {len(names)} on "
+                 f"{roads[0]} furthest from {dest}, since closing one beside the "
+                 f"destination would not be a policy anyone proposes."),
+         "assumed": not named},
         {"n": "02", "claim": "This is a closure, not a service change",
          "why": (f"Each of these stops is served by several routes. Removing them from "
                  f"service {feeder} alone would be absorbed by the others, so the policy "
@@ -96,7 +127,7 @@ def _policy_dict(geo, removed: set[str]) -> dict:
     ]
     return {
         "objective": f"Reduce end-to-end journey time on service {feeder} without new vehicles",
-        "text": text,
+        "text": policy_text,
         "modifications": {
             "remove_stops": sorted(removed),
             "add_express_segment": {"from_stop": geo.work_gateway,
@@ -105,6 +136,12 @@ def _policy_dict(geo, removed: set[str]) -> dict:
         },
         "constraints": {"fleet_increase_allowed": False, "operating_budget_delta_pct": 8},
         "reading": reading,
+        "study_area": {
+            "town": getattr(resolution, "town", DEFAULT_TOWN),
+            "chosen_from": getattr(resolution, "considered", []),
+            "matched": getattr(resolution, "matched", []),
+            "unmatched": getattr(resolution, "unmatched", []),
+        },
         "resolved_entities": (
             [{"kind": "service", "id": feeder, "label": f"Service {feeder}"}]
             + [{"kind": "stop", "id": s, "label": geo.stops[s].name} for s in sorted(removed)]
@@ -173,8 +210,27 @@ def _graph_edges(pop, geo) -> list[dict]:
     ]
 
 
-def build_run(run_id: str = "run_a91f") -> dict:
-    geo, removed = study_area()
+def study_area_for(run):
+    """Rebuild the study area a finished run was built with.
+
+    The deliberation must reason about the same town and the same closures the run
+    reported, not about whatever the default is. Both are recorded in the run's policy, so
+    this reads them back rather than re-deriving from a guess.
+    """
+    if GEOGRAPHY != "real":
+        return build_geography(), {"55079", "55081"}, None
+
+    from app.geography_real import build_real_geography, pick_closures
+
+    ref = run.policy.study_area
+    geo = build_real_geography(town=(ref.town if ref and ref.town else DEFAULT_TOWN))
+    closures = {s for s in run.policy.modifications.remove_stops if s in geo.stops}
+    return geo, (closures or pick_closures(geo)), ref
+
+
+def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
+              text: str = "") -> dict:
+    geo, removed, resolution = study_area(policy, text)
     pop = build_population(geo, POPULATION_SIZE)
     graph = build_graph(geo, pop)
 
@@ -225,7 +281,7 @@ def build_run(run_id: str = "run_a91f") -> dict:
         "generated_by": "backend/app/engine.py",
         "is_synthetic": True,
         "study_area": STUDY_AREA,
-        "policy": _policy_dict(geo, removed),
+        "policy": _policy_dict(geo, removed, resolution, text),
         "personas": _persona_dicts(pop),
         "graph": {"edges": _graph_edges(pop, geo)},
         "geography": display_dict(geo),
@@ -295,7 +351,7 @@ def ablation_second_order() -> tuple[int, int]:
     The only honest way to claim the graph does work. Same seeds, same population, no
     `CARES_FOR`: second-order harm should be N with the edges and 0 without.
     """
-    geo, removed = study_area()
+    geo, removed, _ = study_area()
     pop = build_population(geo, POPULATION_SIZE)
     with_graph = simulate(geo, pop, removed, EXPRESS_SAVING_MIN, record_events=False)
     n_with = sum(1 for o in with_graph.outcomes.values() if o.second_order)

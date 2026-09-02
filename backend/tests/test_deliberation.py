@@ -66,7 +66,7 @@ class StubCompletion:
 
 @pytest.fixture(scope="module")
 def small():
-    geo, closed = study_area()
+    geo, closed, _ = study_area()
     pop = build_population(geo, 120)
     world = build_world(pop, geo, closed)
     return pop, world, build_social_graph(pop)

@@ -23,6 +23,8 @@ from pydantic import BaseModel, Field
 from app.agents.policy_interpreter import PolicyInterpretationFailed, interpret
 from app.schemas.policy import StartRunRequest, StartRunResponse
 from app.schemas.run import Intervention, SimulationRun
+from app.engine import build_run
+from app.resolve import StudyAreaNotFound
 from app.services.llm import LLMError, TELEMETRY, build_client
 
 FIXTURE = pathlib.Path(__file__).resolve().parents[2] / "data" / "fixtures" / "demo_run.json"
@@ -58,7 +60,6 @@ def load_run() -> SimulationRun:
     global _run_cache
     if _run_cache is None:
         try:
-            from app.engine import build_run
             _run_cache = SimulationRun.model_validate(build_run())
         except ImportError as exc:
             if not FIXTURE.exists():
@@ -79,9 +80,17 @@ def health() -> dict[str, Any]:
     }
 
 
+#: Runs built from a submitted policy, by id. The demo run is separate and unnamed:
+#: it is what the interface shows before anyone has typed anything.
+_runs: dict[str, SimulationRun] = {}
+
+
 # ----------------------------------------------------------------- reads
 @app.get("/api/runs/{run_id}", response_model=SimulationRun)
 def get_run(run_id: str) -> SimulationRun:
+    """A submitted run if there is one, otherwise the demo run."""
+    if run_id in _runs:
+        return _runs[run_id]
     run = load_run()
     if run_id not in ("latest", run.run_id):
         raise HTTPException(404, f"No run {run_id}")
@@ -117,7 +126,17 @@ def start_run(req: StartRunRequest) -> StartRunResponse:
         # the model itself is unreachable or misbehaving: not the planner's fault, and not
         # something to paper over with a plausible default
         raise HTTPException(502, f"The interpreter is unavailable: {exc}") from exc
-    return StartRunResponse(run_id=f"run_{uuid.uuid4().hex[:6]}", policy=policy)
+    run_id = f"run_{uuid.uuid4().hex[:6]}"
+    # Keep it. This used to return the parsed policy and drop it on the floor, so the run
+    # the planner then opened was built from an environment variable and two guessed stops
+    # -- a careful reading of their words, discarded, and a different question answered.
+    try:
+        _runs[run_id] = SimulationRun.model_validate(
+            build_run(run_id, policy=policy, text=req.policy_text)
+        )
+    except StudyAreaNotFound as exc:
+        raise HTTPException(422, str(exc)) from exc
+    return StartRunResponse(run_id=run_id, policy=policy)
 
 
 class FeedbackIn(BaseModel):
@@ -192,7 +211,7 @@ def get_deliberation(run_id: str) -> "DeliberationRun":
     configured, which the route turns into a 503 saying exactly what to set.
     """
     from app.deliberate import deliberate
-    from app.engine import study_area
+    from app.engine import study_area_for
     from app.population import build_population
     from app.services.llm import build_deliberation_client
     from app.social import build_social_graph
@@ -200,7 +219,8 @@ def get_deliberation(run_id: str) -> "DeliberationRun":
 
     run = get_run(run_id)
     if run_id not in _deliberation_cache:
-        geo, closed = study_area()
+        # the study area this run was actually built for, not the default one
+        geo, closed, _ = study_area_for(run)
         pop = build_population(geo)
         world = build_world(pop, geo, closed)
         _deliberation_cache[run_id] = deliberate(

@@ -209,8 +209,10 @@ _DEFAULT_MOCKS = {
     "Ang Mo Kio": json.dumps({
         "objective": "reduce journey time and operating cost",
         "modifications": {
-            "remove_stops": ["55079", "55081"],
-            "add_express_segment": {"from_stop": "55009", "to_stop": "55101"},
+            # real Ang Mo Kio Ave 3 stop codes, so the canned answer resolves to a real
+            # study area. Synthetic codes made every demo request refuse.
+            "remove_stops": ["54231", "54239"],
+            "add_express_segment": {"from_stop": "54009", "to_stop": "54241"},
             "frequency_delta_pct": 0,
         },
         "constraints": {"fleet_increase_allowed": False, "operating_budget_delta_pct": 0},
