@@ -27,9 +27,11 @@ from datetime import datetime, timezone
 BASE = "https://datamall2.mytransport.sg/ltaodataservice"
 OUT = pathlib.Path(__file__).resolve().parent.parent / "data" / "lta"
 
-#: Ang Mo Kio, roughly. Deliberately generous: trimming too tightly loses the interchange
-#: and the stops just outside the estate that people actually transfer at.
-BBOX = {"lat_min": 1.355, "lat_max": 1.395, "lon_min": 103.830, "lon_max": 103.870}
+#: Ang Mo Kio. Wide enough to keep the interchange and the stops just outside the estate
+#: that people really transfer at, tight enough to exclude Sengkang and Yio Chu Kang: a
+#: generous box put 45 synthetic residents on Sengkang West Road, four kilometres away,
+#: and then reported them as an Ang Mo Kio cohort.
+BBOX = {"lat_min": 1.358, "lat_max": 1.388, "lon_min": 103.832, "lon_max": 103.862}
 
 #: Services are **discovered**, not listed. Picking them by name left 119 of 244 stops
 #: with no service attached, so the router treated them as unusable and overstated harm.

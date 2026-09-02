@@ -146,8 +146,11 @@ def build_real_geography(closed: set[str] | None = None) -> Geography:
 #: assumption rather than a measurement.
 CLUSTER_MIN_M, CLUSTER_MAX_M = 40.0, 260.0
 
-#: roads with fewer residents than this are folded into a catch-all, so no cohort is
-#: reported on a handful of people. The same n floor governs calibration (L2).
+#: A road needs this many stops before it is its own cohort. Below it, residents are
+#: attached to the **nearest larger road** rather than a catch-all bucket: an "Other"
+#: bucket collects the scattered, badly-served corners of the estate, so it reliably
+#: shows the worst harm rate of any cohort and is reported as if that were a finding
+#: about a place. It is a finding about a bucket.
 MIN_COHORT_STOPS = 3
 
 
@@ -174,9 +177,17 @@ def residential_clusters(geo: Geography) -> list[dict]:
     counts: dict[str, int] = {}
     for sid in geo.stops:
         counts[road_of[sid]] = counts.get(road_of[sid], 0) + 1
-    label = {sid: (road_of[sid] if counts[road_of[sid]] >= MIN_COHORT_STOPS
-                   else "Other Ang Mo Kio")
-             for sid in geo.stops}
+    major = {r for r, n in counts.items() if n >= MIN_COHORT_STOPS}
+    label = {}
+    for sid, stop in geo.stops.items():
+        if road_of[sid] in major:
+            label[sid] = road_of[sid]
+            continue
+        # nearest stop on a road big enough to name
+        near = min((s for s in geo.stops.values() if road_of[s.stop_id] in major),
+                   key=lambda s: (s.x - stop.x) ** 2 + (s.y - stop.y) ** 2,
+                   default=None)
+        label[sid] = road_of[near.stop_id] if near else road_of[sid]
 
     blocks: list[dict] = []
     for sid, stop in sorted(geo.stops.items()):

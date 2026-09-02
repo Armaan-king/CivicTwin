@@ -4,19 +4,19 @@
 |---|---|
 | Source | https://datamall2.mytransport.sg/ltaodataservice |
 | Endpoints | `BusStops`, `BusRoutes`, `BusServices` |
-| Retrieved | 2026-09-02 04:33 UTC |
+| Retrieved | 2026-09-02 04:44 UTC |
 | Licence | Singapore Open Data Licence v1.0 |
 | Fetched by | `scripts/fetch_lta.py` |
 
 ## What was trimmed
 
-Bounding box 1.355-1.395 N, 103.83-103.87 E,
+Bounding box 1.358-1.388 N, 103.832-103.862 E,
 which is Ang Mo Kio plus a margin. Every service calling at a stop inside the box is
-kept: 89 of them, discovered rather than listed by hand.
+kept: 73 of them, discovered rather than listed by hand.
 
-- `stops.json` 244 of 5208 stops nationwide
-- `routes.json` 1390 of 26881 route rows
-- `services.json` 131 of 806 services
+- `stops.json` 161 of 5208 stops nationwide
+- `routes.json` 924 of 26881 route rows
+- `services.json` 108 of 806 services
 
 ## What this is not
 
