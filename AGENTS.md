@@ -49,18 +49,20 @@ Do not add empty abstractions, placeholder modules, or premature plugin systems 
 
 When several implementations are viable, prefer the option that is:
 
-1. more deterministic,
-2. easier to test,
-3. cheaper to run,
-4. easier to explain,
-5. easier to demo,
-6. less likely to hallucinate,
-7. modular without being over-engineered,
-8. consistent with the CivicTwin core loop.
+1. easier to explain,
+2. easier to demo,
+3. easier to test,
+4. modular without being over-engineered,
+5. consistent with the CivicTwin core loop.
 
-Use an LLM only when language understanding or qualitative reasoning materially improves the system.
+**Determinism is no longer a tie-breaker.** V2 simulates the population with reasoning
+agents (`goal.md` §15), so a preference for deterministic implementations would argue
+against the architecture. What replaced it as the safeguard is *groundedness*: an agent
+may only reason from facts it was given, and a conclusion citing anything else is rejected
+rather than displayed.
 
-Prefer conventional algorithms for deterministic calculations.
+Conventional algorithms are still right for **retrieving world facts** — distances,
+nearest stops, who is in which household. They are no longer used to decide consequences.
 
 ---
 
@@ -152,35 +154,45 @@ Human-facing explanations may be natural language, but machine-facing outputs sh
 
 ---
 
-## 8. Simulation Rules
+## 8. Agent Simulation
 
-Simulation logic must remain inspectable.
+The population is simulated by reasoning agents. Each resident decides for itself what a
+policy does to it, in rounds, having seen what its neighbours concluded in the round
+before.
 
-Where possible:
+**This reverses the previous rule in this section**, which forbade an LLM call per citizen
+per round. That prohibition was correct for a rules engine with a narration layer on top.
+It is wrong for a deliberation, and it kept the product's central feature switched off.
 
-- use fixed random seeds,
-- separate deterministic rules from probabilistic behavior,
-- keep behavioral parameters explicit,
-- record the configuration of each run,
-- avoid hidden state changes.
+What is required instead:
 
-Do not simulate every citizen by making an LLM call on every timestep.
+- **Ground every conclusion.** An agent is given its own record, the world facts around it,
+  and its neighbours' last positions. It may reason only from those. A conclusion citing a
+  fact it was not given is rejected and counted, never rendered.
+- **Look facts up, do not reason them out.** Distances, which stop closed, who lives with
+  whom: retrieved and handed to the agent. A model asked to compute a distance will invent
+  a plausible one.
+- **Bound the rounds.** Four. Unbounded deliberation is how an agent system becomes a bill.
+- **Batch.** Residents per call, not a call per resident.
+- **Cache by content hash.** Same resident, same facts, same neighbours, same prompt: no
+  second call. A replay of a run costs nothing.
+- **Record what a run cost.** Calls, tokens, latency, cache hits, rejected conclusions.
 
-**Explicitly required, and therefore permitted:** one reasoning pass per persona, plus
-re-reasoning only for personas whose state actually changed in a later round. That is
-`scenario-v1.md` §6A, roughly 2,040 calls for a 2,000-persona run rather than 8,000. It is
-cached by content hash so a replay costs nothing. What stays banned is the unbounded shape:
-every persona, every round, uncached.
-
-The default assumption is that most population evolution should be performed using normal Python logic, graph algorithms, probabilities, and rules.
-
-Use LLM reasoning selectively.
-
----
+What stays banned is the unbounded shape: every resident, every round, uncached, with no
+ceiling and no record of what it cost.
 
 ## 9. Reproducibility
 
-Simulation runs should preserve enough metadata to reproduce or explain results.
+Agent runs are **not bit-reproducible, and the write-up must say so.** Two runs of the
+same policy will differ. What is guaranteed instead:
+
+- a **replay** is exact, because it is served from the content-hash cache,
+- the **world state** is fully reproducible from the seed: same residents, same network,
+  same social graph, every time,
+- every conclusion carries the facts it was reasoned from, so a result can be *explained*
+  even when it cannot be re-derived.
+
+Runs should preserve enough metadata to replay or explain results.
 
 Where applicable, record:
 
@@ -216,10 +228,14 @@ Do not use LLMs for:
 
 - arithmetic,
 - shortest-path calculations,
-- capacity calculations,
-- deterministic threshold checks,
+- distance and geometry,
 - data aggregation,
-- metrics that normal code can compute more reliably.
+- counting outcomes into metrics.
+
+These are all **world facts and tallies**. They are retrieved or counted and handed to the
+agents, who then decide what they mean. Judging consequence, severity, adaptation and
+opinion is exactly what the agents are for, and that judgement is no longer to be moved
+back into code.
 
 Prompts should be centralized or versioned where practical.
 
@@ -322,9 +338,11 @@ Avoid without explicit justification:
 - OpenSearch,
 - provisioned throughput,
 - long-lived expensive endpoints,
-- one *expensive-model* call per simulated citizen. The per-persona reasoning pass in
-  `docs/scenario-v1.md` §6A uses the cheap model, is bounded at roughly one call per
-  resident, and is cached by content hash.
+- an **expensive** model on the per-resident deliberation. That pass is the bulk of the
+  spend, so it runs on the cheap model, batched, bounded to four rounds, and cached by
+  content hash. Reserve the strong model for the few calls that need it: interpreting a
+  policy, and writing the explanation a human reads.
+- any agent loop without a round ceiling and a recorded cost.
 
 Cache or reuse results where appropriate.
 
@@ -457,16 +475,18 @@ Observability should support debugging and hackathon evaluation without becoming
 
 ## 20. Testing Priorities
 
-Prioritize tests for deterministic logic:
+Prioritize tests for the parts that are still deterministic, because the agents are not:
 
 - persona schema validation,
-- graph construction,
-- graph dependency operations,
-- simulation transitions,
-- metrics,
+- world-fact retrieval: distances, nearest stop, what a closure removes,
+- graph construction and dependency direction,
+- metrics and aggregation over agent outputs,
 - intervention validation,
-- scenario comparison,
 - calibration calculations.
+
+And, above all, the **groundedness guard**: an agent conclusion citing a fact it was not
+given must be rejected. Test it by planting one. A guard nobody has watched fail is not a
+guard.
 
 For runtime-agent behavior:
 
@@ -474,6 +494,12 @@ For runtime-agent behavior:
 - test failure paths,
 - mock model calls where appropriate,
 - keep a small number of integration tests for real agent flows.
+
+**A mock must not be able to stand in for a run.** Mocked deliberation is for exercising
+plumbing. It may never produce output that reaches a screen looking like resident
+reasoning: without a model the run fails loudly. This rule exists because the opposite was
+built, and a whole feature sat switched off behind a silent fallback while appearing to
+work.
 
 Do not make the entire test suite dependent on live Bedrock access.
 
@@ -510,7 +536,10 @@ The critical path should:
 - complete within a short time,
 - avoid expensive or slow loops.
 
-When live generation is risky but the underlying feature is already implemented, deterministic cached fixtures may be used as a fallback for demo reliability, provided this is not presented dishonestly as a fresh model output.
+A cached run may be replayed for demo reliability, and should be: the content-hash cache
+makes a replay exact and free. What may **not** happen is generating substitute text when
+no model is available. A replay is a real run shown again; a template is a fake, and the
+line between them is not a matter of labelling.
 
 ---
 

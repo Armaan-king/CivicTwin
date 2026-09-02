@@ -50,6 +50,10 @@ FAMILY = (
 )
 
 
+class NoModelConfigured(RuntimeError):
+    """Raised rather than producing something that reads like a resident and is not."""
+
+
 @dataclass
 class VoiceRun:
     voices: list[PersonaVoice]
@@ -202,10 +206,13 @@ def generate_voices(
     stop_names = {s.stop_id: s.name for s in geo.stops.values()}
 
     if llm is None or llm.provider_name == "mock":
-        voices = [write_offline(p, outcomes[p.persona_id],
-                                by_persona.get(p.persona_id, []), stop_names)
-                  for p in ordered]
-        return VoiceRun(voices=voices, generated_by="offline-template")
+        # No silent fallback. Templates dressed as resident reasoning let a run look
+        # finished when the feature had never executed, which is exactly how this shipped
+        # switched off for a whole session.
+        raise NoModelConfigured(
+            "Resident deliberation needs a model. Set LLM_PROVIDER=bedrock with AWS "
+            "credentials, or LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY."
+        )
 
     CACHE.mkdir(parents=True, exist_ok=True)
     voices: list[PersonaVoice] = []

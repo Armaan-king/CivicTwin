@@ -285,7 +285,7 @@ INPUT POLICY
     ↓
 CONSTRUCT WORLD STATE
     ↓
-SIMULATE
+DELIBERATE            residents reason, in rounds, hearing each other
     ↓
 AUDIT IMPACT
     ↓
@@ -295,7 +295,7 @@ GENERATE INTERVENTIONS
     ↓
 VALIDATE INTERVENTIONS
     ↓
-RE-SIMULATE
+RE-DELIBERATE         the same residents, the same seeds, a different policy
     ↓
 COMPARE
     ↓
@@ -465,60 +465,65 @@ The product should surface not just the final negative outcome, but also the **p
 
 # 15. Simulation Model
 
-The simulation engine should separate different kinds of reasoning.
+**V2 direction, and it replaces what this section previously said.**
 
-## 15.1 Deterministic / Structural Effects
+The population is simulated by **reasoning agents, not by rules**. Each synthetic resident
+is an LLM agent that is given its own record, the state of the world around it, and what
+its neighbours are saying, and decides for itself what the policy does to it and how it
+responds. There is no rules engine computing harm and no severity predicate; those were the
+V1 design and they are gone.
 
-Examples:
+## 15.1 What the agents decide
 
-- travel distance,
-- service capacity,
-- eligibility constraints,
-- schedule conflicts,
-- queue length,
-- walking thresholds,
-- resource limits,
-- dependency availability.
+Everything the product reports:
 
-These should be computed using deterministic code or conventional algorithms whenever possible.
+- whether this policy affects them at all,
+- how badly, and in their own terms,
+- what they do about it: absorb it, adapt, pay for an alternative, or stop going,
+- whether they take on somebody else's journey,
+- what they think of the policy, and how that changes as they hear from others.
 
-## 15.2 Probabilistic / Behavioral Effects
+## 15.2 What is still computed, and why
 
-Examples:
+A model is bad at knowing facts about a network it cannot see. So the world is looked up,
+never judged:
 
-- likelihood of adopting an alternative,
-- response to inconvenience,
-- social influence,
-- trust changes,
-- willingness to switch channels.
+- which stops exist, where they are, and which services call there,
+- which of them the policy closes,
+- distances and which stop is nearest,
+- who is in whose household, and who is connected to whom.
 
-These may use:
+This is **retrieval, not simulation**. It tells an agent "the stop outside your block is
+closed and the next one is 380 m away". It does not decide whether that matters. That
+distinction is the whole architecture: facts are looked up, consequences are reasoned.
 
-- rules,
-- probability models,
-- calibrated heuristics,
-- lightweight statistical models,
-- selective LLM reasoning.
+## 15.3 Deliberation, not polling
 
-## 15.3 LLM Role
+Agents reason in rounds and **see what their neighbours concluded in the previous round**.
+A resident whose own journey did not change can still move, because someone they know lost
+the trip to the hospital. That social movement is a first-class output, not noise, and it
+is the difference between a survey and a deliberation.
 
-LLMs should be used where language interpretation or complex qualitative reasoning adds value, such as:
+## 15.4 What this costs, and what it buys
 
-- converting policy text into structured scenario changes,
-- generating structured persona descriptions from distributions,
-- explaining consequence chains,
-- proposing alternative interventions,
-- classifying citizen feedback,
-- extracting newly discovered constraints,
-- producing public-facing plain-language explanations,
-- reasoning as each synthetic resident about how the policy lands on them.
+Roughly one model call per resident per round, batched. For 2,000 residents over four
+rounds that is a few hundred calls and a run measured in minutes rather than milliseconds,
+and a replay is served from cache.
 
-> **V1 direction.** The last item is now a core capability, not an optional one. Every
-> persona produces a validated `BehaviorAssessment` grounded in their own record, and the
-> result is a screen in its own right. Volume, caching and the honesty constraints are in
-> [`docs/scenario-v1.md`](./docs/scenario-v1.md) §6A.
+It buys the thing the product exists for: a population that can be asked *why*, and answer.
+A rules engine can tell you 21 people were severely harmed. It cannot tell you what they
+made of it, what they tried first, or who they talked to before giving up.
 
-LLMs should not be used for calculations that deterministic code can perform more reliably.
+## 15.5 What is given up, and stated plainly
+
+- **Exact reproducibility.** Two runs of the same policy will not be identical. Runs are
+  cached by content hash so a *replay* is exact, and the write-up says which is which.
+- **Auditable arithmetic.** No one can point at a line of code and say this is why the
+  number is 21. The defence is different: every agent conclusion cites the world facts it
+  was given, and a conclusion that cites something it was not given is rejected.
+
+Anyone who needs a defensible arithmetic model of a bus network should use a transport
+model. This is a tool for finding what such a model cannot see.
 
 ---
 

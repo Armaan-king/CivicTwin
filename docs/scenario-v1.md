@@ -18,6 +18,34 @@ Decision identifiers (`A1`, `F3`, `N2`, …) are stable and referenced from the 
 
 ---
 
+# SUPERSEDED IN PART — V2
+
+The population is no longer simulated by rules. Each resident is a reasoning agent that
+decides for itself what the policy does to it, in rounds, hearing its neighbours.
+`goal.md` §15 is the current statement of the model.
+
+Which decisions in this file still stand, and which do not:
+
+| still binding | superseded |
+|---|---|
+| A1-A3 scope, the study area | **F1** the seven deterministic rules |
+| C1-C5 persona schema and attributes | **F3** the severity predicate |
+| D1-D4 the graph, `CARES_FOR` direction | **G1** the adaptation logistic |
+| E1-E3 neutral vocabulary, harm patterns | **G3** behavioural coefficients |
+| I1, I4 metrics and subgroup axes | **B1** as a rules pipeline; rounds remain |
+| J1-J4 the closed intervention action space | |
+| K1-K5, L1-L3 consultation and calibration | |
+
+The superseded rows describe how an outcome was *computed*. Agents now decide those, and
+what remains of each is a definition rather than an algorithm: severity still means the
+four things F3 named, and an agent is asked to judge against them.
+
+Everything about **honesty** still binds without exception. Synthetic data is labelled,
+`n >= 30` still gates a flag, a rejected intervention still carries no metrics, and a
+conclusion that cites a fact the agent was not given is still rejected.
+
+---
+
 # 0. What this is an instance of
 
 CivicTwin is not a transport tool. It detects a mechanism that recurs wherever an
