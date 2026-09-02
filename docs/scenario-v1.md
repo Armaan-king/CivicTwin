@@ -648,6 +648,36 @@ comparative information the trade-off table needs while making no claim the proj
 support. Coefficients live in scenario config and are shown beside the comparison, labelled
 illustrative.
 
+## J4 — Residents propose remedies too · LOCKED
+
+The planner's five typed actions stay exactly as **J1** defines them. Alongside them,
+harmed residents are asked one further question during deliberation:
+
+> What would make this workable for you?
+
+Answers are clustered into distinct proposals, each mapped onto a typed action where one
+fits, and each carrying the count of residents who asked for it. They then go through the
+same validator and the same re-simulation as a planner candidate. No shortcut, no
+exemption.
+
+This is the difference between consulting people about a remedy and letting them author
+one. It costs a prompt field and a clustering pass, because the deliberation in §6A is
+already paid for.
+
+**Unmappable requests are reported, not discarded.** When residents ask for something the
+model cannot express as a simulable change, that is a finding in its own right:
+
+```text
+31 residents asked for something this model cannot simulate
+   "somewhere to sit and wait"           14
+   "a shelter over the new walk"         11
+   "a different appointment time"         6
+```
+
+A model that quietly dropped those would be hiding the gap between what it can represent
+and what people actually need. That gap belongs on the screen.
+
+
 ---
 
 # 9. Public consultation and feedback
@@ -711,6 +741,36 @@ renders the headline score without, on the same screen:
 
 The score is a way into the components, never a verdict. This reconciles the required
 capability in `goal.md` §29 with the warnings in `goal.md` §23 and `evaluation.md` §12.
+
+## K5 — Name who the consultation will under-hear · LOCKED
+
+Turnout is not uniform, and it is not random. Residents who are most affected are often
+least able to respond: the oldest, the least mobile, the ones already spending their spare
+hours caring for someone else.
+
+CivicTwin already models both halves. It computes severity per persona, and it weights
+turnout by stake and capacity. Multiplying them gives a blind-spot score:
+
+```text
+blind_spot = severity x (1 - expected_response_rate)
+```
+
+Reported as cohorts, with counts, on the calibration screen:
+
+```text
+This consultation will under-hear an estimated 340 residents.
+  75+ with severe mobility        118
+  carers in full-time work         94
+  low income, no car access       128
+```
+
+This is the one output a real ministry could act on the same afternoon: it names who to go
+and find. It is also the honest counterweight to the Public Confidence Score, which can
+only ever describe the people who did reply.
+
+**It is an estimate about a synthetic population**, and the screen says so. It points at
+cohorts to reach, never at individuals.
+
 
 ---
 
@@ -867,6 +927,10 @@ condition `AGENTS.md` §22 attaches to fixture use.
 
 Seven beats, following `goal.md` §30 and `evaluation.md` §25:
 
+The single claim the demo makes is **harm prevented before rollout**, which is the
+north-star metric in `goal.md` §50. Every beat below is evidence for it, and the closing
+number is the one to remember.
+
 ```text
 1  planner proposes removing two stops, in plain language
 2  synthetic population and graph load; headline journey time improves
@@ -876,7 +940,12 @@ Seven beats, following `goal.md` §30 and `evaluation.md` §25:
 6  three alternatives generated, validated, re-simulated, compared
 7  consultation feedback reveals a constraint the model lacked;
    calibration shows support was overestimated for one cohort
+8  the close: 103 residents would have been harmed. None of them had
+   been asked. The strongest alternative prevents 79 of them, and it
+   was proposed by residents rather than by the planner.
 ```
+
+Beat 8 is the claim. Beats 1 to 7 exist to make it credible.
 
 Beat 5 is the one to protect if anything gets cut — it is what **N2** measures and what
 distinguishes the product.

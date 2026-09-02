@@ -1715,6 +1715,10 @@ A useful long-term conceptual metric is:
 
 How much severe or disproportionate negative impact can CivicTwin identify and help reduce **before real-world rollout**?
 
+> **V1 definition.** `prevented = baseline_severe_harm - chosen_alternative_severe_harm`,
+> reported with both counts so the denominator is never hidden. On the locked scenario that
+> is 103 down to 24, so 79 prevented. See `docs/scenario-v1.md` §13.
+
 Supporting metrics may include:
 
 - high-severity population reduction,

@@ -318,6 +318,22 @@ The agent that makes every resident reason about the policy, plus the screen tha
 **Done when:** a full pass completes, replays from cache with zero calls, and no assessment
 cites a fact absent from its persona's record. That last one is a test, not a hope.
 
+### W11 · Resident-authored remedies (J4)
+One extra field on `BehaviorAssessment`, a clustering pass over what harmed residents say
+would fix it, and each cluster mapped onto a typed action where one fits. Same validator,
+same re-simulation, plus provenance: how many residents asked for it.
+
+**Done when:** at least one candidate in the comparison table carries a resident count
+instead of a planner rationale, and unmappable requests are reported rather than dropped.
+
+### W12 · Consultation blind spot (K5)
+`blind_spot = severity x (1 - expected_response_rate)`, reported as cohorts with counts on
+the calibration screen. Both inputs already exist: severity per persona, and the turnout
+weighting in `build_consultation`.
+
+**Done when:** the screen names cohorts to go and reach, with counts, and says plainly that
+it is an estimate over a synthetic population.
+
 ### W9 · Evaluation (N1, N2)
 Eight required results from `evaluation.md` section 28, including the **N2** ablation.
 **Done when:** results file exists with run ids, and the ablation shows N second-order cases
