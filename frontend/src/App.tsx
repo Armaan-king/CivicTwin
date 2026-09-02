@@ -7,6 +7,8 @@ import { ImpactAudit } from "@/pages/ImpactAudit";
 import { InterventionLab } from "@/pages/InterventionLab";
 import { Calibration } from "@/pages/Calibration";
 import { Consultation } from "@/pages/Consultation";
+import { SystemMap } from "@/pages/SystemMap";
+import { Voices } from "@/pages/Voices";
 
 export function App() {
   return (
@@ -19,6 +21,8 @@ export function App() {
       <Route path="/interventions" element={<InterventionLab />} />
       <Route path="/calibration" element={<Calibration />} />
       <Route path="/consultation" element={<Consultation />} />
+      <Route path="/voices" element={<Voices />} />
+      <Route path="/system" element={<SystemMap />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     </Boundary>

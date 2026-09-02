@@ -5,8 +5,10 @@ const STEPS = [
   { to: "/policy", label: "Policy" },
   { to: "/simulation", label: "Simulation" },
   { to: "/impact", label: "Impact" },
+  { to: "/voices", label: "Voices" },
   { to: "/interventions", label: "Interventions" },
   { to: "/calibration", label: "Calibration" },
+  { to: "/system", label: "System" },
 ];
 
 export function TopBar({ meta }: { meta?: string }) {
