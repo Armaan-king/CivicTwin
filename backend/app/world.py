@@ -39,6 +39,11 @@ class ResidentWorld:
     depends_on_me: list[str] = field(default_factory=list)
     i_depend_on: list[str] = field(default_factory=list)
 
+    #: the stop this resident uses is one of the ones closing. A fact about the network,
+    #: not a judgement about them: it says the policy reaches them, not that it harms them.
+    #: Whether it harms them is theirs to decide, and that is the whole point.
+    directly_affected: bool = False
+
     def ids(self) -> set[str]:
         return {f.id for f in self.facts}
 
@@ -119,6 +124,7 @@ def build_resident_world(
     fact(f"The policy closes these stops: {closed_names}.", rnd=1)
 
     if near_before and near_before[0] in closed:
+        w.directly_affected = True
         fact(f"{geo.stops[near_before[0]].name} is the stop you use. It is closing.", rnd=1)
         near_after = _nearest(after, p.xy, dest, closed)
         if near_after:

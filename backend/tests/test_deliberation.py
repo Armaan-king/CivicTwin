@@ -1,4 +1,4 @@
-"""The deliberation loop, and the guard that makes it evidence.
+"""The deliberation loop: does it wire facts to residents, and residents to neighbours.
 
 Each test uses its own policy text. The cache is keyed on the prompt, so a shared string
 lets one test serve another from cache and quietly assert nothing.
@@ -6,6 +6,9 @@ lets one test serve another from cache and quietly assert nothing.
 The stub here exercises plumbing and nothing else. It never reaches a screen: `deliberate()`
 refuses a mock provider outright, and these tests reach past that refusal deliberately, to
 check the loop rather than to manufacture residents. `AGENTS.md` §20.
+
+The groundedness guard itself is tested in `test_grounding.py`, and batch integrity in
+`test_batch_integrity.py`.
 """
 from __future__ import annotations
 
@@ -13,11 +16,9 @@ import json
 
 import pytest
 
-from app.agents.deliberation import check_grounding
 from app.deliberate import NoModelConfigured, deliberate
 from app.engine import study_area
 from app.population import build_population
-from app.schemas.deliberation import AgentTurn
 from app.services.llm import LLMClient
 from app.social import build_social_graph
 from app.world import build_world
@@ -27,8 +28,8 @@ class StubCompletion:
     """Returns schema-valid JSON built from the prompt it was handed.
 
     It reads the resident ids and fact ids out of the prompt, so a turn it produces is
-    grounded by construction. That is the point: it tests that the loop wires facts to
-    residents and residents to their neighbours, not that a model writes well.
+    grounded by construction -- including the policy facts, without which a turn claiming
+    any impact is rejected for resting only on things that were true beforehand.
     """
 
     name = "stub"
@@ -36,7 +37,7 @@ class StubCompletion:
     def __init__(self):
         self.prompts: list[str] = []
 
-    def complete(self, system: str, prompt: str, max_tokens: int) -> str:
+    def complete(self, system: str, prompt: str, max_tokens: int, schema=None) -> str:
         self.prompts.append(prompt)
         ids = [line.split()[1] for line in prompt.splitlines() if line.startswith("RESIDENT ")]
         facts = {
@@ -58,7 +59,7 @@ class StubCompletion:
             "turns": [
                 {"round": 1, "position": 0.3, "confidence": 0.7,
                  "reasoning": "Stub round view.", "severity": "moderate",
-                 "response": "adapting", "grounded_in": facts[pid][:2]}
+                 "response": "adapting", "grounded_in": facts[pid]}
                 for pid in ids
             ],
         })
@@ -85,14 +86,19 @@ def test_the_loop_produces_a_turn_per_round(small):
     pop, world, social = small
     stub = StubCompletion()
     run = deliberate(pop, world, "turns policy", LLMClient(stub), social=social)
-    assert len(run.voices) == len(pop.personas)
-    assert run.participation[0] == len(pop.personas)
-    assert run.participation[1] == len(pop.personas), "round 1 is everyone"
+    assert run.voices, "nobody deliberated"
+    assert run.participation[0] == len(run.voices)
+    assert run.participation[1] == len(run.cohort), "round 1 is the whole cohort"
     assert all(len(v.turns) >= 2 for v in run.voices.values())
 
 
-def test_identity_never_comes_from_the_model(small):
-    """The model is told persona ids and must not be trusted to hand them back."""
+def test_every_voice_is_filed_under_the_id_the_model_returned(small):
+    """Identity is validated, not overwritten.
+
+    The loop matches each returned voice to the resident it names. Anything it cannot
+    match is refused rather than relabelled, so a voice present here is one the model
+    actually attributed to that resident.
+    """
     pop, world, social = small
     run = deliberate(pop, world, "identity policy", LLMClient(StubCompletion()), social=social)
     for pid, v in run.voices.items():
@@ -100,7 +106,7 @@ def test_identity_never_comes_from_the_model(small):
 
 
 def test_residents_are_shown_their_neighbours(small):
-    """Without this the run is two thousand monologues, not a deliberation."""
+    """Without this the run is many monologues, not a deliberation."""
     pop, world, social = small
     stub = StubCompletion()
     deliberate(pop, world, "neighbour policy", LLMClient(stub), social=social)
@@ -132,37 +138,17 @@ def test_caching_means_a_replay_costs_nothing(small):
     assert second.cached > 0
 
 
-# ---------------------------------------------------------------- the grounding guard
-def test_a_fabricated_fact_is_caught():
-    turn = AgentTurn(round=1, position=0.2, confidence=0.6, reasoning="My stop closed.",
-                     severity="high", response="giving_up", grounded_in=["p_0001:f99"])
-    assert check_grounding(turn, {"p_0001:f1"}, set())
+def test_coverage_never_reports_the_unasked_as_unaffected(small):
+    """The denominator rule, enforced by the run rather than by the screen.
 
-
-def test_an_invented_neighbour_is_caught():
-    turn = AgentTurn(round=1, position=0.2, confidence=0.6, reasoning="Ah Seng told me.",
-                     severity="none", response="unaffected",
-                     grounded_in=["p_0001:f1"], influenced_by="p_9999")
-    assert check_grounding(turn, {"p_0001:f1"}, {"p_0002"})
-
-
-def test_absorbing_for_a_stranger_is_caught():
-    """The second-order claim is the product. A resident may not invent who they carry."""
-    turn = AgentTurn(round=3, position=0.1, confidence=0.8, reasoning="I drive her now.",
-                     severity="high", response="absorbing",
-                     grounded_in=["p_0001:f1"], absorbing_for="p_7777")
-    assert check_grounding(turn, {"p_0001:f1"}, {"p_0002"})
-
-
-def test_harm_claimed_from_nothing_is_caught():
-    turn = AgentTurn(round=1, position=0.1, confidence=0.9, reasoning="This ruins me.",
-                     severity="high", response="giving_up", grounded_in=[])
-    assert check_grounding(turn, {"p_0001:f1"}, set())
-
-
-def test_a_grounded_turn_passes():
-    turn = AgentTurn(round=1, position=0.3, confidence=0.6,
-                     reasoning="The stop I use is closing and the next is 380 m further.",
-                     severity="moderate", response="adapting",
-                     grounded_in=["p_0001:f7", "p_0001:f8"], influenced_by="p_0002")
-    assert check_grounding(turn, {"p_0001:f7", "p_0001:f8"}, {"p_0002"}) == []
+    A resident nobody asked is unknown. `coverage()` has to be able to say how many that
+    is, or a rate over the cohort gets read as a rate over the town.
+    """
+    pop, world, social = small
+    run = deliberate(pop, world, "coverage policy", LLMClient(StubCompletion()), social=social)
+    cov = run.coverage()
+    assert cov["population"] == len(pop.personas)
+    assert cov["evaluated"] == len(run.evaluated)
+    assert cov["evaluated"] <= cov["cohort"] <= cov["population"]
+    assert cov["unevaluated"] == cov["population"] - cov["evaluated"]
+    assert sum(cov["strata"].values()) == cov["cohort"]

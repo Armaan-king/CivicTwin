@@ -34,6 +34,7 @@ from app.agents.deliberation import (
     run_opening,
     run_round,
 )
+from app.cohort import select_cohort
 from app.population import Population
 from app.schemas.deliberation import AgentTurn, AgentVoice
 from app.services.llm import LLMClient
@@ -42,8 +43,11 @@ from app.world import ResidentWorld
 
 CACHE = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "deliberation_cache"
 
-#: how many batches are in flight at once. Bounded so a run cannot become a stampede.
-CONCURRENCY = 8
+#: How many batches are in flight at once. Bounded so a run cannot become a stampede
+#: (`AGENTS.md` §8). The right ceiling depends on what is behind the client: a hosted
+#: API wants several, one local GPU wants one, and eight against Ollama merely builds a
+#: queue while making the failure modes concurrent.
+CONCURRENCY = int(os.getenv("DELIBERATION_CONCURRENCY", "8"))
 
 ROUNDS = (1, 2, 3)
 #: how many neighbours a resident hears from in a round
@@ -66,9 +70,47 @@ class DeliberationRun:
     #: residents who spoke, per round
     participation: dict[int, int] = field(default_factory=dict)
 
+    # ---------------------------------------------------------------- coverage
+    #: everyone in the study area, whether or not they were asked
+    population: int = 0
+    #: who this run selected to reason. The rest are unknown, not unaffected.
+    cohort: list[str] = field(default_factory=list)
+    #: how the cohort was chosen, for the screen that has to state it
+    cohort_strata: dict[str, int] = field(default_factory=dict)
+    #: residents whose every turn was rejected, so nothing they said can be counted
+    ungrounded: list[str] = field(default_factory=list)
+
     def ordered(self) -> list[AgentVoice]:
         """Most-moved first: the residents who changed their mind are the story."""
         return sorted(self.voices.values(), key=lambda v: (v.moved, -len(v.turns)))
+
+    @property
+    def evaluated(self) -> list[str]:
+        """Residents with at least one turn that survived the grounding guard.
+
+        The denominator for every rate this run reports. It is not the population and it
+        is not the cohort: a resident who was asked and whose answer was rejected has been
+        evaluated to no conclusion, which is a third thing.
+        """
+        return [pid for pid, v in self.voices.items() if v.turns]
+
+    def coverage(self) -> dict:
+        """What this run can and cannot speak for.
+
+        `goal.md` and the brief agree on the rule that makes this necessary: a resident
+        nobody asked is *unknown*, never *unaffected*. Reporting a harm rate over the
+        cohort while implying the population is the exact error the product exists to
+        criticise, so the denominator travels with the number.
+        """
+        ev = self.evaluated
+        return {
+            "population": self.population,
+            "cohort": len(self.cohort),
+            "evaluated": len(ev),
+            "unevaluated": max(0, self.population - len(ev)),
+            "ungrounded": len(self.ungrounded),
+            "strata": dict(self.cohort_strata),
+        }
 
 
 def _cached_or_call(prompt: str, model: str, fn, run: DeliberationRun):
@@ -113,8 +155,8 @@ def deliberate(
     """
     if llm is None or llm.provider_name == "mock":
         raise NoModelConfigured(
-            "Deliberation needs a model. LLM_PROVIDER=bedrock with AWS credentials, "
-            "or LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY. There is no offline "
+            "Deliberation needs a model. Set LLM_PROVIDER=groq and GROQ_API_KEY "
+            "in the project root .env. There is no offline "
             "substitute: text that reads like a resident and is not one is worse than "
             "no output."
         )
@@ -122,17 +164,41 @@ def deliberate(
     started = time.monotonic()
     run = DeliberationRun(model=llm.provider_name)
     social = social if social is not None else build_social_graph(pop)
-    people = pop.personas[:limit] if limit else pop.personas
-    index = {p.persona_id: p for p in people}
+    run.population = len(pop.personas)
+
+    # Who reasons. The cohort is the honest middle between asking everyone -- four hours
+    # locally, most of it spent on residents the policy never reaches -- and asking only
+    # the harmed, which leaves every rate without a denominator.
+    if limit:
+        # An explicit cap still selects rather than slicing: `personas[:12]` returns
+        # whoever the generator happened to emit first, and on this population that is
+        # twelve people nowhere near the closure, all of whom correctly report nothing.
+        cohort = select_cohort(pop, world, social, comparison=0)
+        ordered_ids = cohort.ids[:limit]
+        run.cohort_strata = {
+            "affected": sum(1 for p in ordered_ids if p in set(cohort.affected)),
+            "tied": sum(1 for p in ordered_ids if p in set(cohort.tied)),
+            "comparison": 0,
+        }
+    else:
+        cohort = select_cohort(pop, world, social)
+        ordered_ids = cohort.ids
+        run.cohort_strata = cohort.strata()
+
+    run.cohort = ordered_ids
+    index = {p.persona_id: p for p in pop.personas if p.persona_id in set(ordered_ids)}
+    people = [index[pid] for pid in ordered_ids if pid in index]
 
     # ---------------------------------------------------------------- round 0
     batches = [people[i:i + BATCH_SIZE] for i in range(0, len(people), BATCH_SIZE)]
 
     def opening(group):
+        ids = [p.persona_id for p in group]
         prompt = opening_prompt([(p, world[p.persona_id]) for p in group], policy_text)
         try:
-            raw = _cached_or_call(prompt, run.model,
-                                  lambda pr: run_opening(pr, llm).model_dump(), run)
+            raw = _cached_or_call(
+                prompt, run.model,
+                lambda pr: run_opening(pr, llm, len(ids)).model_dump(), run)
         except DeliberationFailed:
             run.failed_batches += 1
             return []
@@ -141,14 +207,29 @@ def deliberate(
 
     with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
         for group, voices in zip(batches, pool.map(opening, batches)):
-            for p, v in zip(group, voices):
-                v.persona_id = p.persona_id          # never trust the model with identity
+            # Match on the id the model returned rather than on position. Writing our id
+            # over theirs cannot detect a batch that came back reordered -- it relabels
+            # it, and twelve residents' reasoning attached to the wrong twelve people
+            # still looks like evidence.
+            returned = {v.persona_id: v for v in voices}
+            for p in group:
+                v = returned.get(p.persona_id)
+                if v is None:
+                    run.failed_batches += 1
+                    continue
                 w = world[p.persona_id]
+                kept = []
                 for t in v.turns:
-                    if check_grounding(t, w.ids(), set(w.household)):
+                    if check_grounding(t, w, 0, heard_from=set()):
                         run.rejected += 1
-                        t.grounded_in = []
-                        t.severity = "none"
+                        continue
+                    kept.append(t)
+                if not kept:
+                    # Nothing this resident said survived. They are unevaluated, which is
+                    # not the same as unaffected, so no blanked turn is invented for them.
+                    run.ungrounded.append(p.persona_id)
+                    continue
+                v.turns = kept
                 run.voices[p.persona_id] = v
                 if on_voice:
                     on_voice(v, 0)
@@ -179,10 +260,11 @@ def deliberate(
             )))
 
         def one_round(item, rnd=rnd):
-            _group, _heard_map, prompt = item
+            group, _heard_map, prompt = item
             try:
-                return _cached_or_call(prompt, run.model,
-                                       lambda pr: run_round(pr, llm).model_dump(), run)
+                return _cached_or_call(
+                    prompt, run.model,
+                    lambda pr: run_round(pr, llm, list(group)).model_dump(), run)
             except DeliberationFailed:
                 run.failed_batches += 1
                 return None
@@ -193,10 +275,15 @@ def deliberate(
                     continue
                 from app.schemas.deliberation import DeliberationBatch
                 batch = DeliberationBatch.model_validate(raw)
-                for pid, turn in zip(group, batch.turns):
-                    w = world[pid]
-                    allowed_people = set(w.household) | {n for n, _ in heard.get(pid, [])}
-                    if check_grounding(turn, w.ids(), allowed_people):
+                by_id = dict(zip(batch.persona_ids, batch.turns))
+                for pid in group:
+                    turn = by_id.get(pid)
+                    if turn is None:
+                        continue
+                    # Only the neighbours this resident was actually shown this round.
+                    # Their household is who they live with, not who they heard from.
+                    heard_from = {n for n, _ in heard.get(pid, [])}
+                    if check_grounding(turn, world[pid], rnd, heard_from):
                         run.rejected += 1
                         continue
                     turn.round = rnd

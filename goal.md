@@ -1166,7 +1166,7 @@ This is directional and may evolve if implementation constraints demand it.
 - LangGraph
 
 ## LLM
-- Claude through Amazon Bedrock
+- Grok through the xAI API (current provider; replaces Claude through Bedrock).
 
 Model strategy:
 - cheaper/faster model for frequent structured operations,

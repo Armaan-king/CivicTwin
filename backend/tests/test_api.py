@@ -1,9 +1,19 @@
 """Routes hold their contract, and failures surface as the right status."""
 from fastapi.testclient import TestClient
+import pytest
+from app import main
 from app.main import app
+from app.services.llm import build_client
 
 client = TestClient(app)
 GOOD = "Remove the two stops on Ang Mo Kio Avenue 3 from service 265 and run non-stop."
+
+
+@pytest.fixture(autouse=True)
+def offline_interpreter(monkeypatch):
+    """API contract tests never use the developer's configured live provider."""
+    monkeypatch.setenv("LLM_PROVIDER", "mock")
+    monkeypatch.setattr(main, "_llm", build_client())
 
 
 def test_health():

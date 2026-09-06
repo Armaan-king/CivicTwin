@@ -201,14 +201,31 @@ def assign_care_edges(pop: Population) -> list[CareEdge]:
     """One carer per dependent, inside one household. D2, D4.
 
     A dependent is someone with an essential trip who does not reliably make it alone:
-    mobility-limited at any age, or simply old. Requiring a diagnosed limitation would
-    miss the archetypal case, which is not a wheelchair but "I take my mother to the
-    polyclinic every Tuesday" -- an 80-year-old who walks fine and does not travel across
-    the estate by herself. Narrowing it to moderate and severe mobility produced 35 carers
-    in 2,000 residents, against a Singapore rate nearer one in ten.
+    mobility-limited at any age, or simply old. Requiring a diagnosed limitation misses
+    the archetypal case, which is not a wheelchair but "I take my mother to the polyclinic
+    every Tuesday" -- an 80-year-old who walks fine and does not cross the estate by
+    herself.
 
-    A carer is a household member who could absorb that trip: no mobility limitation, and
-    in work, which is what makes absorbing it cost something.
+    **Resolved, with a source.** This rule was previously narrowed to moderate and severe
+    mobility and left as an open question in the code. It produced 35 carers in 2,000
+    residents (1.75%) and, on a stop closure, zero carers anywhere near the closing stops:
+    the dependency graph that the product exists to reason about could not fire at all.
+
+    The target is the SMU Centre for Research on Successful Ageing survey of ~7,700
+    Singapore residents aged 48-79 (November 2024), which found roughly one in seven older
+    adults is a caregiver, that 54% of care recipients are 80 or older, and that carers are
+    overwhelmingly adult children (77%) or spouses (16%).
+
+        https://news.smu.edu.sg/news/2025/04/09/smu-report-nearly-14-older-adults-are-caregivers-over-half-aged-60-and-above
+
+    So `75+` joins mobility limitation as a route into dependency, matching the finding
+    that most recipients are the oldest old. A spouse who does not work is admitted as a
+    carer, because 16% of primary carers are spouses and excluding them was most of why
+    the rate came out so low -- employed carers are still preferred, so the cost of
+    absorbing a journey stays visible where it exists.
+
+    The population remains synthetic and is labelled as such. The survey calibrates a rate;
+    it does not supply people.
     """
     households: dict[str, list[Persona]] = {}
     for p in pop.personas:
@@ -216,24 +233,24 @@ def assign_care_edges(pop: Population) -> list[CareEdge]:
 
     edges: list[CareEdge] = []
     for members in households.values():
-        # OPEN QUESTION, deliberately not settled here. This narrow rule yields 35 carers
-        # in 2,000 residents (1.75%), against a Singapore caregiving rate nearer one in
-        # ten, and it misses the archetypal case: an 80-year-old who walks fine but does
-        # not cross the estate alone. Widening it to frail elders takes second-order harm
-        # from 1 person to 7. Left narrow until the population is built on real data.
         dependents = [
             m for m in members
-            if m.mobility_level in ("moderate", "severe") and m.needs_clinic
+            if m.needs_clinic
+            and (m.mobility_level in ("moderate", "severe") or m.age_band == "75+")
         ]
         dependent_ids = {m.persona_id for m in dependents}
-        carers = [
+        eligible = [
             m for m in members
-            if m.mobility_level == "none" and m.employment_status == "employed"
-            # never both. widening "dependent" to include healthy elders made two members
-            # of an elder household eligible as each other's carer, which produced
-            # reciprocal CARES_FOR edges and ran the cascade in both directions.
+            if m.mobility_level == "none" and m.age_band != "<18"
+            # never both. Letting frail elders be dependents made two members of an elder
+            # household eligible as each other's carer, which produced reciprocal
+            # CARES_FOR edges and ran the cascade in both directions (D2 forbids it).
             and m.persona_id not in dependent_ids
         ]
+        # An employed carer is the case where absorbing a journey visibly costs something,
+        # so they are assigned first; a non-working spouse still counts as a carer.
+        carers = ([m for m in eligible if m.employment_status == "employed"]
+                  + [m for m in eligible if m.employment_status != "employed"])
         if not dependents or not carers:
             continue
         for i, d in enumerate(dependents):

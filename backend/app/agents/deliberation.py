@@ -26,8 +26,12 @@ from app.world import ResidentWorld
 #: residents per model call
 BATCH_SIZE = 12
 
-#: bump when a prompt changes, so cached deliberations from an older prompt are not reused
-PROMPT_VERSION = "v2"
+#: Bump when a prompt OR the output schema changes, so cached deliberations produced under
+#: older rules are not replayed as if they had passed the current ones. v3: grounding is
+#: scoped to the round, a citation must reach a policy fact to support a harm claim, and
+#: identity is validated rather than overwritten. v4: harmed residents are asked
+#: what would make the policy workable for them (J4).
+PROMPT_VERSION = "v4"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -37,7 +41,8 @@ Absolute rules:
 - Use ONLY the numbered facts given for that resident. Every distance, stop name, service
   number, age and circumstance must come from their own list. Invent nothing: no illnesses,
   no jobs, no family members, no stops.
-- `grounded_in` lists the fact ids you actually reasoned from.
+- `grounded_in` lists the fact ids you actually reasoned from. It must never be empty:
+  every judgement rests on something you were told. Use the exact ids, like "p_0007:f3".
 - `reasoning` is 2 to 4 sentences, first person, plain speech. No slogans, no policy
   language, no quotation marks around the whole thing.
 - `name` is a plausible Singapore name fitting their age. It is synthetic and labelled as
@@ -60,7 +65,10 @@ you: judge it.
 Absolute rules:
 - Use ONLY that resident's numbered facts. Every number must appear in their list. Invent
   nothing.
-- `grounded_in` lists the fact ids you reasoned from this round.
+- `grounded_in` lists the fact ids you reasoned from this round, and is never empty. If
+  you say this policy affected you at all, one of those ids must be a fact about the
+  policy itself -- your age and your household were true before it existed and cannot on
+  their own show that it did anything to you.
 - If a neighbour moved them, name them in `influenced_by` and say so in `changed_because`.
   A resident whose own journey did not change can still move because of what they heard.
   Only cite a neighbour who is actually in the list you were given.
@@ -77,6 +85,10 @@ Absolute rules:
   them specifically.
 - Most people are not affected. Do not manufacture drama: "nothing has changed for me" is a
   legitimate and common answer.
+- `remedy`: if and only if this resident is harmed (severity "moderate" or "high"), answer
+  one further question in their own words, one sentence: what would make this workable for
+  you? Ask for what they need, not for a policy instrument -- "somewhere to sit while I
+  wait" is a real answer. Leave it null for anyone who is not harmed.
 
 Respond with a single JSON object matching the DeliberationBatch schema, with one turn per
 resident in the order given. No prose, no fences."""
@@ -143,37 +155,100 @@ def cache_key(prompt: str, model: str) -> str:
     ).hexdigest()[:32]
 
 
-def run_opening(prompt: str, llm: LLMClient) -> OpeningBatch:
+def run_opening(prompt: str, llm: LLMClient, expected: int) -> OpeningBatch:
+    """Round 0, with the batch checked for shape before anything downstream trusts it.
+
+    A schema-valid answer is not necessarily an answer. `{"voices": []}` satisfies the
+    model and says nothing, and it is the documented failure mode of both providers we
+    use: DeepSeek's own docs warn the API "may occasionally return empty content", and an
+    8B model asked for twelve residents without a grammar returns exactly that. Counting
+    it as a result would silently shrink the population and report the survivors as if
+    they were everyone.
+    """
     try:
-        return llm.structured(OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=8000)
+        batch = llm.structured(OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=8000)
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("opening batch was not valid", exc.raw) from exc
+    if len(batch.voices) != expected:
+        raise DeliberationFailed(
+            f"opening batch returned {len(batch.voices)} voices, expected {expected}")
+    return batch
 
 
-def run_round(prompt: str, llm: LLMClient) -> DeliberationBatch:
+def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> DeliberationBatch:
+    """A later round, checked for shape and for identity.
+
+    The identity check replaces an assignment. This used to write the resident's id over
+    whatever the model returned -- "never trust the model with identity" -- which is the
+    right instinct and the wrong action: it cannot detect a batch returned in the wrong
+    order, it relabels it. Twelve residents' reasoning silently attached to the wrong
+    twelve people is worse than a rejected batch, because it still looks like evidence.
+    """
     try:
-        return llm.structured(DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000)
+        batch = llm.structured(DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000)
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("round batch was not valid", exc.raw) from exc
+    if len(batch.turns) != len(expected_ids):
+        raise DeliberationFailed(
+            f"round batch returned {len(batch.turns)} turns, expected {len(expected_ids)}")
+    if batch.persona_ids != expected_ids:
+        raise DeliberationFailed(
+            "round batch came back for the wrong residents, or in the wrong order")
+    return batch
 
 
 def check_grounding(
-    turn: AgentTurn, allowed_facts: set[str], allowed_neighbours: set[str]
+    turn: AgentTurn,
+    world: ResidentWorld,
+    rnd: int,
+    heard_from: set[str],
 ) -> list[str]:
     """What this agent was not entitled to say.
 
     Returns problems rather than raising: one bad turn in a batch of twelve is dropped and
     counted, not thrown away with the other eleven. The count is the honesty number the
     evaluation reports.
+
+    Scoped to the round on purpose. An earlier version checked against `world.ids()`, every
+    fact the resident would *ever* be given, so a round-1 turn could cite a fact only
+    revealed in round 3 and pass. The question is not whether a fact exists somewhere; it
+    is whether this resident had been told it when it spoke.
+
+    The second rule here is the one that makes a citation mean something. A fact id proves
+    the agent was handed that fact, not that the fact supports the claim. A resident
+    declaring harm while citing only their own age and household -- facts true before the
+    policy existed -- has cited nothing capable of establishing that the policy did it. So
+    a claim of harm must rest on at least one fact from the policy rounds.
     """
     problems: list[str] = []
+
+    supplied = {f.id for f in world.upto(rnd)}
     for fid in turn.grounded_in:
-        if fid not in allowed_facts:
-            problems.append(f"cites fact {fid}, which it was not given")
-    if turn.influenced_by and turn.influenced_by not in allowed_neighbours:
-        problems.append(f"claims {turn.influenced_by} influenced it, but never heard from them")
-    if turn.absorbing_for and turn.absorbing_for not in allowed_neighbours:
-        problems.append(f"claims to absorb for {turn.absorbing_for}, who is not in their household")
-    if turn.severity != "none" and not turn.grounded_in:
-        problems.append("claims harm while citing no fact at all")
+        if fid not in supplied:
+            problems.append(
+                f"cites fact {fid}, which it was not given in round {rnd}")
+
+    if not turn.grounded_in:
+        problems.append("reached a conclusion while citing no fact at all")
+
+    # facts that only became true because of the policy
+    policy_facts = {f.id for f in world.upto(rnd) if f.round >= 1}
+    claims_impact = turn.severity != "none" or turn.response != "unaffected"
+    if claims_impact and policy_facts and not (set(turn.grounded_in) & policy_facts):
+        problems.append(
+            f"claims {turn.severity} severity / {turn.response} citing only facts that were "
+            "already true before the policy")
+
+    if turn.influenced_by:
+        if turn.influenced_by == world.persona_id:
+            problems.append("claims to have been influenced by itself")
+        elif turn.influenced_by not in heard_from:
+            problems.append(
+                f"claims {turn.influenced_by} influenced it, but never heard from them "
+                f"in round {rnd}")
+
+    if turn.absorbing_for and turn.absorbing_for not in set(world.household):
+        problems.append(
+            f"claims to absorb for {turn.absorbing_for}, who is not in their household")
+
     return problems

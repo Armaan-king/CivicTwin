@@ -94,14 +94,17 @@ changed, change `docs/scenario-v1.md` first, then the test, then the code.
 fails loudly at the boundary rather than quietly in the browser. It costs about 10 ms for
 2,000 personas, which is worth paying.
 
-**Adding an agent.** Follow `agents/policy_interpreter.py`. Never call Bedrock directly;
+**Adding an agent.** Follow `agents/policy_interpreter.py`. Never call a model provider directly;
 go through `LLMClient.structured()`, which returns a validated Pydantic model or raises.
 That gives you mocking, one place to swap models, token and latency recording, and schema
 validation on every output (`architecture.md` §15, `AGENTS.md` §7).
 
-**Running without AWS.** `LLM_PROVIDER` defaults to `mock`. The whole suite runs with no
-credentials, which `AGENTS.md` §20 requires. `LLM_PROVIDER=bedrock` switches adapters;
-nothing else changes.
+**Model setup.** The local `.env` selects `LLM_PROVIDER=groq` and `GROQ_API_KEY`;
+`GROQ_MODEL_ID` selects the model. `grok` (xAI, `XAI_API_KEY`, `GROK_MODEL_ID`) is the
+other host of the same OpenAI-shaped API and shares the `ChatCompletion` adapter -- only
+the base URL and key name differ. Groq and Grok are different companies and each rejects
+the other's key, so provider and key must agree. Offline tests use explicit mock clients;
+a mock cannot drive resident deliberation. Unknown providers fail visibly.
 
 **Failure semantics are already decided.** Keep them.
 

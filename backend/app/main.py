@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import pathlib
 import uuid
 from typing import Any
@@ -23,7 +24,7 @@ from pydantic import BaseModel, Field
 from app.agents.policy_interpreter import PolicyInterpretationFailed, interpret
 from app.schemas.policy import StartRunRequest, StartRunResponse
 from app.schemas.run import Intervention, SimulationRun
-from app.engine import build_run
+from app.engine import build_run, study_area_for
 from app.resolve import StudyAreaNotFound
 from app.services.llm import LLMError, TELEMETRY, build_client
 
@@ -228,9 +229,14 @@ def get_deliberation(run_id: str) -> "DeliberationRun":
         geo, closed, _ = study_area_for(run)
         pop = build_population(geo)
         world = build_world(pop, geo, closed)
+        # DELIBERATION_LIMIT caps how many residents reason, for accounts whose
+        # rate limit cannot carry the whole town: a free Groq key allows 8,000 tokens
+        # a minute and one batch of 12 reserves most of that. Unset means everyone,
+        # which is the real product; a slice is a demo of it and says so on the page.
         _deliberation_cache[run_id] = deliberate(
             pop, world, run.policy.text or "", build_deliberation_client(),
             social=build_social_graph(pop),
+            limit=int(os.getenv("DELIBERATION_LIMIT", "0")) or None,
         )
     return _deliberation_cache[run_id]
 
@@ -249,6 +255,8 @@ def list_voices(run_id: str, limit: int = 200, offset: int = 0) -> dict:
         d = get_deliberation(run_id)
     except NoModelConfigured as exc:
         raise HTTPException(503, str(exc)) from exc
+    except LLMError as exc:
+        raise HTTPException(502, str(exc)) from exc
 
     ordered = d.ordered()
     return {
@@ -280,6 +288,8 @@ async def stream_voices(run_id: str, limit: int = 150) -> StreamingResponse:
         d = get_deliberation(run_id)
     except NoModelConfigured as exc:
         raise HTTPException(503, str(exc)) from exc
+    except LLMError as exc:
+        raise HTTPException(502, str(exc)) from exc
 
     voices = d.ordered()[:limit]
 
@@ -294,3 +304,103 @@ async def stream_voices(run_id: str, limit: int = 150) -> StreamingResponse:
                           "calls": d.calls, "seconds": d.seconds}) + "\n"
 
     return StreamingResponse(gen(), media_type="application/x-ndjson")
+
+
+@app.get("/api/runs/{run_id}/deliberated")
+def deliberated_outcomes(run_id: str) -> dict:
+    """The numbers as the residents decided them, with the denominator attached.
+
+    This is the V2 answer to the same question `/impacts` answers from the fact layer.
+    `metrics.py` is shared and unchanged -- the six metrics of I1, the four axes of I4, the
+    n >= 30 floor -- so the two are directly comparable. What differs is provenance:
+    severity, adaptation and essential-trip completion here were declared by residents,
+    not computed by a predicate.
+
+    Every rate carries `coverage`. A resident nobody asked is unknown, never unaffected,
+    and a subgroup below the floor is reported as insufficient evidence rather than as
+    zero disparity.
+    """
+    from app.aggregate import aggregate, declared_support_by_cohort
+    from app.cohort import MIN_CELL, reportable_cells
+    from app.deliberate import NoModelConfigured
+    from app.metrics import disparity_pp, metrics_for, subgroup_metrics
+    from app.remedies import cluster_remedies, collect_remedies
+
+    try:
+        d = get_deliberation(run_id)
+    except NoModelConfigured as exc:
+        raise HTTPException(503, str(exc)) from exc
+    except LLMError as exc:
+        raise HTTPException(502, str(exc)) from exc
+
+    run = get_run(run_id)
+    geo, closed, _ = study_area_for(run)
+    from app.population import build_population
+    pop = build_population(geo)
+
+    # the computed half: geometry from the fact layer the agents were shown
+    geometry = {o.persona_id: o for o in _geometry_outcomes(run)}
+    agg = aggregate(d, pop, geometry=geometry)
+    outcomes = list(agg.outcomes.values())
+    sub = subgroup_metrics(pop, agg.outcomes)
+    cells = reportable_cells(pop, list(agg.outcomes))
+
+    remedies = cluster_remedies(collect_remedies(d))
+    return {
+        "run_id": run_id,
+        "model": d.model,
+        "provenance": {
+            "declared_by_residents": ["severity", "adaptation",
+                                      "essential_trip_completion", "support"],
+            "computed_from_the_network": ["walk_distance_m", "journey_time_delta_min"],
+        },
+        "coverage": agg.coverage,
+        "metrics": {
+            "overall": metrics_for(outcomes),
+            "subgroup": sub,
+            "subgroup_disparity_pp": disparity_pp(sub),
+            # A cell under the floor cannot support a claim. Named here so the screen can
+            # say "insufficient evidence" rather than render an empty bar as parity.
+            "insufficient_cells": {
+                axis: [k for k, n in counts.items() if n < MIN_CELL]
+                for axis, counts in cells.items()
+            },
+            "min_cell": MIN_CELL,
+        },
+        "declared_support": {
+            axis: declared_support_by_cohort(pop, agg.declared_support, axis)
+            for axis in ("age_band", "mobility_level", "is_caregiver")
+        },
+        "second_order": [{"carer": c, "for": dep} for c, dep in sorted(agg.absorbing.items())],
+        "remedies": {
+            "asked": remedies.asked(),
+            "silent": remedies.silent,
+            "mapped": [{"action_type": c.action_type, "label": c.label, "count": c.count,
+                        "examples": c.examples} for c in remedies.mapped],
+            "unmappable": [{"label": c.label, "count": c.count, "examples": c.examples}
+                           for c in remedies.unmappable],
+        },
+        "cost": {"calls": d.calls, "cached_batches": d.cached, "rejected_turns": d.rejected,
+                 "failed_batches": d.failed_batches, "seconds": d.seconds},
+    }
+
+
+def _geometry_outcomes(run: SimulationRun):
+    """The computed half of every outcome, from the deterministic fact layer.
+
+    Distances and journey times stay code's job (`AGENTS.md` §10). This reads them off the
+    run the engine already built rather than recomputing, so the numbers a resident was
+    shown are the numbers their outcome carries.
+    """
+    from app.simulation import Outcome
+
+    out = []
+    for o in run.outcomes:
+        out.append(Outcome(
+            persona_id=o.persona_id,
+            walk_distance_m=int(getattr(o, "walk_distance_m", 0) or 0),
+            baseline_walk_m=int(getattr(o, "baseline_walk_m", 0) or 0),
+            journey_time_min=float(getattr(o, "journey_time_min", 0.0) or 0.0),
+            journey_time_delta_min=float(getattr(o, "journey_time_delta_min", 0.0) or 0.0),
+        ))
+    return out

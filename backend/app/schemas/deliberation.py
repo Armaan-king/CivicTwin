@@ -62,6 +62,12 @@ class AgentTurn(BaseModel):
     #: finding, now claimed by the resident rather than derived by a rule.
     absorbing_for: str | None = None
 
+    #: J4: what this resident says would make the policy workable for them, in their own
+    #: words. Asked only of residents who report being harmed, because the question is
+    #: meaningless to someone nothing happened to. Clustered and mapped onto the typed
+    #: action space in `remedies.py`; what cannot be mapped is reported, never dropped.
+    remedy: str | None = Field(default=None, max_length=300)
+
 
 class AgentVoice(BaseModel):
     """A resident's whole deliberation."""

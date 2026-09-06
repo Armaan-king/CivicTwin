@@ -94,7 +94,7 @@ The exact implementation may evolve, but the current preferred stack is:
 
 ### LLM
 
-- Claude through Amazon Bedrock
+- Grok through the xAI API
 
 ### Graph / Simulation
 
@@ -160,75 +160,58 @@ CivicTwin/
 
 ## Local Setup
 
-The implementation is not final yet, so these commands describe the intended development workflow rather than a guaranteed completed repository.
+The live app uses Grok through the xAI API. AWS credentials are not required.
 
-### 1. Clone the repository
-
-```bash
-git clone <repository-url>
-cd CivicTwin
-```
-
-### 2. Create a Python virtual environment
-
-```bash
-python -m venv .venv
-```
-
-Activate it.
-
-**macOS / Linux**
-
-```bash
-source .venv/bin/activate
-```
-
-**Windows PowerShell**
+From the project root in PowerShell:
 
 ```powershell
-.venv\Scripts\Activate.ps1
+Copy-Item .env.example .env
+Copy-Item frontend/.env.example frontend/.env
 ```
 
-### 3. Install backend dependencies
+Set `GROQ_API_KEY` in the root `.env` and set `VITE_TRANSPORT=http` in
+`frontend/.env`. Both files are gitignored. Never put the API key in a `VITE_*`
+variable, which would expose it to the browser. Existing shell variables override
+`.env`; restart the backend after editing its configuration.
 
-Once `requirements.txt` or `pyproject.toml` exists:
+**Groq is not Grok.** They are different companies whose names differ by one letter.
+Groq ([console.groq.com](https://console.groq.com), `gsk_...` keys) hosts open-weight
+models; Grok (`xai-...` keys) is xAI's own model. Each provider rejects the other's key
+with a 401, so `LLM_PROVIDER` and the key must agree.
 
-```bash
-pip install -r requirements.txt
+The configured provider is `groq` running `openai/gpt-oss-120b` at low reasoning effort;
+change `GROQ_MODEL_ID` to select another. Set `LLM_PROVIDER=grok` with `XAI_API_KEY` and
+`GROK_MODEL_ID` to use xAI instead. Both speak the same OpenAI-shaped chat API, so one
+adapter serves them and validates JSON against the existing Pydantic schemas.
+
+**Free-tier limits bite.** A free Groq key allows 8,000 tokens per minute, and the
+deliberation reserves up to 8,000 per batch across 8 concurrent workers. Deliberating
+the full 2,000 residents needs a paid tier; a small `limit=` slice runs fine on the free
+one.
+
+Start the backend:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python -m pip install -r backend/requirements.txt
+cd backend
+..\.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
 ```
 
-### 4. Configure environment variables
+Start the frontend in a second terminal:
 
-Copy:
-
-```bash
-cp .env.example .env
-```
-
-Expected variables may include AWS credentials or Bedrock configuration.
-
-Do not commit `.env`.
-
-Hackathon AWS credentials may expire and should not be treated as permanent secrets.
-
-### 5. Start backend
-
-Expected pattern:
-
-```bash
-uvicorn backend.app.main:app --reload
-```
-
-### 6. Start frontend
-
-From the frontend directory:
-
-```bash
+```powershell
+cd frontend
 npm install
 npm run dev
 ```
 
-Exact commands should be updated once the implementation stabilizes.
+Open http://localhost:5173. Backend health is at http://localhost:8000/health.
+A missing or invalid xAI key produces an explicit error when a model is needed;
+it does not produce substitute resident reasoning. The default frontend fixture
+mode is only for inspecting bundled data and does not run live deliberation.
+
+Run offline backend tests from `backend/` with `python -m pytest tests -q`.
 
 ---
 

@@ -20,6 +20,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Protocol, TypeVar
 
+import httpx
 from pydantic import BaseModel, ValidationError
 
 T = TypeVar("T", bound=BaseModel)
@@ -63,12 +64,26 @@ class Telemetry:
 TELEMETRY = Telemetry()
 
 
+@dataclass
+class CompletionResult:
+    text: str
+    input_tokens: int = 0
+    output_tokens: int = 0
+
+
 class Completion(Protocol):
-    """Anything that can turn a prompt into text. Kept deliberately tiny."""
+    """Anything that can turn a prompt into text. Kept deliberately tiny.
+
+    `schema` is the JSON Schema the caller will validate against. Most providers ignore it
+    -- they are told the shape in the system prompt and asked nicely. A provider that can
+    constrain decoding to a grammar uses it instead, which is the difference between a
+    small local model returning valid output and returning `{"voices": []}`.
+    """
 
     name: str
 
-    def complete(self, system: str, prompt: str, max_tokens: int) -> str: ...
+    def complete(self, system: str, prompt: str, max_tokens: int,
+                 schema: dict | None = None) -> str | CompletionResult: ...
 
 
 class MockCompletion:
@@ -84,7 +99,8 @@ class MockCompletion:
         self.responses = responses or {}
         self.calls: list[tuple[str, str]] = []
 
-    def complete(self, system: str, prompt: str, max_tokens: int) -> str:
+    def complete(self, system: str, prompt: str, max_tokens: int,
+                 schema: dict | None = None) -> str:
         self.calls.append((system, prompt))
         for marker, response in self.responses.items():
             if marker in prompt:
@@ -94,6 +110,164 @@ class MockCompletion:
         return json.dumps({
             "objective": "", "modifications": {}, "constraints": {}, "reading": [],
         })
+
+
+class ChatCompletion:
+    """An OpenAI-shaped chat API, over the existing HTTP dependency.
+
+    xAI and Groq speak the identical wire format -- same request body, same
+    `finish_reason`, same `usage` keys -- so one adapter serves both and only the host
+    and the key name differ. They are separate companies with confusingly similar
+    names: Grok is xAI's model, Groq is an inference provider running open weights.
+    A key for one is rejected by the other, so `key_env` is part of the provider.
+    """
+
+    def __init__(self, model_id: str, temperature: float = 0.0, *,
+                 base_url: str = "https://api.x.ai/v1/chat/completions",
+                 key_env: str = "XAI_API_KEY"):
+        self.name = model_id
+        self.temperature = temperature
+        self.base_url = base_url
+        self.key_env = key_env
+
+    def complete(self, system: str, prompt: str, max_tokens: int,
+                 schema: dict | None = None) -> CompletionResult:
+        api_key = os.getenv(self.key_env, "").strip()
+        if not api_key:
+            raise LLMError(
+                f"No model key: set {self.key_env} in the project root .env "
+                "and restart the backend.")
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+        try:
+            response = httpx.post(
+                self.base_url,
+                headers={"Authorization": f"Bearer {api_key}"},
+                json={
+                    "model": self.name,
+                    "messages": messages,
+                    "temperature": self.temperature,
+                    "reasoning_effort": "low",
+                    "max_tokens": max_tokens,
+                    "response_format": {"type": "json_object"},
+                    "stream": False,
+                },
+                timeout=120.0,
+            )
+            response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            # Do not echo request headers or arbitrary provider response bodies.
+            raise LLMError(
+                f"The model API returned HTTP {exc.response.status_code}. "
+                f"Check {self.key_env}, access to {self.name}, credits and rate limits."
+            ) from None
+        except httpx.RequestError:
+            raise LLMError("The model API could not be reached or timed out. Please retry.") from None
+        try:
+            data = response.json()
+            choice = data["choices"][0]
+            content = choice["message"]["content"]
+            if choice.get("finish_reason") != "stop" or not isinstance(content, str) or not content.strip():
+                raise ValueError("incomplete response")
+            usage = data.get("usage", {})
+            return CompletionResult(content, int(usage.get("prompt_tokens", 0)),
+                                    int(usage.get("completion_tokens", 0)))
+        except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+            raise LLMError("The model returned an incomplete or invalid response. Please retry.") from None
+
+
+class OllamaCompletion:
+    """A local model through Ollama's native API, with grammar-constrained decoding.
+
+    Ollama exposes two endpoints. The OpenAI-compatible one takes
+    `response_format: {"type": "json_object"}`, which *asks* for JSON; the native one takes
+    `format: <json schema>` and constrains generation so the sampled tokens cannot leave
+    the schema. On an 8B model that is the whole difference: asked politely for a batch of
+    twelve residents it returns `{"voices": []}`, and constrained it returns twelve
+    residents.
+
+    Two limits of that grammar, both handled by the caller rather than here:
+
+    - It enforces types and required fields, not numeric ranges. `minimum`/`maximum` ride
+      along in the schema but are not compiled into the grammar, so `position: -1` can
+      still arrive against a `ge=0` field. The Pydantic model rejects it and `structured()`
+      retries. It is never clamped -- a clamped value is a number the resident did not say.
+    - A schema-valid but *empty* answer is still empty. `{"voices": []}` satisfies any
+      grammar that makes the list optional; the deliberation agent rejects it explicitly.
+
+    No API key: the endpoint is on the loopback interface.
+    """
+
+    #: Ollama keeps a model resident for a few minutes; a cold load on an 8 GB card is
+    #: slow enough to look like a hang, and a whole run is many minutes of calls.
+    TIMEOUT = 900.0
+
+    #: The context window, which Ollama will NOT infer from the model.
+    #:
+    #: deepseek-r1:8b advertises 131072 tokens; Ollama serves it at 8192 unless told
+    #: otherwise, and `num_predict` is drawn from that same window rather than added to
+    #: it. A batch of twelve residents fills 8192 with prompt, leaving no room to
+    #: generate, so every batch came back truncated and every batch was correctly
+    #: rejected -- a whole run of 28 batches producing nothing, with the guards working
+    #: perfectly and the cause two layers down. Sized to fit beside 5.2 GB of weights on
+    #: an 8 GB card; raise it if the card is bigger.
+    NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "16384"))
+
+    def __init__(self, model_id: str, temperature: float = 0.0,
+                 base_url: str = "http://localhost:11434/api/chat"):
+        self.name = model_id
+        self.temperature = temperature
+        self.base_url = base_url
+
+    def complete(self, system: str, prompt: str, max_tokens: int,
+                 schema: dict | None = None) -> CompletionResult:
+        body: dict[str, Any] = {
+            "model": self.name,
+            "messages": (
+                ([{"role": "system", "content": system}] if system else [])
+                + [{"role": "user", "content": prompt}]
+            ),
+            "options": {
+                "temperature": self.temperature,
+                "num_predict": max_tokens,
+                "num_ctx": self.NUM_CTX,
+            },
+            # DeepSeek-R1 emits a <think> block that is not JSON and breaks parsing.
+            # Ollama strips it into its own field when thinking is switched off.
+            "think": False,
+            "stream": False,
+        }
+        if schema:
+            body["format"] = schema
+
+        try:
+            response = httpx.post(self.base_url, json=body, timeout=self.TIMEOUT)
+            response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise LLMError(
+                f"Ollama returned HTTP {exc.response.status_code}. Is `ollama serve` "
+                f"running, and has `{self.name}` been pulled?"
+            ) from None
+        except httpx.RequestError:
+            raise LLMError(
+                f"Ollama at {self.base_url} could not be reached. Start it with "
+                "`ollama serve`."
+            ) from None
+
+        try:
+            data = response.json()
+            content = data["message"]["content"]
+            if not isinstance(content, str) or not content.strip():
+                raise ValueError("empty content")
+            # Ollama reports counts, not billing. Recorded so a local run still shows what
+            # it cost in tokens and time.
+            return CompletionResult(content,
+                                    int(data.get("prompt_eval_count", 0)),
+                                    int(data.get("eval_count", 0)))
+        except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+            raise LLMError("Ollama returned an incomplete response. Please retry.") from None
 
 
 class BedrockCompletion:
@@ -118,7 +292,8 @@ class BedrockCompletion:
             self._client = boto3.client("bedrock-runtime", region_name=self.region)
         return self._client
 
-    def complete(self, system: str, prompt: str, max_tokens: int) -> str:
+    def complete(self, system: str, prompt: str, max_tokens: int,
+                 schema: dict | None = None) -> str:
         try:
             res = self._bedrock().converse(
                 modelId=self.model_id,
@@ -156,11 +331,27 @@ class LLMClient:
 
     def structured(self, schema: type[T], system: str, prompt: str,
                    max_tokens: int = 1024) -> T:
+        json_schema = schema.model_json_schema()
+        system = f"{system}\n\nReturn JSON matching this schema:\n{json.dumps(json_schema)}"
         last: LLMOutputInvalid | None = None
         started = time.monotonic()
+        input_tokens = output_tokens = 0
 
         for attempt in range(1, self.max_attempts + 1):
-            raw = self.completion.complete(system, prompt, max_tokens)
+            try:
+                result = self.completion.complete(system, prompt, max_tokens, json_schema)
+            except LLMError:
+                TELEMETRY.record(Usage(model=self.completion.name,
+                                       ms=int((time.monotonic() - started) * 1000),
+                                       input_tokens=input_tokens, output_tokens=output_tokens,
+                                       attempts=attempt))
+                raise
+            if isinstance(result, CompletionResult):
+                input_tokens += result.input_tokens
+                output_tokens += result.output_tokens
+                raw = result.text
+            else:
+                raw = result
             try:
                 parsed = schema.model_validate_json(_strip_fence(raw))
             except (ValidationError, ValueError) as exc:
@@ -171,12 +362,15 @@ class LLMClient:
                 model=self.completion.name,
                 ms=int((time.monotonic() - started) * 1000),
                 attempts=attempt,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
             ))
             return parsed
 
         assert last is not None
         TELEMETRY.record(Usage(model=self.completion.name,
                                ms=int((time.monotonic() - started) * 1000),
+                               input_tokens=input_tokens, output_tokens=output_tokens,
                                attempts=self.max_attempts))
         raise last
 
@@ -189,6 +383,34 @@ def build_client(temperature: float = 0.0) -> LLMClient:
     resident and is not one.
     """
     provider = os.getenv("LLM_PROVIDER", "mock").lower()
+    if provider in {"grok", "xai"}:
+        return LLMClient(ChatCompletion(
+            model_id=os.getenv("GROK_MODEL_ID", "grok-4.3"),
+            temperature=temperature,
+        ))
+    if provider == "groq":
+        return LLMClient(ChatCompletion(
+            model_id=os.getenv("GROQ_MODEL_ID", "openai/gpt-oss-120b"),
+            temperature=temperature,
+            base_url="https://api.groq.com/openai/v1/chat/completions",
+            key_env="GROQ_API_KEY",
+        ))
+    if provider in {"ollama", "local", "deepseek-local"}:
+        return LLMClient(OllamaCompletion(
+            model_id=os.getenv("OLLAMA_MODEL_ID", "deepseek-r1:8b"),
+            temperature=temperature,
+            base_url=os.getenv("OLLAMA_URL", "http://localhost:11434/api/chat"),
+        ))
+    if provider == "deepseek":
+        # Hosted DeepSeek speaks the OpenAI shape. It has no grammar mode -- only
+        # `response_format: json_object` -- so it relies on validate-and-retry, and its own
+        # docs warn it "may occasionally return empty content".
+        return LLMClient(ChatCompletion(
+            model_id=os.getenv("DEEPSEEK_MODEL_ID", "deepseek-v4-flash"),
+            temperature=temperature,
+            base_url="https://api.deepseek.com/chat/completions",
+            key_env="DEEPSEEK_API_KEY",
+        ))
     if provider == "bedrock":
         return LLMClient(BedrockCompletion(
             model_id=os.getenv("BEDROCK_MODEL_ID_FAST",
@@ -196,7 +418,11 @@ def build_client(temperature: float = 0.0) -> LLMClient:
             region=os.getenv("AWS_REGION", "ap-southeast-1"),
             temperature=temperature,
         ))
-    return LLMClient(MockCompletion(_DEFAULT_MOCKS))
+    if provider == "mock":
+        return LLMClient(MockCompletion(_DEFAULT_MOCKS))
+    raise LLMError(
+        f"Unknown LLM_PROVIDER {provider!r}. Use ollama, deepseek, groq, grok, bedrock, "
+        "or mock (tests only).")
 
 
 def build_deliberation_client() -> LLMClient:
