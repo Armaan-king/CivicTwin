@@ -12,6 +12,8 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+
+from app.config import env_int
 import pathlib
 import uuid
 from typing import Any
@@ -236,7 +238,7 @@ def get_deliberation(run_id: str) -> "DeliberationRun":
         _deliberation_cache[run_id] = deliberate(
             pop, world, run.policy.text or "", build_deliberation_client(),
             social=build_social_graph(pop),
-            limit=int(os.getenv("DELIBERATION_LIMIT", "0")) or None,
+            limit=env_int("DELIBERATION_LIMIT", 0) or None,
         )
     return _deliberation_cache[run_id]
 

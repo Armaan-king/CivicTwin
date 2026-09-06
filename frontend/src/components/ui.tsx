@@ -30,7 +30,7 @@ export function Note({ children, tone = "quiet" }: { children: ReactNode; tone?:
       className={tone === "alert" ? "box-alert" : "box"}
       style={{
         padding: "14px 16px",
-        background: tone === "alert" ? "rgba(239,78,54,.08)" : undefined,
+        background: tone === "alert" ? "rgba(180,35,24,.06)" : undefined,
       }}
     >
       {children}
@@ -92,12 +92,16 @@ export function Loading({ what }: { what: string }) {
 }
 
 export function Failed({ message }: { message: string }) {
+  // The advice here used to be "regenerate it with python scripts/make_fixture.py", which
+  // was deleted from this repository some time ago. Pointing someone at a script that does
+  // not exist is worse than saying nothing, so this now names the two things that are
+  // actually true when a screen cannot load: the API it wanted, and how to check it.
   return (
     <div style={{ padding: 40 }}>
       <p className="alert" style={{ fontSize: "var(--fs-16)", margin: "0 0 8px" }}>{message}</p>
       <p className="t3" style={{ fontSize: "var(--fs-14)", margin: 0, lineHeight: 1.6 }}>
-        Regenerate it with <code>python scripts/make_fixture.py</code>, then copy it into{" "}
-        <code>frontend/public/fixtures/</code>.
+        This screen reads from the CivicTwin API. Check it is running with{" "}
+        <code>uvicorn app.main:app --port 8000</code> from <code>backend/</code>, then reload.
       </p>
     </div>
   );

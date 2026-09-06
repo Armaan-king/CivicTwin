@@ -17,6 +17,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+
+from app.config import env_float, env_int
 import pathlib
 import threading
 import time
@@ -222,7 +224,7 @@ class OllamaCompletion:
     #: the layers to CPU, and throughput fell by roughly an order of magnitude while
     #: looking, from the outside, exactly like a hang. The prompt is made to fit by
     #: shrinking the batch (`DELIBERATION_BATCH_SIZE`), not by growing the window.
-    NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "8192"))
+    NUM_CTX = env_int("OLLAMA_NUM_CTX", 8192)
 
     def __init__(self, model_id: str, temperature: float = 0.0,
                  base_url: str = "http://localhost:11434/api/chat"):
@@ -500,7 +502,7 @@ def build_client(temperature: float = 0.0, role: str = "interpreter") -> LLMClie
 def build_deliberation_client() -> LLMClient:
     """The client the population reasons with. Warmer, cheaper, and never the mock."""
     return build_client(
-        temperature=float(os.getenv("DELIBERATION_TEMPERATURE", "0.8")),
+        temperature=env_float("DELIBERATION_TEMPERATURE", 0.8),
         role="deliberation",
     )
 

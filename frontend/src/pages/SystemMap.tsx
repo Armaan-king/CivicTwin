@@ -25,6 +25,7 @@ import {
  */
 
 const WORLD = { w: 1660, h: 1020 };
+const CORE_HEIGHT = 650;
 const MIN_SCALE = 0.35;
 const MAX_SCALE = 2.2;
 
@@ -35,9 +36,10 @@ const EDGE_COLOR: Record<string, string> = {
 };
 
 function stateInk(state: NodeState): string {
+  if (state === "live") return "var(--success)";
   if (state === "planned") return "var(--fig-quiet)";
-  if (state === "stub") return "var(--alert)";
-  return "var(--gold)";
+  if (state === "stub" || state === "partial") return "var(--warning)";
+  return "var(--t2)";
 }
 
 /** Orthogonal connector: out the right edge, along a channel, into the left edge. */
@@ -67,23 +69,32 @@ export function SystemMap() {
   const frame = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
 
-  const fit = useCallback(() => {
+  const fitCore = useCallback(() => {
+    const el = frame.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    const k = Math.min(width / (WORLD.w + 80), height / (CORE_HEIGHT + 80), MAX_SCALE);
+    setView({
+      k,
+      x: (width - WORLD.w * k) / 2,
+      y: (height - CORE_HEIGHT * k) / 2 - 34 * k,
+    });
+  }, []);
+
+  const fitAll = useCallback(() => {
     const el = frame.current;
     if (!el) return;
     const { width, height } = el.getBoundingClientRect();
     const k = Math.min(width / (WORLD.w + 80), height / (WORLD.h + 80), MAX_SCALE);
-    setView({
-      k,
-      x: (width - WORLD.w * k) / 2,
-      y: (height - WORLD.h * k) / 2,
-    });
+    setView({ k, x: (width - WORLD.w * k) / 2, y: (height - WORLD.h * k) / 2 });
   }, []);
 
   useEffect(() => {
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, [fit]);
+    fitCore();
+    const observer = new ResizeObserver(fitCore);
+    if (frame.current) observer.observe(frame.current);
+    return () => observer.disconnect();
+  }, [fitCore]);
 
   const zoomBy = (factor: number) => {
     const el = frame.current;
@@ -110,15 +121,23 @@ export function SystemMap() {
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
-    (e.target as Element).setPointerCapture?.(e.pointerId);
+    if ((e.target as Element).closest("[data-system-node]")) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      return;
+    }
     drag.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y };
   };
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!drag.current) return;
+    const activeDrag = drag.current;
+    if (!activeDrag) return;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
     setView((v) => ({
       ...v,
-      x: drag.current!.vx + (e.clientX - drag.current!.x),
-      y: drag.current!.vy + (e.clientY - drag.current!.y),
+      x: activeDrag.vx + (clientX - activeDrag.x),
+      y: activeDrag.vy + (clientY - activeDrag.y),
     }));
   };
   const onPointerUp = () => {
@@ -150,30 +169,28 @@ export function SystemMap() {
     <Crt>
       <TopBar meta="SYSTEM" />
 
-      <div style={{ padding: "var(--s-4) var(--s-6) var(--s-2)", flexShrink: 0 }}>
+      <div className="system-header">
         <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s-3)", flexWrap: "wrap" }}>
           <h1 className="t1" style={{ fontSize: "var(--fs-28)", fontWeight: 500, margin: 0, letterSpacing: "-0.01em" }}>
-            How this is built
+            System architecture
           </h1>
           <span className="t3" style={{ fontSize: "var(--fs-14)" }}>
             {counts.live ?? 0} built · {counts.stub ?? 0} stub · {counts.planned ?? 0} not built
           </span>
         </div>
         <p className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.65, margin: "var(--s-2) 0 0", maxWidth: "78ch" }}>
-          Drag to pan, scroll to zoom, click a component to open it. Counts come from the
-          run currently loaded, so this is the shape of the system that produced the numbers
-          on the other screens — including the parts that are drawn in the architecture
-          document and do not exist.
+          Select a component to see what it does. Drag to pan and scroll to zoom.
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: detail ? "minmax(0,1fr) 372px" : "minmax(0,1fr)", gap: "var(--s-3)", padding: "0 var(--s-6) var(--s-4)", flexGrow: 1, minHeight: 0 }}>
+      <div className="system-workspace">
         <div
           ref={frame}
           onWheel={onWheel}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
           onPointerLeave={onPointerUp}
           style={{
             position: "relative",
@@ -246,12 +263,22 @@ export function SystemMap() {
                 return (
                   <g
                     key={nd.id}
+                    data-system-node
+                    role="button"
+                    tabIndex={0}
+                    aria-label={nd.label + ", " + STATE_COPY[nd.state].label}
                     transform={`translate(${nd.x} ${nd.y})`}
                     onMouseEnter={() => setHovered(nd.id)}
                     onMouseLeave={() => setHovered(null)}
                     onClick={(ev) => {
                       ev.stopPropagation();
                       setSelected(isSel ? null : nd.id);
+                    }}
+                    onKeyDown={(ev) => {
+                      if (ev.key === "Enter" || ev.key === " ") {
+                        ev.preventDefault();
+                        setSelected(isSel ? null : nd.id);
+                      }
                     }}
                     style={{ cursor: "pointer", opacity: dim ? 0.3 : 1, transition: "opacity .16s ease" }}
                   >
@@ -267,14 +294,14 @@ export function SystemMap() {
                     <text x={14} y={43} style={{ fontSize: 11, fill: "var(--t3)" }}>
                       {nd.kind}
                     </text>
-                    {nd.facts?.[0] && (
+                    {nd.state === "live" && nd.facts?.[0] && (
                       <text x={14} y={58} style={{ fontSize: 11, fill: "var(--t2)" }}>
                         {nd.facts[0].value}{" "}
                         <tspan style={{ fill: "var(--fig-quiet)" }}>{nd.facts[0].label}</tspan>
                       </text>
                     )}
                     {nd.state !== "live" && (
-                      <text x={nd.w - 14} y={25} textAnchor="end"
+                      <text x={14} y={59}
                             style={{ fontSize: 10, letterSpacing: "0.1em", fill: ink }}>
                         {STATE_COPY[nd.state].label}
                       </text>
@@ -286,7 +313,7 @@ export function SystemMap() {
           </svg>
 
           <div style={{ position: "absolute", left: 12, bottom: 12, display: "flex", gap: 6 }}>
-            {[["−", () => zoomBy(1 / 1.25)], ["+", () => zoomBy(1.25)], ["FIT", fit]].map(
+            {[["−", () => zoomBy(1 / 1.25)], ["+", () => zoomBy(1.25)], ["CORE", fitCore], ["ALL", fitAll]].map(
               ([label, fn]) => (
                 <button
                   key={label as string}
@@ -295,7 +322,7 @@ export function SystemMap() {
                   style={{
                     border: "1px solid var(--rule-strong)", background: "var(--ground)",
                     color: "var(--t2)", fontFamily: "inherit", fontSize: "var(--fs-12)",
-                    padding: "6px 11px", borderRadius: 0, cursor: "pointer", minWidth: 34,
+                    padding: "6px 11px", borderRadius: 4, cursor: "pointer", minWidth: 34,
                   }}
                 >
                   {label as string}
@@ -315,7 +342,7 @@ export function SystemMap() {
         </div>
 
         {detail && (
-          <aside style={{ border: "1px solid var(--rule)", background: "var(--panel)", padding: "var(--s-3)", overflowY: "auto" }}>
+          <aside className="system-detail">
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "var(--s-2)" }}>
               <h2 className="t1" style={{ fontSize: "var(--fs-20)", fontWeight: 500, margin: 0 }}>
                 {detail.label}

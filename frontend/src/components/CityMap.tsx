@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Geography, Persona, PersonaOutcome, SimEvent, CityBlock } from "@/types/simulation";
 
 /**
@@ -27,10 +27,19 @@ export interface CityMapProps {
   selected: string | null;
   onSelect: (blockId: string | null) => void;
   ties?: { source: string; target: string }[];
+  removedStopIds?: string[];
+}
+
+interface MapView {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 export function CityMap({
   geography, personas, outcomes, events, round, selected, onSelect, ties = [],
+  removedStopIds = [],
 }: CityMapProps) {
   const [hover, setHover] = useState<string | null>(null);
   const [spanX, spanY] = geography.span;
@@ -71,6 +80,71 @@ export function CityMap({
     () => new Map(personas.map((p) => [p.persona_id, p])),
     [personas]
   );
+  const removedStops = useMemo(() => new Set(removedStopIds), [removedStopIds]);
+  const visibleStops = useMemo(
+    () => geography.stops.filter((stop) =>
+      removedStops.has(stop.stop_id) ||
+      geography.route.some(([x, y]) => Math.hypot(stop.x - x, stop.y - y) < 42)
+    ),
+    [geography.route, geography.stops, removedStops]
+  );
+  const focusBounds = useMemo(() => {
+    const points = [...geography.route, [geography.polyclinic.x, geography.polyclinic.y] as [number, number]];
+    const xs = points.map(([x]) => x);
+    const ys = points.map(([, y]) => y);
+    const pad = 90;
+    const minX = Math.max(0, Math.min(...xs) - pad);
+    const minY = Math.max(0, Math.min(...ys) - pad);
+    const maxX = Math.min(spanX, Math.max(...xs) + pad);
+    const maxY = Math.min(spanY, Math.max(...ys) + pad);
+    return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
+  }, [geography.polyclinic.x, geography.polyclinic.y, geography.route, spanX, spanY]);
+
+  const closureBounds = useMemo(() => {
+    const stops = geography.stops.filter((stop) => removedStops.has(stop.stop_id));
+    if (!stops.length) return focusBounds;
+    const xs = stops.map((stop) => stop.x);
+    const ys = stops.map((stop) => stop.y);
+    const centreX = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const centreY = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const w = Math.min(spanX, Math.max(1050, Math.max(...xs) - Math.min(...xs) + 760));
+    const h = Math.min(spanY, Math.max(650, Math.max(...ys) - Math.min(...ys) + 520));
+    return {
+      x: Math.max(0, Math.min(spanX - w, centreX - w / 2)),
+      y: Math.max(0, Math.min(spanY - h, centreY - h / 2)),
+      w,
+      h,
+    };
+  }, [focusBounds, geography.stops, removedStops, spanX, spanY]);
+
+  const [view, setView] = useState<MapView>(focusBounds);
+  const [dragging, setDragging] = useState(false);
+  const drag = useRef<{ id: number; x: number; y: number; view: MapView } | null>(null);
+  const moved = useRef(false);
+
+  useEffect(() => setView(focusBounds), [focusBounds]);
+
+  const clampView = (next: MapView): MapView => ({
+    ...next,
+    x: Math.max(0, Math.min(spanX - next.w, next.x)),
+    y: Math.max(0, Math.min(spanY - next.h, next.y)),
+  });
+
+  const zoomBy = (factor: number, anchorX = 0.5, anchorY = 0.5) => {
+    setView((current) => {
+      const minScale = 0.24;
+      const maxScale = Math.min(spanX / focusBounds.w, spanY / focusBounds.h);
+      const scale = Math.max(minScale, Math.min(maxScale, (current.w / focusBounds.w) * factor));
+      const w = focusBounds.w * scale;
+      const h = focusBounds.h * scale;
+      return clampView({
+        x: current.x + (current.w - w) * anchorX,
+        y: current.y + (current.h - h) * anchorY,
+        w,
+        h,
+      });
+    });
+  };
 
   const centre = (personaId: string) => {
     const b = blockById.get(personaById.get(personaId)?.block_id ?? "");
@@ -78,26 +152,85 @@ export function CityMap({
   };
 
   return (
-    <svg
-      viewBox={`-40 -46 ${spanX + 80} ${spanY + 100}`}
-      style={{ width: "100%", height: "100%", display: "block" }}
-      onPointerLeave={() => setHover(null)}
-      role="img"
-      aria-label="Plan of the estate. Blocks darken to red as residents lose an essential trip, round by round."
-    >
-      <defs>
-        <filter id="mapGlow" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur stdDeviation="5" result="b" />
-          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-      </defs>
-
+    <div className={"city-map" + (dragging ? " is-dragging" : "")}>
+      <svg
+        viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}
+        preserveAspectRatio="xMidYMid meet"
+        tabIndex={0}
+        onPointerDown={(event) => {
+          if (event.button !== 0) return;
+          moved.current = false;
+          drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, view };
+          event.currentTarget.setPointerCapture(event.pointerId);
+          setDragging(true);
+        }}
+        onPointerMove={(event) => {
+          const active = drag.current;
+          if (!active || active.id !== event.pointerId) return;
+          const dx = event.clientX - active.x;
+          const dy = event.clientY - active.y;
+          if (Math.abs(dx) + Math.abs(dy) > 4) moved.current = true;
+          const rect = event.currentTarget.getBoundingClientRect();
+          setView(clampView({
+            ...active.view,
+            x: active.view.x - (dx / rect.width) * active.view.w,
+            y: active.view.y - (dy / rect.height) * active.view.h,
+          }));
+        }}
+        onPointerUp={(event) => {
+          if (drag.current?.id === event.pointerId) {
+            drag.current = null;
+            event.currentTarget.releasePointerCapture(event.pointerId);
+            setDragging(false);
+          }
+        }}
+        onPointerCancel={() => {
+          drag.current = null;
+          setDragging(false);
+        }}
+        onPointerLeave={() => setHover(null)}
+        onClickCapture={(event) => {
+          if (!moved.current) return;
+          event.stopPropagation();
+          moved.current = false;
+        }}
+        onWheel={(event) => {
+          event.preventDefault();
+          const rect = event.currentTarget.getBoundingClientRect();
+          zoomBy(
+            event.deltaY > 0 ? 1.18 : 0.84,
+            (event.clientX - rect.left) / rect.width,
+            (event.clientY - rect.top) / rect.height,
+          );
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "+" || event.key === "=") {
+            event.preventDefault();
+            zoomBy(0.8);
+          } else if (event.key === "-") {
+            event.preventDefault();
+            zoomBy(1.25);
+          } else if (event.key === "0") {
+            event.preventDefault();
+            setView(focusBounds);
+          } else if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
+            event.preventDefault();
+            setView((current) => clampView({
+              ...current,
+              x: current.x + (event.key === "ArrowLeft" ? -current.w * 0.08 : event.key === "ArrowRight" ? current.w * 0.08 : 0),
+              y: current.y + (event.key === "ArrowUp" ? -current.h * 0.08 : event.key === "ArrowDown" ? current.h * 0.08 : 0),
+            }));
+          }
+        }}
+        role="application"
+        aria-label="Interactive map of the Service 265 corridor in Ang Mo Kio. Drag to move, scroll or use the controls to zoom, and select a block for resident details."
+      >
       {geography.roads.map((r, i) => (
         <line
           key={i}
           x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2}
-          stroke={r.kind === "arterial" ? "#2f2a23" : "#1c1915"}
-          strokeWidth={r.kind === "arterial" ? 17 : 7}
+          stroke={r.kind === "arterial" ? "var(--map-road)" : "var(--map-road-quiet)"}
+          strokeWidth={r.kind === "arterial" ? 24 : 10}
           strokeLinecap="square"
         />
       ))}
@@ -110,8 +243,8 @@ export function CityMap({
           key={s.service_id}
           points={s.points.map(([x, y]) => `${x},${y}`).join(" ")}
           fill="none"
-          stroke="#241f19"
-          strokeWidth={13}
+          stroke="var(--map-route)"
+          strokeWidth={17}
           strokeLinejoin="round"
           strokeLinecap="round"
         />
@@ -133,37 +266,50 @@ export function CityMap({
           >
             <rect
               x={b.x} y={b.y} width={b.w} height={b.h}
-              fill={hot ? "rgba(239,78,54,.34)" : mid ? "rgba(242,176,36,.15)" : "#16130f"}
-              stroke={on ? "var(--gold)" : hot ? "var(--alert)" : near ? "var(--t3)" : mid ? "rgba(242,176,36,.45)" : "#232019"}
-              strokeWidth={on ? 2.4 : hot ? 1.5 : 1}
-              filter={hot ? "url(#mapGlow)" : undefined}
+              fill={hot ? "color-mix(in srgb, var(--danger) 22%, var(--map-block))" : mid ? "var(--map-mid)" : "var(--map-block)"}
+              stroke={on ? "var(--gold)" : hot ? "var(--alert)" : near ? "var(--t3)" : mid ? "var(--map-mid-stroke)" : "var(--map-block-stroke)"}
+              strokeWidth={on ? 4 : hot ? 2.6 : 1.5}
               style={{ transition: "fill .45s ease, stroke .18s ease" }}
             />
-            {hot &&
-              Array.from({ length: Math.min(7, rec!.severe) }).map((_, i) => (
-                <rect
-                  key={i}
-                  x={b.x + 5 + i * 7} y={b.y + b.h - 10}
-                  width={3.6} height={6}
+            {hot && (
+              <g style={{ pointerEvents: "none" }}>
+                <circle
+                  cx={b.x + b.w / 2}
+                  cy={b.y + b.h / 2}
+                  r={17}
                   fill="var(--alert)"
+                  stroke="var(--panel)"
+                  strokeWidth={3}
                 />
-              ))}
+                <text
+                  x={b.x + b.w / 2}
+                  y={b.y + b.h / 2 + 5}
+                  textAnchor="middle"
+                  fontSize={14}
+                  fontWeight={700}
+                  fill="#fff"
+                  fontFamily="var(--font-ui)"
+                >
+                  {rec!.severe}
+                </text>
+              </g>
+            )}
           </g>
         );
       })}
 
       <g style={{ pointerEvents: "none" }}>
         <rect
-          x={geography.polyclinic.x - 14} y={geography.polyclinic.y - 14}
-          width={28} height={28} fill="#16130f" stroke="var(--t2)" strokeWidth={1.8}
+          x={geography.polyclinic.x - 21} y={geography.polyclinic.y - 21}
+          width={42} height={42} rx={4} fill="var(--panel)" stroke="var(--t2)" strokeWidth={3}
         />
         <path
-          d={`M ${geography.polyclinic.x} ${geography.polyclinic.y - 8} v 16 M ${geography.polyclinic.x - 8} ${geography.polyclinic.y} h 16`}
-          stroke="var(--t2)" strokeWidth={2.4}
+          d={`M ${geography.polyclinic.x} ${geography.polyclinic.y - 12} v 24 M ${geography.polyclinic.x - 12} ${geography.polyclinic.y} h 24`}
+          stroke="var(--t2)" strokeWidth={3.6}
         />
         <text
-          x={geography.polyclinic.x} y={geography.polyclinic.y + 34}
-          textAnchor="middle" fontSize={13} fill="var(--t2)" fontFamily="var(--font-ui)"
+          x={geography.polyclinic.x} y={geography.polyclinic.y + 48}
+          textAnchor="middle" fontSize={17} fontWeight={650} fill="var(--t2)" fontFamily="var(--font-ui)"
         >
           Polyclinic
         </text>
@@ -171,32 +317,35 @@ export function CityMap({
 
       <polyline
         points={geography.route.map(([x, y]) => `${x},${y}`).join(" ")}
-        fill="none" stroke="var(--gold)" strokeWidth={2.6}
+        fill="none" stroke="var(--gold)" strokeWidth={5}
         style={{ pointerEvents: "none" }}
       />
 
-      {geography.stops.map((s) => (
+      {visibleStops.map((s) => {
+        const removed = s.removed || removedStops.has(s.stop_id);
+        return (
         <g key={s.stop_id} style={{ pointerEvents: "none" }}>
-          {s.removed && round >= 1 ? (
+          {removed && round >= 1 ? (
             <>
-              <rect x={s.x - 8} y={s.y - 8} width={16} height={16} fill="var(--ground)" stroke="var(--alert)" strokeWidth={2.2} />
-              <path d={`M ${s.x - 8} ${s.y - 8} l 16 16 M ${s.x + 8} ${s.y - 8} l -16 16`} stroke="var(--alert)" strokeWidth={2.2} />
-              <text x={s.x} y={s.y - 17} textAnchor="middle" fontSize={12} fill="var(--alert)" fontFamily="var(--font-ui)">
-                {s.stop_id}
+              <circle cx={s.x} cy={s.y} r={23} fill="var(--panel)" stroke="var(--alert)" strokeWidth={4} />
+              <path d={`M ${s.x - 11} ${s.y - 11} l 22 22 M ${s.x + 11} ${s.y - 11} l -22 22`} stroke="var(--alert)" strokeWidth={4} />
+              <text x={s.x} y={s.y - 36} textAnchor="middle" fontSize={19} fill="var(--alert)" fontWeight={700} fontFamily="var(--font-ui)">
+                STOP CLOSED
               </text>
             </>
           ) : (
             <>
-              <circle cx={s.x} cy={s.y} r={5} fill="var(--ground)" stroke="var(--gold)" strokeWidth={2.2} />
+              <circle cx={s.x} cy={s.y} r={7} fill="var(--ground)" stroke="var(--gold)" strokeWidth={2.8} />
               {s.name === "Interchange" && (
-                <text x={s.x} y={s.y - 15} textAnchor="middle" fontSize={12} fill="var(--t3)" fontFamily="var(--font-ui)">
+                <text x={s.x} y={s.y - 20} textAnchor="middle" fontSize={15} fill="var(--t3)" fontWeight={600} fontFamily="var(--font-ui)">
                   Interchange
                 </text>
               )}
             </>
           )}
         </g>
-      ))}
+        );
+      })}
 
       {round >= 2 &&
         ties.slice(0, 18).map((t, i) => {
@@ -214,7 +363,15 @@ export function CityMap({
             />
           );
         })}
-    </svg>
+      </svg>
+
+      <div className="city-map__tools" role="group" aria-label="Map controls">
+        <button type="button" onClick={() => zoomBy(1.25)} aria-label="Zoom out" title="Zoom out">−</button>
+        <button type="button" onClick={() => zoomBy(0.8)} aria-label="Zoom in" title="Zoom in">+</button>
+        <button type="button" className="city-map__text-button" onClick={() => setView(closureBounds)}>Focus closures</button>
+        <button type="button" className="city-map__text-button" onClick={() => setView(focusBounds)}>Full route</button>
+      </div>
+    </div>
   );
 }
 

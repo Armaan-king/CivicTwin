@@ -16,6 +16,8 @@ from __future__ import annotations
 
 import json
 import os
+
+from app.config import env_int
 import pathlib
 import threading
 import time
@@ -49,7 +51,7 @@ CACHE = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "delibe
 #: (`AGENTS.md` §8). The right ceiling depends on what is behind the client: a hosted
 #: API wants several, one local GPU wants one, and eight against Ollama merely builds a
 #: queue while making the failure modes concurrent.
-CONCURRENCY = int(os.getenv("DELIBERATION_CONCURRENCY", "8"))
+CONCURRENCY = env_int("DELIBERATION_CONCURRENCY", 8)
 
 ROUNDS = (1, 2, 3)
 #: how many neighbours a resident hears from in a round

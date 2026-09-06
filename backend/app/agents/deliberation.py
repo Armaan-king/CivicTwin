@@ -18,6 +18,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+
+from app.config import env_int
 import re
 
 from app.population import Persona
@@ -33,7 +35,7 @@ from app.world import ResidentWorld
 #: draws from the same window, so every batch came back truncated and was rejected.
 #: Six fits with room to generate on a local 8B; a hosted model with a wide context can
 #: raise it and save calls.
-BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
+BATCH_SIZE = env_int("DELIBERATION_BATCH_SIZE", 12)
 
 #: Bump when a prompt OR the output schema changes, so cached deliberations produced under
 #: older rules are not replayed as if they had passed the current ones. v3: grounding is

@@ -1,145 +1,191 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
-import { Loading, Failed, Prose, Stat } from "@/components/ui";
+import { Loading, Failed } from "@/components/ui";
+import { api, NotAvailableOffline } from "@/lib/api";
 import { useRun } from "@/lib/useRun";
+
+type ReviewTab = "change" | "assumptions" | "locations";
 
 export function PolicyInput() {
   const { run, error } = useRun();
   const navigate = useNavigate();
+  const [draft, setDraft] = useState<string | null>(null);
+  const [tab, setTab] = useState<ReviewTab>("change");
+  const [running, setRunning] = useState(false);
+  const [runError, setRunError] = useState<string | null>(null);
 
   if (error) return <Crt><TopBar /><Failed message={error} /></Crt>;
   if (!run) return <Crt><TopBar /><Loading what="the scenario" /></Crt>;
 
-  const p = run.policy;
+  const policyText = draft ?? run.policy.text;
+  const changed = policyText.trim() !== run.policy.text.trim();
+  const assumptions = run.policy.reading.filter((step) => step.assumed);
+
+  async function startSimulation() {
+    setRunError(null);
+    if (!changed) {
+      window.sessionStorage.removeItem("civictwin-active-run");
+      navigate("/simulation");
+      return;
+    }
+
+    setRunning(true);
+    try {
+      const created = await api.startRun(policyText.trim());
+      window.sessionStorage.setItem("civictwin-active-run", created.run_id);
+      navigate("/simulation");
+    } catch (caught) {
+      setRunError(caught instanceof NotAvailableOffline
+        ? "Start the backend to simulate an amended policy. You can reset to the prepared example and continue now."
+        : (caught as Error).message);
+    } finally {
+      setRunning(false);
+    }
+  }
 
   return (
     <Crt>
-      <TopBar meta={`SYNTHETIC N=${run.personas.length} SEED ${run.seed}`} />
+      <TopBar meta={"SYNTHETIC · " + run.study_area} />
 
-      <div className="grid-split" style={{ flexGrow: 1, display: "grid", gridTemplateColumns: "1.05fr .95fr", minHeight: 0 }}>
-        {/* ---- what you wrote ---- */}
-        <section
-          style={{
-            padding: "var(--s-5) var(--s-5) var(--s-5) var(--s-6)", display: "flex", flexDirection: "column",
-            gap: "var(--s-4)", borderRight: "1px solid var(--rule)", overflowY: "auto",
-          }}
-        >
-          <div>
-            <h1
-              className="t1"
-              style={{
-                fontSize: "var(--fs-28)", fontWeight: 500, lineHeight: 1.12,
-                letterSpacing: ".02em", margin: "0 0 13px",
-              }}
-            >
-              SAY IT IN PLAIN ENGLISH
-            </h1>
-            <Prose style={{ fontSize: "var(--fs-16)", maxWidth: "54ch" }}>
-              CivicTwin turns it into something it can simulate. You check that reading
-              before anything runs.
-            </Prose>
-          </div>
+      <main className="policy-workspace">
+        <header className="policy-workspace__header">
+          <span className="page-kicker">Step 1 · Policy</span>
+          <h1>Review the transport policy</h1>
+          <p>Edit the proposal, confirm what CivicTwin will test, then run the simulation.</p>
+        </header>
 
-          <div className="box" style={{ padding: "var(--s-3)", fontSize: "var(--fs-16)", lineHeight: 1.7, minHeight: 140 }}>
-            <span className="t1">{p.text}</span>
-            <span className="caret t1">_</span>
-          </div>
-
-          <div style={{ display: "flex", gap: "var(--s-2)", alignItems: "center", flexWrap: "wrap" }}>
-            <button className="btn" onClick={() => navigate("/simulation")}>INTERPRET PROPOSAL</button>
-            <button className="btn-ghost">ENTER FIELDS DIRECTLY</button>
-          </div>
-
-          <div
-            style={{
-              marginTop: "auto", borderTop: "1px solid var(--rule)", paddingTop: 20,
-              display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: "var(--s-3)",
-            }}
-          >
-            <Stat label="personas" value={run.personas.length.toLocaleString()} />
-            <Stat label="study area" value={run.study_area} />
-            <Stat label="seed" value={String(run.seed)} />
-            <Stat label="rounds" value={`0-${run.rounds}`} />
-          </div>
-        </section>
-
-        {/* ---- how it read you. reasoning, not JSON. ---- */}
-        <section style={{ padding: "var(--s-5) var(--s-6) var(--s-5) var(--s-5)", display: "flex", flexDirection: "column", gap: "var(--s-3)", overflowY: "auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span className="t1" style={{ fontSize: "var(--fs-16)", fontWeight: 600 }}>
-              How CivicTwin read this
-            </span>
-            <span
-              className="gold"
-              style={{ fontSize: "var(--fs-12)", border: "1px solid var(--rule-strong)", padding: "2px 8px" }}
-            >
-              SCHEMA VALID
-            </span>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-            {p.reading.map((step) => (
-              <div key={step.n} style={{ display: "flex", gap: 12 }}>
-                <span
-                  className={step.assumed ? "alert" : "gold"}
-                  style={{ fontSize: "var(--fs-12)", flexShrink: 0, paddingTop: 2 }}
-                >
-                  {step.n}
-                </span>
+        <section className="policy-builder">
+          <div className="policy-workspace__grid">
+            <section className="policy-editor" aria-labelledby="policy-draft-label">
+              <div className="policy-panel-label">
+                <span>Your draft</span>
+              </div>
+              <div className="policy-step-heading">
+                <span aria-hidden="true">1</span>
                 <div>
-                  <div className="t1" style={{ fontSize: "var(--fs-14)" }}>{step.claim}</div>
-                  <div className="t3" style={{ fontSize: "var(--fs-12)", lineHeight: 1.5, marginTop: 3 }}>
-                    {step.why}
-                  </div>
+                  <label id="policy-draft-label" htmlFor="policy-draft">Policy proposal</label>
+                  <small>Edit the prepared scenario if needed.</small>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* the machine-facing form stays one row away, not a wall of it */}
-          <div className="box" style={{ display: "flex", alignItems: "center", gap: "var(--s-2)", padding: "11px 14px" }}>
-            <span className="t3" style={{ fontSize: "var(--fs-12)" }}>Structured output</span>
-            <span className="t3" style={{ fontSize: "var(--fs-12)" }}>
-              PolicyChange · {p.modifications.remove_stops.length} stops removed · schema valid
-            </span>
-            <div style={{ flexGrow: 1 }} />
-            <span className="gold" style={{ fontSize: "var(--fs-12)", cursor: "pointer" }}>View JSON</span>
-          </div>
-
-          <div>
-            {p.resolved_entities.map((e, i) => (
-              <div
-                key={e.ref}
-                style={{
-                  display: "flex", justifyContent: "space-between", padding: "10px 0",
-                  borderBottom: i < p.resolved_entities.length - 1 ? "1px solid var(--rule-dim)" : undefined,
-                }}
-              >
-                <span className="t2" style={{ fontSize: "var(--fs-14)" }}>{e.label}</span>
-                <span className="t3" style={{ fontSize: "var(--fs-12)" }}>{e.ref}</span>
+              <textarea
+                id="policy-draft"
+                value={policyText}
+                onChange={(event) => setDraft(event.target.value)}
+                aria-describedby={runError ? "policy-run-error" : "policy-draft-help"}
+              />
+              <div className="policy-editor__footer">
+                <div className="policy-context" id="policy-draft-help">
+                  <span>Service 265</span>
+                  <span>Ang Mo Kio Ave 3</span>
+                  {changed && <span className="warning">Edited</span>}
+                </div>
+                {changed && (
+                  <button type="button" onClick={() => setDraft(null)}>Reset example</button>
+                )}
               </div>
-            ))}
+            </section>
+
+            <div className="policy-flow-bridge" aria-hidden="true">
+              <span>CivicTwin reads</span>
+              <b>→</b>
+            </div>
+
+            <section className="policy-review" aria-labelledby="policy-review-title">
+              <div className="policy-panel-label policy-panel-label--output">
+                <span>CivicTwin interpretation</span>
+                {changed ? <small>Re-read the draft</small> : null}
+              </div>
+              <div className="policy-step-heading">
+                <span aria-hidden="true">2</span>
+                <div>
+                  <h2 id="policy-review-title">What CivicTwin understood</h2>
+                  <small>Confirm this interpretation before simulation.</small>
+                </div>
+              </div>
+
+              {changed ? (
+                <div className="policy-review__pending" role="status">
+                  <span>Interpretation pending</span>
+                  <strong>Your draft has changed</strong>
+                  <p>CivicTwin will interpret the amended policy before it starts the simulation.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="segmented policy-review__tabs" aria-label="Policy interpretation sections">
+                    {(["change", "assumptions", "locations"] as ReviewTab[]).map((name) => (
+                      <button
+                        type="button"
+                        key={name}
+                        aria-pressed={tab === name}
+                        onClick={() => setTab(name)}
+                      >
+                        {name === "change" ? "Change" : name === "assumptions" ? "Assumptions" : "Locations"}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="policy-review__content">
+                    {tab === "change" && (
+                      <dl className="policy-summary-list">
+                        <div><dt>Service</dt><dd>265</dd></div>
+                        <div><dt>Change</dt><dd>Close {run.policy.modifications.remove_stops.length} stops and run express</dd></div>
+                        <div><dt>Goal</dt><dd>{run.policy.objective}</dd></div>
+                        <div><dt>Fleet</dt><dd>{run.policy.constraints.fleet_increase_allowed ? "Increase allowed" : "No additional vehicles"}</dd></div>
+                      </dl>
+                    )}
+
+                    {tab === "assumptions" && (
+                      <div className="policy-review__items">
+                        {assumptions.map((step) => (
+                          <article key={step.n}>
+                            <span className="warning">Needs confirmation</span>
+                            <strong>{step.claim}</strong>
+                            <p>{step.why}</p>
+                          </article>
+                        ))}
+                      </div>
+                    )}
+
+                    {tab === "locations" && (
+                      <div className="policy-review__items">
+                        {run.policy.resolved_entities.map((entity) => (
+                          <article key={entity.kind + entity.id}>
+                            <span>{entity.kind}</span>
+                            <strong>{entity.label}</strong>
+                            <p>ID {entity.id}</p>
+                          </article>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </section>
           </div>
 
-          <div className="box" style={{ padding: "14px 16px" }}>
-            <div className="t1" style={{ fontSize: "var(--fs-14)", fontWeight: 600 }}>
-              Check this reading before running
+          <footer className="policy-workspace__actions">
+            <div className="policy-readiness">
+              <i aria-hidden="true">✓</i>
+              <span>
+                <strong>{changed ? "Ready for live review" : "Ready to simulate"}</strong>
+                <small>{changed ? "Your edit will be interpreted before the run starts." : "Compare today’s route with the proposed stop closures."}</small>
+              </span>
             </div>
-            <div className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.55, marginTop: 4 }}>
-              The interpretation is model-generated. Correct any field here, or enter them
-              yourself. Nothing is simulated until you run it.
-            </div>
-          </div>
-
-          <div style={{ marginTop: "auto", display: "flex", gap: "var(--s-2)", alignItems: "center" }}>
-            <button className="btn" onClick={() => navigate("/simulation")}>RUN BASELINE SIMULATION</button>
-            <span className="t3" style={{ fontSize: "var(--fs-12)" }}>
-              {run.personas.length.toLocaleString()} personas
-            </span>
-          </div>
+            {runError && <p id="policy-run-error" role="alert">{runError}</p>}
+            <button
+              type="button"
+              className="btn"
+              onClick={startSimulation}
+              disabled={running || policyText.trim().length < 10}
+              aria-busy={running}
+            >
+              {running ? "PREPARING SIMULATION" : changed ? "INTERPRET & SIMULATE" : "RUN SIMULATION"}
+            </button>
+          </footer>
         </section>
-      </div>
+      </main>
     </Crt>
   );
 }

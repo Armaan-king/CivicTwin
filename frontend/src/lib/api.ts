@@ -179,10 +179,7 @@ export async function streamRounds(
  */
 export async function fetchVoices(runId: string, limit = 300): Promise<VoiceListing> {
   if (TRANSPORT === "fixture") {
-    throw new NotAvailableOffline(
-      "Residents deliberate through a model on the backend. There is no offline " +
-      "substitute: start the backend and set VITE_TRANSPORT=http."
-    );
+    throw new NotAvailableOffline("Resident deliberation");
   }
   const res = await fetch(`${API_BASE}/api/runs/${runId}/voices?limit=${limit}`);
   if (res.status === 503) {

@@ -3,7 +3,8 @@ import type { SimulationRun, PersonaOutcome, SimEvent } from "@/types/simulation
 
 /** Kept as the single entry point the screens call. Transport is chosen in config.ts. */
 export function loadRun(): Promise<SimulationRun> {
-  return api.getRun();
+  const runId = window.sessionStorage.getItem("civictwin-active-run") ?? "latest";
+  return api.getRun(runId);
 }
 
 /** persona_id -> outcome, built once rather than per lookup. */

@@ -59,3 +59,30 @@ def test_round_stream_is_ndjson_and_chains():
         assert r.headers["content-type"].startswith("application/x-ndjson")
         kinds = [line for line in r.iter_lines() if line]
     assert any('"type": "complete"' in k or '"type":"complete"' in k for k in kinds)
+
+
+def test_a_blank_env_knob_reads_as_unset(monkeypatch):
+    """`.env` documents an unused knob as `NAME=`, and int("") raises.
+
+    DELIBERATION_LIMIT was cleared to mean "the whole cohort" and took the /voices route
+    down with a 500 the moment anyone opened it.
+    """
+    from app.config import env_float, env_int
+
+    monkeypatch.setenv("CIVICTWIN_TEST_KNOB", "")
+    assert env_int("CIVICTWIN_TEST_KNOB", 12) == 12
+    assert env_float("CIVICTWIN_TEST_KNOB", 0.8) == 0.8
+
+    monkeypatch.setenv("CIVICTWIN_TEST_KNOB", "  ")
+    assert env_int("CIVICTWIN_TEST_KNOB", 12) == 12
+
+    monkeypatch.setenv("CIVICTWIN_TEST_KNOB", "6")
+    assert env_int("CIVICTWIN_TEST_KNOB", 12) == 6
+
+
+def test_a_nonsense_env_knob_says_which_one(monkeypatch):
+    from app.config import env_int
+
+    monkeypatch.setenv("CIVICTWIN_TEST_KNOB", "banana")
+    with pytest.raises(ValueError, match="CIVICTWIN_TEST_KNOB"):
+        env_int("CIVICTWIN_TEST_KNOB", 12)

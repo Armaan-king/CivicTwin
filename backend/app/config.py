@@ -42,3 +42,30 @@ def load_env(path: pathlib.Path | None = None) -> list[str]:
 
 #: Loaded on import, so any module that reads os.environ sees it.
 LOADED = load_env()
+
+
+def env_int(name: str, default: int) -> int:
+    """An integer from the environment, treating empty as unset.
+
+    `.env` files document a knob that is not in use by leaving it blank, and `os.getenv`
+    falls back only when a name is *absent* -- an empty value comes back as `""` and
+    `int("")` raises. That took the `/voices` route down with a 500 the moment
+    DELIBERATION_LIMIT was cleared to mean "the whole cohort".
+    """
+    raw = os.getenv(name, "").strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        raise ValueError(f"{name} must be a whole number, got {raw!r}") from None
+
+
+def env_float(name: str, default: float) -> float:
+    raw = os.getenv(name, "").strip()
+    if not raw:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        raise ValueError(f"{name} must be a number, got {raw!r}") from None

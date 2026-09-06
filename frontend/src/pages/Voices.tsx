@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
+import { fetchVoices, NotAvailableOffline } from "@/lib/api";
 import type { AgentVoice, VoiceListing } from "@/types/voice";
 
 /**
@@ -33,6 +35,7 @@ export function Voices() {
   const { run, error } = useRun();
   const [data, setData] = useState<VoiceListing | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
+  const [unavailable, setUnavailable] = useState(false);
   const [filter, setFilter] = useState<Filter>("affected");
   const [open, setOpen] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(0);
@@ -40,10 +43,16 @@ export function Voices() {
 
   useEffect(() => {
     let alive = true;
-    import("@/lib/api")
-      .then((m) => m.fetchVoices(run?.run_id ?? "run_a91f", 300))
+    setData(null);
+    setFailed(null);
+    setUnavailable(false);
+    fetchVoices(run?.run_id ?? "run_a91f", 300)
       .then((d) => alive && setData(d))
-      .catch((e) => alive && setFailed(String(e?.message ?? e)));
+      .catch((caught) => {
+        if (!alive) return;
+        if (caught instanceof NotAvailableOffline) setUnavailable(true);
+        else setFailed(String((caught as Error)?.message ?? caught));
+      });
     return () => {
       alive = false;
     };
@@ -79,9 +88,11 @@ export function Voices() {
     };
   }, [shown]);
 
-  if (error) return <Failed message={error} />;
-  if (failed) return <Failed message={failed} />;
-  if (!run || !data) return <Loading what="residents" />;
+  if (error) return <Crt><TopBar /><Failed message={error} /></Crt>;
+  if (!run) return <Crt><TopBar /><Loading what="residents" /></Crt>;
+  if (unavailable) return <VoicesUnavailable />;
+  if (failed) return <Crt><TopBar /><Failed message={failed} /></Crt>;
+  if (!data) return <Crt><TopBar /><Loading what="residents" /></Crt>;
 
   const download = () => {
     const lines = (data.voices ?? []).map((v) => {
@@ -143,7 +154,7 @@ export function Voices() {
               style={{
                 background: "none", border: "none", borderBottom: `1px solid ${filter === f ? "var(--gold)" : "transparent"}`,
                 color: "inherit", fontFamily: "inherit", fontSize: "var(--fs-14)",
-                padding: "2px 0", cursor: "pointer", borderRadius: 0,
+                padding: "2px 0", cursor: "pointer", borderRadius: 4,
               }}
             >
               {f === "affected" ? "affected" : f === "moved" ? "changed their mind most" : "everyone"}
@@ -232,6 +243,40 @@ export function Voices() {
           </p>
         )}
       </div>
+    </Crt>
+  );
+}
+
+function VoicesUnavailable() {
+  return (
+    <Crt>
+      <TopBar meta="RECORDED RUN" />
+      <main className="voices-unavailable">
+        <section>
+          <span className="page-kicker">Resident voices</span>
+          <h1>No recorded deliberation for this run</h1>
+          <p>
+            The prepared demo includes verified transport outcomes, but no model-written
+            resident transcripts. CivicTwin will not invent them.
+          </p>
+
+          <div className="voices-unavailable__status" aria-label="Resident voice availability">
+            <div><i className="success" aria-hidden="true">✓</i><span><strong>Transport run</strong>Loaded</span></div>
+            <b aria-hidden="true">→</b>
+            <div><i className="warning" aria-hidden="true">!</i><span><strong>Live model</strong>Not connected</span></div>
+            <b aria-hidden="true">→</b>
+            <div><i aria-hidden="true">—</i><span><strong>Resident voices</strong>Not available</span></div>
+          </div>
+
+          <p className="voices-unavailable__note">
+            A live run with the backend model connected will populate this page automatically.
+          </p>
+          <div className="voices-unavailable__actions">
+            <Link className="btn" to="/impact">REVIEW RECORDED IMPACT</Link>
+            <Link to="/policy">Return to policy</Link>
+          </div>
+        </section>
+      </main>
     </Crt>
   );
 }
