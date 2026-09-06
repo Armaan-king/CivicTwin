@@ -124,3 +124,37 @@ def test_out_of_range_values_are_rejected_not_clamped(field, value):
     """
     with pytest.raises(Exception):
         turn(**{field: value})
+
+
+def test_bare_fact_numbers_are_expanded_into_the_residents_namespace():
+    """A small model routinely cites `f3` where the prompt showed `p_0001:f3`.
+
+    Within one resident's turn that shorthand is unambiguous, so it is parsed rather than
+    rejected -- every fact id it could mean belongs to them.
+    """
+    from app.agents.deliberation import normalise_citations
+
+    t = turn(grounded_in=["f1", "f4"])
+    normalise_citations(t, "p_0001")
+    assert t.grounded_in == ["p_0001:f1", "p_0001:f4"]
+    assert check_grounding(t, world_with(), 1, set()) == []
+
+
+def test_expansion_does_not_weaken_the_guard():
+    """Parsing the shorthand must not turn a fabricated citation into a valid one."""
+    from app.agents.deliberation import normalise_citations
+
+    t = turn(grounded_in=["f99"])
+    normalise_citations(t, "p_0001")
+    assert t.grounded_in == ["p_0001:f99"]
+    assert any("f99" in p for p in check_grounding(t, world_with(), 1, set()))
+
+
+def test_expansion_cannot_borrow_another_residents_fact():
+    """`f4` cited by p_0001 becomes p_0001:f4, never p_0002:f4."""
+    from app.agents.deliberation import normalise_citations
+
+    t = turn(grounded_in=["p_0002:f4"])
+    normalise_citations(t, "p_0001")
+    assert t.grounded_in == ["p_0002:f4"], "a full id is left alone"
+    assert any("p_0002:f4" in p for p in check_grounding(t, world_with(), 1, set()))

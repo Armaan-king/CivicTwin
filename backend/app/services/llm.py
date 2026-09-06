@@ -526,6 +526,26 @@ def exact_items(model_cls, field: str, n: int) -> dict:
     return schema
 
 
+def require_fields(schema: dict, defn: str, *fields: str) -> dict:
+    """Mark fields of a `$defs` entry required, so the grammar cannot drop them.
+
+    Anything with a Python default is optional in the emitted JSON Schema, and a
+    grammar-constrained sampler reads that as permission to omit it. `persona_id` went
+    missing from every turn for exactly this reason.
+    """
+    target = schema.get("$defs", {}).get(defn)
+    if not isinstance(target, dict):
+        return schema
+    required = target.setdefault("required", [])
+    for field in fields:
+        prop = target.get("properties", {}).get(field)
+        if isinstance(prop, dict):
+            prop.pop("default", None)
+        if field not in required:
+            required.append(field)
+    return schema
+
+
 def require_citations(schema: dict, defn: str = "AgentTurn",
                       field: str = "grounded_in") -> dict:
     """Make a turn's citation list mandatory and non-empty *in the grammar*.

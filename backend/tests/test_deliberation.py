@@ -149,3 +149,26 @@ def test_coverage_never_reports_the_unasked_as_unaffected(small):
     assert cov["evaluated"] <= cov["cohort"] <= cov["population"]
     assert cov["unevaluated"] == cov["population"] - cov["evaluated"]
     assert sum(cov["strata"].values()) == cov["cohort"]
+
+
+def test_a_resident_with_no_opening_view_is_not_asked_to_continue(small):
+    """Round 1 follows on from round 0, so it can only include residents who have one.
+
+    A resident whose opening turn failed the grounding guard has nothing to continue from.
+    Asking them anyway crashed the loop the first time a real model produced an ungrounded
+    opening; with a reliable model round 0 never failed and this never fired.
+    """
+    from app.deliberate import DeliberationRun, _participants
+    from app.schemas.deliberation import AgentTurn, AgentVoice
+
+    pop, world, social = small
+    run = DeliberationRun(model="test")
+    spoke, silent = pop.personas[0].persona_id, pop.personas[1].persona_id
+    run.voices = {spoke: AgentVoice(persona_id=spoke, name="n", summary="", turns=[
+        AgentTurn(round=0, position=0.5, confidence=0.5, reasoning="x",
+                  grounded_in=[f"{spoke}:f1"])])}
+    index = {p.persona_id: p for p in pop.personas[:2]}
+
+    speakers = _participants(run, world, social, 1, index)
+    assert spoke in speakers
+    assert silent not in speakers, "a resident with no opening view was asked to continue"

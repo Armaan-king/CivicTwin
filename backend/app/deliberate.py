@@ -29,6 +29,7 @@ from app.agents.deliberation import (
     DeliberationFailed,
     cache_key,
     check_grounding,
+    normalise_citations,
     opening_prompt,
     round_prompt,
     run_opening,
@@ -220,6 +221,7 @@ def deliberate(
                 w = world[p.persona_id]
                 kept = []
                 for t in v.turns:
+                    normalise_citations(t, p.persona_id)
                     if check_grounding(t, w, 0, heard_from=set()):
                         run.rejected += 1
                         continue
@@ -283,6 +285,7 @@ def deliberate(
                     # Only the neighbours this resident was actually shown this round.
                     # Their household is who they live with, not who they heard from.
                     heard_from = {n for n, _ in heard.get(pid, [])}
+                    normalise_citations(turn, pid)
                     if check_grounding(turn, world[pid], rnd, heard_from):
                         run.rejected += 1
                         continue
@@ -319,7 +322,11 @@ def _participants(
     Asking a resident with nothing new to say produces a paraphrase and a bill.
     """
     if rnd == 1:
-        return list(index)
+        # Everyone who actually has an opening view. A resident whose round-0 turn was
+        # rejected has no voice to continue from, and including them here crashed the
+        # loop the first time a real model produced an ungrounded opening -- with a
+        # reliable model round 0 never failed, so this never fired.
+        return [pid for pid in index if run.voices.get(pid)]
 
     speakers: list[str] = []
     for pid in index:

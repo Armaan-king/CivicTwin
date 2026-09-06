@@ -18,11 +18,12 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 
 from app.population import Persona
 from app.schemas.deliberation import AgentTurn, DeliberationBatch, OpeningBatch
 from app.services.llm import (LLMClient, LLMOutputInvalid, exact_items,
-                              require_citations)
+                              require_citations, require_fields)
 from app.world import ResidentWorld
 
 #: Residents per model call. `AGENTS.md` §8 requires batching -- residents per call, not a
@@ -41,7 +42,7 @@ BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 #: what would make the policy workable for them (J4). v5: the 0..1 support scale is
 #: stated explicitly, after a local model read a field named `position` as a signed
 #: -1..+1 scale and every turn was rejected for it.
-PROMPT_VERSION = "v7"
+PROMPT_VERSION = "v8"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -102,7 +103,9 @@ Absolute rules:
 - Most people are not affected. Do not manufacture drama: "nothing has changed for me" is a
   legitimate and common answer.
 - `persona_id` on every turn is the id of the resident that turn is for, copied exactly
-  from the RESIDENT heading above their facts.
+  from the RESIDENT heading above their facts, like "p_0098".
+- fact ids in `grounded_in` are written in full, exactly as they appear in the brackets:
+  "p_0098:f3", not "f3".
 - `remedy`: if and only if this resident is harmed (severity "moderate" or "high"), answer
   one further question in their own words, one sentence: what would make this workable for
   you? Ask for what they need, not for a policy instrument -- "somewhere to sit while I
@@ -208,8 +211,10 @@ def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> Deliberat
     try:
         batch = llm.structured(
             DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000,
-            schema_override=require_citations(
-                exact_items(DeliberationBatch, "turns", len(expected_ids))))
+            schema_override=require_fields(
+                require_citations(
+                    exact_items(DeliberationBatch, "turns", len(expected_ids))),
+                "AgentTurn", "persona_id"))
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("round batch was not valid", exc.raw) from exc
     if len(batch.turns) != len(expected_ids):
@@ -219,6 +224,22 @@ def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> Deliberat
         raise DeliberationFailed(
             f"round batch named {batch.persona_ids or 'nobody'}, expected {expected_ids}")
     return batch
+
+
+#: A resident's facts are numbered `p_0098:f3`, and a small model routinely cites just
+#: `f3`. Within one resident's own turn that shorthand is unambiguous -- the namespace is
+#: theirs -- so it is expanded rather than rejected. This is parsing, not leniency: the
+#: expanded id is then checked against the facts that resident was actually given, and a
+#: citation to something they do not hold still fails.
+_SHORT_FACT = re.compile(r"^f\d+$")
+
+
+def normalise_citations(turn: AgentTurn, persona_id: str) -> None:
+    """Expand bare `fN` citations into this resident's namespace, in place."""
+    turn.grounded_in = [
+        f"{persona_id}:{fid}" if _SHORT_FACT.match(fid) else fid
+        for fid in turn.grounded_in
+    ]
 
 
 def check_grounding(
