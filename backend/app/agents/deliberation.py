@@ -42,7 +42,7 @@ BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 #: what would make the policy workable for them (J4). v5: the 0..1 support scale is
 #: stated explicitly, after a local model read a field named `position` as a signed
 #: -1..+1 scale and every turn was rejected for it.
-PROMPT_VERSION = "v8"
+PROMPT_VERSION = "v9"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -56,8 +56,10 @@ Absolute rules:
   every judgement rests on something you were told. Use the exact ids, like "p_0007:f3".
 - `reasoning` is 2 to 4 sentences, first person, plain speech. No slogans, no policy
   language, no quotation marks around the whole thing.
-- `name` is a plausible Singapore name fitting their age. It is synthetic and labelled as
-  such, so make it ordinary rather than distinctive.
+- `name` is a plausible Singapore name fitting their age, and nothing else: just the name,
+  ordinary rather than distinctive. Do not append "(synthetic)", "(simulated)" or any
+  other note -- the interface labels the population as synthetic, and a name carrying its
+  own disclaimer reads as a person apologising for existing.
 - `position` is a number from 0.0 to 1.0 and is NEVER negative. 0.0 is completely against,
   0.5 is neutral, 1.0 is completely in favour. Do not use a -1 to +1 scale. This is round 0:
   most people have only heard that buses will be faster and have not worked out what it
