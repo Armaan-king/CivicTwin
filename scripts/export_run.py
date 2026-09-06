@@ -23,6 +23,7 @@ import argparse
 import json
 import pathlib
 import sys
+import time
 from collections import Counter
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "backend"))
@@ -140,6 +141,9 @@ def main() -> int:
     ap.add_argument("--out", default="data/runs")
     ap.add_argument("--name", default="deliberation")
     ap.add_argument("--policy", default=POLICY)
+    ap.add_argument("--limit", type=int, default=None,
+                    help="cap the cohort. A smaller cohort taken through all four rounds "
+                         "says more than a large one stuck at round 0.")
     args = ap.parse_args()
 
     geo, closed, _ = study_area()
@@ -148,7 +152,19 @@ def main() -> int:
     social = build_social_graph(pop)
 
     print("replaying the deliberation (served from cache where available)...", flush=True)
-    run = deliberate(pop, world, args.policy, build_deliberation_client(), social=social)
+
+    # Progress, because a silent four-hour process is indistinguishable from a hung one.
+    seen = [0]
+    started = time.time()
+
+    def progress(_voice, rnd):
+        seen[0] += 1
+        if seen[0] % 20 == 0:
+            mins = (time.time() - started) / 60
+            print(f"  {seen[0]} turns, round {rnd}, {mins:.0f} min elapsed", flush=True)
+
+    run = deliberate(pop, world, args.policy, build_deliberation_client(), social=social,
+                     limit=args.limit, on_voice=progress)
     if run.calls:
         print(f"note: {run.calls} batches were NOT cached and called the model", flush=True)
 
