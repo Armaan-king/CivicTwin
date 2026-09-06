@@ -1,195 +1,326 @@
 # CivicTwin
 
-> **Stress-test change before people live with the consequences.**
+**A policy looks fine on average. CivicTwin finds the people it quietly breaks.**
 
-CivicTwin is an agentic AI platform for stress-testing proposed public-policy changes against a graph-connected synthetic population before those changes reach the real world.
+Close two bus stops and the mean journey across a town gets *faster*. That number is true,
+and it is the number a transport plan is approved on. Underneath it, a handful of residents
+lose the only stop they can reach, and a handful more — who were never near the closure at
+all — start driving a parent to a clinic and missing the start of their own shift.
 
-The system simulates how a policy may affect different people, identifies unintended or unequal consequences, proposes alternative interventions, re-simulates those alternatives, and then allows a selected proposal to be exposed to real users through a public consultation dashboard. Real feedback can then be compared with simulated expectations to identify model error and improve future calibration.
-
----
-
-## Project Status
-
-**Current stage:** Hackathon MVP / V1  
-**Primary vertical:** Public Policy  
-**Implementation scope:** One strong public-policy scenario  
-**Long-term vision:** A reusable decision digital-twin platform for multiple institutional environments
-
-The current product direction is defined in [`goal.md`](./goal.md).
-
-Coding-agent instructions are defined in [`AGENTS.md`](./AGENTS.md).
+CivicTwin is a simulator for exactly that gap. It builds a synthetic town from real open
+transport data, puts a proposed policy to every resident in it, and asks each one what the
+change does to them. The residents answer for themselves; the system counts what they said.
 
 ---
 
-## Core Product Loop
+## 1. The idea, in one mechanism
 
-```text
-POLICY PROPOSAL
-      ↓
-SYNTHETIC POPULATION
-      ↓
-DEPENDENCY / SOCIAL GRAPH
-      ↓
-SIMULATION
-      ↓
-IMPACT AUDIT
-      ↓
-ROOT-CAUSE ANALYSIS
-      ↓
-ALTERNATIVE INTERVENTIONS
-      ↓
-RE-SIMULATION
-      ↓
-SCENARIO COMPARISON
-      ↓
-PUBLIC CONSULTATION
-      ↓
-REAL FEEDBACK
-      ↓
-CALIBRATION
+CivicTwin is not really a transport tool. It detects a pattern that recurs wherever an
+institution optimises an aggregate:
+
+> **a threshold, a dependency, and someone who absorbs a loss that was not theirs.**
+
+Change the nouns and it is clinic consolidation, benefits digitisation, school catchment
+redraws, appointment systems, tariff restructuring. Transport is how the mechanism is
+proved, not what the product is about.
+
+The three parts matter together:
+
+- **A threshold** — a walk that crosses what someone can manage, a trip that stops being
+  reachable within the time they have.
+- **A dependency** — someone whose journey is made by another person.
+- **An absorbed loss** — the carer takes on the trip, and the cost lands on a person the
+  policy never touched and no impact assessment counted.
+
+An average cannot express that. Neither can a survey, because the person absorbing the loss
+often does not think of themselves as affected until they hear what happened to someone
+else.
+
+---
+
+## 2. What makes the answers trustworthy
+
+The obvious objection to simulating people with a language model is that it will simply
+make things up. CivicTwin's architecture is largely an answer to that objection.
+
+### Facts are looked up. Consequences are reasoned.
+
+This is the line the whole system is built around.
+
+Code computes everything factual: the walking distance from a flat to a bus stop, which
+services call there, which stop remains once one closes, how much longer the journey takes,
+who lives in which household. These are geometry and lookup, and a model asked to compute a
+distance will invent a plausible one.
+
+The resident decides what those facts *mean*. Whether 503 metres instead of 183 is an
+inconvenience or the end of a weekly hospital trip is a judgement about a life, and that
+judgement is the product.
+
+```
+  computed by code                    decided by the resident
+  ─────────────────                   ───────────────────────
+  walk distance, journey time         severity: none / moderate / high
+  which stop closes, what is left     what they do about it
+  who lives with whom                 whether the essential trip still happens
+  the social graph                    support for the policy
 ```
 
-CivicTwin is not intended to be a one-shot chatbot or a system that autonomously decides public policy.
+### Every claim carries its receipts
 
-It is a **decision-support and policy stress-testing platform**.
+Each resident is handed a numbered list of facts about their own life, and nothing else:
 
----
-
-## Repository Documentation
-
-| File | Purpose |
-|---|---|
-| [`goal.md`](./goal.md) | Product intent, V1 scope, success criteria, user journeys, non-goals |
-| [`AGENTS.md`](./AGENTS.md) | Instructions for Claude Code, Codex, and other coding agents |
-| [`README.md`](./README.md) | Repository overview, setup, local development, run instructions |
-| [`docs/architecture.md`](./docs/architecture.md) | Technical architecture, component responsibilities, data flow |
-| [`docs/simulation.md`](./docs/simulation.md) | Persona model, graph model, simulation rules, intervention mechanics |
-| [`docs/evaluation.md`](./docs/evaluation.md) | Validation strategy, metrics, backtesting, calibration, experiment design |
-| [`docs/scenario-v1.md`](./docs/scenario-v1.md) | **Locked V1 scenario spec** — Singapore bus stop rationalisation. Canonical for all transport-scenario details |
-| [`HANDOFF.md`](./HANDOFF.md) | **Team handoff** — frozen frontend/backend contract, workstreams, non-negotiables. Start here if you are joining |
-
-The intent of this split is to keep context layered rather than duplicating the entire project specification into one file.
-
----
-
-## Proposed Technology Stack
-
-The exact implementation may evolve, but the current preferred stack is:
-
-### Frontend
-
-- React / Next.js
-- TypeScript
-- Graph visualization library
-- Charting library
-
-### Backend
-
-- Python
-- FastAPI
-
-### Agent Orchestration
-
-- LangGraph
-
-### LLM
-
-- Grok through the xAI API
-
-### Graph / Simulation
-
-- NetworkX for the MVP
-- Normal Python logic for deterministic simulation
-- Explicit probability/rule models for behavioral simulation
-
-### AWS
-
-Prefer low-cost/serverless services where needed:
-
-- Amazon Bedrock
-- AWS Lambda
-- DynamoDB on-demand
-- S3
-- Bedrock AgentCore only if it materially improves deployment or demo quality
-
-The hackathon AWS budget is intentionally small, so the system should avoid always-on infrastructure and unnecessary high-volume LLM calls.
-
----
-
-## Expected Repository Shape
-
-This is the target shape, not a requirement to create empty directories prematurely:
-
-```text
-CivicTwin/
-├── goal.md
-├── AGENTS.md
-├── README.md
-├── .env.example
-├── .gitignore
-│
-├── backend/
-│   ├── app/
-│   │   ├── api/
-│   │   ├── agents/
-│   │   ├── graph/
-│   │   ├── simulation/
-│   │   ├── interventions/
-│   │   ├── feedback/
-│   │   ├── calibration/
-│   │   ├── schemas/
-│   │   └── main.py
-│   └── tests/
-│
-├── frontend/
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── fixtures/
-│
-├── scripts/
-│
-└── docs/
-    ├── architecture.md
-    ├── simulation.md
-    └── evaluation.md
+```
+[p_0524:f1]  r0  Your nearest bus stop is Blk 700B (54241), about 135 m walk from home.
+[p_0524:f2]  r0  Services calling at Blk 700B: 130, 132, 133, 136, 138, 265.
+[p_0524:f6]  r0  You have mild difficulty walking. You would not normally walk more
+                 than about 800 m to a stop.
+[p_0524:f7]  r1  Blk 700B is the stop you use. It is closing.
+[p_0524:f8]  r1  The nearest stop that stays open is Opp Al-Muttaqin Mque (54031),
+                 about 360 m from home. That is +225 m compared with now.
 ```
 
+Their answer must cite the fact ids it reasoned from. A conclusion citing a fact the
+resident was never given is **rejected and counted**, never displayed. The count is
+reported on screen next to the results.
+
+The guard is stricter than it first appears, in three ways that each closed a real hole:
+
+- **Scoped to the round.** A resident reasoning in round 1 may cite only what they had been
+  told by round 1. Checking against every fact they would *ever* hold let a turn cite
+  something revealed two rounds later.
+- **A citation must be capable of supporting the claim.** Being 72 and having no car were
+  both true before anyone proposed anything, so they cannot establish that the policy did
+  something. A claim of harm has to reach at least one fact about the policy itself.
+- **Identity is validated, not repaired.** A batch that comes back for the wrong residents
+  is refused. Overwriting the ids would silently attach twelve residents' reasoning to the
+  wrong twelve people, which still looks like evidence.
+
+### Nobody is counted as unharmed by default
+
+A resident who was never asked is **unknown**, not unaffected. A resident who was asked and
+whose answer failed the grounding guard is unknown too — a third state, and the run reports
+all three separately:
+
+```json
+"coverage": {
+  "population": 2000, "cohort": 467, "evaluated": 451,
+  "unevaluated": 1549, "ungrounded": 14, "unexplained_moves": 69
+}
+```
+
+Every rate the product shows travels with the denominator it was computed over. A subgroup
+too small to support a claim is reported as *insufficient evidence* — never as zero
+disparity, which is the same number wearing a finding's clothes.
+
 ---
 
-## Local Setup
+## 3. The loop
 
-The live app uses Grok through the xAI API. AWS credentials are not required.
+```
+        ┌──────────────────────────────────────────────────────────────┐
+        │                                                              │
+   POLICY ──► SIMULATE ──► IMPACT ──► VOICES ──► OPTIONS ──► CONSULT ──┘
+   plain      the world     who was    why, in    what to     ask real
+   English    changes       harmed     their      do about    people
+                                       words      it              │
+                                                                  ▼
+                                                               LEARN
+                                                          what the model
+                                                             got wrong
+```
 
-From the project root in PowerShell:
+**Policy.** A planner writes a proposal in plain English. A model reads it into a typed
+`PolicyChange` — which stops, which service, which constraints — and the interface shows
+that reading back before anything runs, marking every field the model assumed rather than
+was told. The words then decide the study area: a proposal naming stops in Bedok resolves
+to Bedok, because those stop names exist there and nowhere else. A proposal naming nowhere
+we hold data for is refused rather than quietly run against a default town.
+
+**Simulate.** The network changes. Distances, routes and journey times are recomputed
+against the real stop geometry, and the change is revealed in four stages — the corridor as
+it runs today, the stops closing, residents adjusting, and the full picture including the
+second-order effects that only appear once households react.
+
+**Impact.** Findings ranked by severity, then by how many people they touch. Severity
+outranks headcount deliberately: four carers missing work is listed above seventeen people
+walking further, because the argument of the product is that the small severe number is the
+one an average hides.
+
+**Voices.** Every evaluated resident, in their own words, with the facts they reasoned from
+attached. This is the screen a metric cannot replace: *"the policy closes Blk 700B, which is
+my normal stop and the one I use for trips to Ang Mo Kio Community Hosp."*
+
+**Options.** Five typed interventions — the planner selects and parameterises, it never
+invents a type. Each valid candidate is re-evaluated over the same residents with the same
+seeds, so a difference is attributable to the intervention rather than to reshuffled
+randomness. Residents also author remedies of their own during deliberation, and those go
+through the same validator with no exemption.
+
+**Consult.** The chosen option goes to a public feedback form: support, fairness, clarity,
+confidence, and a free-text field.
+
+**Learn.** Predicted support against reported support, per cohort, and the gap between them.
+
+---
+
+## 4. Two things the loop does that are unusual
+
+### Residents author the remedies
+
+Harmed residents are asked one further question during the deliberation they were already
+paying for:
+
+> *What would make this workable for you?*
+
+Answers are clustered, mapped onto the typed action space where one fits, and carried with
+the count of residents who asked for it. They then face the same validator as any planner
+candidate — and frequently fail it, which is itself the finding. The remedy residents ask
+for most often is a shuttle, and a shuttle needs a vehicle, and the policy declares no fleet
+increase.
+
+**What the action space cannot express is reported, not dropped:**
+
+```
+31 residents asked for something this model cannot simulate
+   "somewhere to sit and wait"            14
+   "a shelter over the new walk"          11
+   "a different appointment time"          6
+```
+
+A model that quietly discarded those would be hiding the gap between what it can represent
+and what people actually need. That gap belongs on the screen.
+
+### The consultation names who it will fail to hear
+
+Turnout is not uniform and it is not random. The residents most affected are often least
+able to respond: the oldest, the least mobile, the ones already spending spare hours caring
+for someone else. CivicTwin models both halves — severity per resident, and turnout weighted
+by stake and capacity — so it can multiply them:
+
+```
+blind_spot = severity × (1 − expected_response_rate)
+```
+
+reported as cohorts with counts. It is the one output a ministry could act on the same
+afternoon, because it names who to go and find. It is also the honest counterweight to a
+public confidence score, which can only ever describe the people who replied.
+
+---
+
+## 5. How the pieces fit
+
+```
+  SURFACE                 BOUNDARY              REASONING            WORLD
+  what a person sees      typed + validated     judgement            facts, never judged
+  ──────────────────      ─────────────────     ──────────────       ───────────────────
+  Policy input       ┐                      ┌─ Policy interpreter    Geography (LTA)
+  Simulation stages  │                      │  reads the proposal    Population (2,000)
+  Impact audit       ├──► FastAPI ──────────┤                        Dependency graph
+  Resident voices    │    Pydantic on       ├─ Deliberation agent    Social graph
+  Intervention lab   │    every boundary    │  residents decide      Routing + distances
+  Consultation       │                      │                        Metrics
+  Calibration        ┘                      └─ LLMClient             Interventions
+                                               one seam to any       Consultation model
+                                               model provider
+```
+
+**One boundary to the model.** Every call goes through `LLMClient.structured()`, which
+returns a validated Pydantic object or raises. Nothing downstream parses prose. That single
+seam is where retries, token accounting, latency, caching and provider choice live — so
+swapping a local model for a hosted one is a configuration change, not a refactor.
+
+**One definition of every metric.** Six numbers — journey time delta, severe harm count,
+essential trip completion, 90th-percentile walk, subgroup disparity, operating cost index —
+computed in one place and read by every screen, so a number shown twice cannot disagree with
+itself. Reported at overall *and* subgroup level together, always with `n`.
+
+**Two graphs, deliberately different shapes.** Opinion travels along an undirected social
+graph: neighbours on the same road, similar stage of life. Dependency is a *directed*
+`CARES_FOR` edge, because harm propagates from the person who lost their stop to the carer
+who absorbs the journey, and never back. Making that edge symmetric would run the cascade in
+both directions and invent harm.
+
+**Reproducible where it can be, replayable where it cannot.** Every seeded stream is derived
+per key — `hash(scenario_seed, persona_id)` — never drawn sequentially, so persona 1847 draws
+the same numbers under every scenario and a measured difference is causal rather than
+reshuffled noise. The town, the graph, the responses and the metrics rebuild identically on
+any machine. The one thing a seed cannot reproduce is a language model at temperature 0.8, so
+every batch is cached on a content hash: a completed run replays exactly, for free, forever.
+
+---
+
+## 6. The data underneath
+
+**The transport network is real.** Stops, routes and services come from Singapore's LTA
+DataMall under the Singapore Open Data Licence, fetched into `data/lta/<town>/` with
+provenance recorded alongside. Nothing about the network is invented: the study area derives
+its interchange, its essential destinations and its feeder services from the extract rather
+than from constants, which is what lets the same code run against another town.
+
+**The population is synthetic, and labelled as such everywhere it appears.** Two thousand
+residents are generated household-first — so a carer cannot live across the estate from the
+mother they drive — with age, mobility, employment, income, car access and walking tolerance
+drawn from published distributions. Care relationships are calibrated against the SMU Centre
+for Research on Successful Ageing survey of Singapore caregivers rather than guessed.
+
+The distinction is load-bearing: **a real network, a synthetic population, and never a claim
+that a synthetic resident is a real person.**
+
+---
+
+## 7. Human judgement is a boundary, not a suggestion
+
+Nothing consequential happens without a person.
+
+Calibration compares what the model predicted against what people reported, per cohort, and
+flags a gap wider than 10 percentage points — with the response count beside it, so a gap
+driven by four replies is visibly a gap driven by four replies. When it finds one, it
+identifies the likely cause from the consultation's own free text and proposes a specific,
+scoped correction:
+
+```
+Ang Mo Kio Ave 3    predicted 67%    reported 53%    −14.1 pts    n = 92
+
+  what the model missed:  the covered walkway ends partway and there is a slope.
+                          The model costed the distance and not the walk.
+  proposed:               walk_cost_multiplier[AMK Ave 3]   1.00 → 1.35
+  status:                 awaiting human approval
+```
+
+The proposal is presented for a decision and is never self-applied. A model that adjusts its
+own parameters because it was contradicted is a model nobody can audit — so the boundary is
+explicit, the decision is recorded either way, and the history is kept.
+
+The same principle governs the rest: an intervention is selected by a person, never enacted
+by the system; a rejected candidate carries no metrics at all, because scoring something that
+was never evaluated would be inventing a result.
+
+---
+
+## 8. Running it
 
 ```powershell
 Copy-Item .env.example .env
 Copy-Item frontend/.env.example frontend/.env
 ```
 
-Set `GROQ_API_KEY` in the root `.env` and set `VITE_TRANSPORT=http` in
-`frontend/.env`. Both files are gitignored. Never put the API key in a `VITE_*`
-variable, which would expose it to the browser. Existing shell variables override
-`.env`; restart the backend after editing its configuration.
+Choose a model provider in `.env`. The same adapter serves all of them, because they speak
+the same OpenAI-shaped chat API — only the host and the key name differ:
 
-**Groq is not Grok.** They are different companies whose names differ by one letter.
-Groq ([console.groq.com](https://console.groq.com), `gsk_...` keys) hosts open-weight
-models; Grok (`xai-...` keys) is xAI's own model. Each provider rejects the other's key
-with a 401, so `LLM_PROVIDER` and the key must agree.
+| `LLM_PROVIDER` | Model | Key |
+|---|---|---|
+| `ollama` | anything local, e.g. `deepseek-r1:8b` | none — loopback |
+| `deepseek` | `deepseek-v4-flash` | `DEEPSEEK_API_KEY` |
+| `groq` | `openai/gpt-oss-120b` | `GROQ_API_KEY` |
+| `bedrock` | Claude | AWS credentials |
 
-The configured provider is `groq` running `openai/gpt-oss-120b` at low reasoning effort;
-change `GROQ_MODEL_ID` to select another. Set `LLM_PROVIDER=grok` with `XAI_API_KEY` and
-`GROK_MODEL_ID` to use xAI instead. Both speak the same OpenAI-shaped chat API, so one
-adapter serves them and validates JSON against the existing Pydantic schemas.
+`LLM_PROVIDER_INTERPRETER` overrides the provider for policy interpretation alone.
+Interpretation is one call per run against a wide schema where being wrong makes every
+downstream number answer a different question; deliberation is hundreds of calls against a
+narrow schema where cost dominates. They are different jobs and can use different models.
 
-**Free-tier limits bite.** A free Groq key allows 8,000 tokens per minute, and the
-deliberation reserves up to 8,000 per batch across 8 concurrent workers. Deliberating
-the full 2,000 residents needs a paid tier; a small `limit=` slice runs fine on the free
-one.
-
-Start the backend:
+> **Groq is not Grok.** Different companies, one letter apart. Groq (`gsk_…`) hosts
+> open-weight models; Grok (`xai-…`) is xAI's own. Each rejects the other's key.
 
 ```powershell
 python -m venv .venv
@@ -198,105 +329,91 @@ cd backend
 ..\.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
 ```
 
-Start the frontend in a second terminal:
-
 ```powershell
 cd frontend
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173. Backend health is at http://localhost:8000/health.
-A missing or invalid xAI key produces an explicit error when a model is needed;
-it does not produce substitute resident reasoning. The default frontend fixture
-mode is only for inspecting bundled data and does not run live deliberation.
+Open http://localhost:5173. Health is at http://localhost:8000/health.
 
-Run offline backend tests from `backend/` with `python -m pytest tests -q`.
+**Local models.** Ollama's native endpoint constrains generation to the output schema, which
+is what lets a small local model return a valid batch at all. Three settings interact and
+each one fails as a hang rather than an error, so they are documented in
+`backend/IMPLEMENTING.md`: the context window Ollama serves regardless of what the model
+advertises, the fact that the generation budget is drawn from that same window rather than
+added to it, and the batch size that has to fit inside both.
 
----
+**Replay.** `DELIBERATION_REPLAY_ONLY=1` serves the deliberation only from cache, so a demo
+cannot accidentally spend hours calling a model for a batch that was never run. A cache miss
+is skipped and counted, and the residents in it are reported as unevaluated.
 
-## Development Priorities
+**Export.** `python scripts/export_run.py` writes a finished run to `data/runs/` as JSON for
+the record and Markdown for reading — every resident, every turn, every citation, the
+coverage counts and the metrics. It replays from cache, so it costs nothing after a run.
 
-The implementation should prioritize the visible end-to-end story:
-
-1. One public-policy scenario.
-2. Structured synthetic personas.
-3. A graph that materially affects outcomes.
-4. Baseline policy simulation.
-5. Automatic impact auditing.
-6. Root-cause / propagation explanation.
-7. Alternative intervention generation.
-8. Re-simulation.
-9. Before/after comparison.
-10. Public consultation.
-11. Real feedback aggregation.
-12. Simulated-vs-real calibration.
-
-A smaller, reliable implementation of this complete loop is preferred over multiple incomplete domains.
+Tests: `cd backend && python -m pytest tests -q`.
 
 ---
 
-## Example Demo Story
+## 9. What the tests are for
 
-A suitable demo could be:
+The suite concentrates on the parts that must not drift, and above all on the guards:
 
-> A policymaker proposes a public-policy change. CivicTwin simulates its effects across a synthetic population. The overall metric improves, but one subgroup suffers a severe accessibility loss. CivicTwin traces the cause, proposes several mitigation strategies, re-simulates them, and identifies a better trade-off. The improved proposal is published for public feedback. Real users reveal an overlooked constraint, and CivicTwin shows that its synthetic model was poorly calibrated for that subgroup.
-
-The exact scenario remains an open product decision.
-
----
-
-## Product Boundaries
-
-CivicTwin is not designed for:
-
-- election manipulation,
-- voter persuasion,
-- political microtargeting,
-- propaganda optimization,
-- covert profiling,
-- automated denial of public services,
-- autonomous enactment of public policy.
-
-Synthetic population results must not be presented as certain predictions of real human behavior.
+- **Groundedness, watched failing.** Every guard has a test that plants a specific lie — a
+  fabricated fact id, a fact from a round that had not happened yet, a neighbour who never
+  spoke, a harm claim resting only on facts that predate the policy — and asserts it is
+  caught. *A guard nobody has watched fail is not a guard.*
+- **Batch integrity.** A schema-valid answer is not necessarily an answer. An empty batch, a
+  short batch and a batch returned for the wrong residents are each refused, because counting
+  any of them silently shrinks the population.
+- **Numbers are rejected, never clamped.** A value outside its range is refused and retried.
+  A clamped value is a number the resident did not say, presented as one they did.
+- **The n ≥ 30 floor.** Nothing is flagged on a cohort too small to support it, and a
+  calibration change is never applied without a person.
+- **A mock cannot stand in for a run.** Without a model the deliberation refuses outright.
+  Text that reads like a resident and is not one is worse than an empty page.
 
 ---
 
-## Documentation Workflow
+## 10. Repository
 
-When the project evolves:
+```
+backend/app/
+  world.py          the numbered facts handed to each resident, and nothing else
+  deliberate.py     the four-round loop: bounded, cached, snapshotted per round
+  cohort.py         who reasons — affected, their ties, a stratified comparison
+  aggregate.py      resident declarations become the six canonical metrics
+  remedies.py       what residents asked for, clustered and mapped
+  alternatives.py   re-evaluating an intervention over the same residents
+  simulation.py     the fact layer: geometry, routes, journey times
+  social.py         undirected opinion graph; CARES_FOR is directed
+  consultation.py   who replies, what they say, and who will not reply
+  services/llm.py   the single seam to any model provider
 
-- Product decisions belong in `goal.md`.
-- Coding-agent behavior belongs in `AGENTS.md`.
-- Setup/run changes belong here.
-- Technical system design belongs in `docs/architecture.md`.
-- Simulation mechanics belong in `docs/simulation.md`.
-- Experimental methodology and results belong in `docs/evaluation.md`.
-- Locked V1 scenario details belong in `docs/scenario-v1.md`.
+frontend/src/
+  pages/            one screen per step of the loop
+  components/       the map, the hero scene, the system diagram
 
-Avoid copying the same section into every file.
-
----
-
-## Current Open Decisions
-
-The V1 scenario is **locked**: Singapore public-bus stop rationalisation. The demo scenario,
-datasets, persona schema, graph relationships, simulation rules, intervention search space,
-“better off” metrics, consultation questions, calibration method, and live-versus-precomputed
-split are all specified in [`docs/scenario-v1.md`](./docs/scenario-v1.md).
-
-Remaining before implementation — see `docs/scenario-v1.md` §14.1:
-
-- exact LTA DataMall dataset and field names,
-- exact SingStat table identifiers for subzone × age band,
-- the study area, once the selection rule is applied to real figures,
-- whether LTA walking-distance planning guidance supports the locked metre thresholds.
-
-See [`goal.md`](./goal.md) for the product-level list, some of which `docs/scenario-v1.md`
-now answers for the transport scenario.
+docs/
+  scenario-v1.md    the locked scenario decisions and why each was made
+  architecture.md   implementation detail
+  evaluation.md     how the run is judged
+goal.md             product goals, scope, and non-goals
+AGENTS.md           instructions for coding agents working here
+```
 
 ---
 
-## North-Star Idea
+## 11. What it is not
 
-> **CivicTwin gives policymakers a safer environment to learn before real people bear the cost of the experiment.**
+Not a prediction of what will happen in Ang Mo Kio. The population is synthetic, the
+consultation respondents are synthetic, and the confidence score describes only the people
+who replied. Every screen says so on its face.
+
+It is a way of asking a specific question — *who does this quietly break, and who absorbs
+the cost on their behalf* — and of showing the working, in the residents' own words, with
+the facts each one reasoned from attached.
+
+> **SIMULATE → FIND WHO IS LEFT BEHIND → UNDERSTAND WHY → DESIGN A BETTER
+> INTERVENTION → RE-SIMULATE → ASK REAL PEOPLE → LEARN**
