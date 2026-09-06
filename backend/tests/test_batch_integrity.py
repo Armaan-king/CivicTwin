@@ -58,31 +58,32 @@ def test_a_complete_opening_batch_passes():
     assert [v.persona_id for v in batch.voices] == ["p_0000", "p_0001", "p_0002"]
 
 
-def turn(rnd=1) -> dict:
-    return {"round": rnd, "position": 0.4, "confidence": 0.6,
-            "reasoning": "I walk further now.", "grounded_in": ["x:f1"]}
+def turn(pid="p_0001", rnd=1) -> dict:
+    return {"persona_id": pid, "round": rnd, "position": 0.4, "confidence": 0.6,
+            "reasoning": "I walk further now.", "grounded_in": [f"{pid}:f4"]}
 
 
 def test_a_round_batch_for_the_wrong_residents_is_refused():
-    """The failure that used to be silently repaired by overwriting the id.
+    """Identity now rides on the turn, so a reordered batch is detected rather than
+    relabelled.
 
     Assigning our id over the model's cannot detect a reordered batch, it relabels one --
     and twelve residents' reasoning attached to the wrong twelve people still looks like
     evidence.
     """
-    payload = {"turns": [turn(), turn()], "persona_ids": ["p_0002", "p_0001"]}
-    with pytest.raises(DeliberationFailed, match="wrong residents, or in the wrong order"):
+    payload = {"turns": [turn("p_0002"), turn("p_0001")]}
+    with pytest.raises(DeliberationFailed, match="expected"):
         run_round("prompt", client(payload), expected_ids=["p_0001", "p_0002"])
 
 
 def test_a_round_batch_with_a_missing_resident_is_refused():
-    payload = {"turns": [turn()], "persona_ids": ["p_0001"]}
+    payload = {"turns": [turn("p_0001")]}
     with pytest.raises(DeliberationFailed, match="returned 1 turns, expected 2"):
         run_round("prompt", client(payload), expected_ids=["p_0001", "p_0002"])
 
 
 def test_a_matching_round_batch_passes():
-    payload = {"turns": [turn(), turn()], "persona_ids": ["p_0001", "p_0002"]}
+    payload = {"turns": [turn("p_0001"), turn("p_0002")]}
     batch = run_round("prompt", client(payload), expected_ids=["p_0001", "p_0002"])
     assert batch.persona_ids == ["p_0001", "p_0002"]
 
@@ -106,19 +107,23 @@ def test_the_schema_is_offered_to_a_provider_that_can_constrain_decoding():
     assert "voices" in seen["schema"]["properties"]
 
 
-def test_the_grammar_schema_pins_how_many_residents_may_be_returned():
+def test_the_grammar_schema_caps_and_requires_the_batch_array():
     """Grammar constrains the shape of a value, not how many of them there are.
 
     An unbounded array is a legal place to keep going, and a small model obligingly does:
-    asked for four residents it returned thirty-nine and spent 508 seconds on it. The
-    count check caught that, but the cheaper fix is to make the sampler unable to run past
-    the end.
+    asked for four residents it returned thirty-nine and spent 508 seconds on it.
+
+    `maxItems` is the ceiling that stops that. `minItems` is set too but is NOT enforced
+    by llama.cpp when the items are a `$ref` -- measured: with minItems 4 the model
+    returned `{"turns": []}`. So the array is also marked required, and the explicit count
+    check stays the thing that actually rejects a short batch.
     """
     from app.services.llm import exact_items
 
     schema = exact_items(OpeningBatch, "voices", 6)
     assert schema["properties"]["voices"]["minItems"] == 6
     assert schema["properties"]["voices"]["maxItems"] == 6
+    assert "voices" in schema["required"], "a defaulted field is droppable by the grammar"
     # the Pydantic model itself is untouched: validation still accepts any length, and the
     # explicit count check remains the thing that rejects a wrong one
     assert OpeningBatch(voices=[]).voices == []
@@ -145,7 +150,7 @@ def test_a_round_batch_pins_its_turn_count_too():
             seen["schema"] = schema
             return json.dumps(self.payload)
 
-    payload = {"turns": [turn(), turn()], "persona_ids": ["p_0001", "p_0002"]}
+    payload = {"turns": [turn("p_0001"), turn("p_0002")]}
     run_round("prompt", LLMClient(Recorder(payload), max_attempts=1),
               expected_ids=["p_0001", "p_0002"])
     assert seen["schema"]["properties"]["turns"]["maxItems"] == 2

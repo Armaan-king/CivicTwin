@@ -33,6 +33,14 @@ Response = Literal[
 class AgentTurn(BaseModel):
     """One resident, one round of deliberation."""
 
+    #: Who is speaking. Carried on the turn rather than in a parallel list beside it.
+    #: `DeliberationBatch` used to hold `turns` and `persona_ids` as two arrays that had
+    #: to correspond by index, and a small model treats those as alternatives rather than
+    #: as one record split in two: asked for four residents it filled the ids and left the
+    #: turns empty, and asked for one it filled the turn and left the ids empty. It never
+    #: filled both. Identity travels with the data now, so there is nothing to align.
+    persona_id: str | None = None
+
     round: int = Field(ge=0, le=3)
 
     #: how this policy lands on them, judged against the same definitions V1 computed:
@@ -90,10 +98,17 @@ class AgentVoice(BaseModel):
 
 
 class DeliberationBatch(BaseModel):
-    """What one model call returns: several residents reasoning about the same round."""
+    """What one model call returns: several residents reasoning about the same round.
+
+    One array. Each turn names the resident it belongs to, so a batch cannot come back
+    half-filled or misaligned -- the two failure modes of the parallel-list shape this
+    replaced.
+    """
     turns: list[AgentTurn] = Field(default_factory=list)
-    #: parallel to `turns`, so a batch can be matched back to its residents
-    persona_ids: list[str] = Field(default_factory=list)
+
+    @property
+    def persona_ids(self) -> list[str]:
+        return [t.persona_id for t in self.turns if t.persona_id]
 
 
 class OpeningBatch(BaseModel):

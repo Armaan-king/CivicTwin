@@ -41,7 +41,7 @@ BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 #: what would make the policy workable for them (J4). v5: the 0..1 support scale is
 #: stated explicitly, after a local model read a field named `position` as a signed
 #: -1..+1 scale and every turn was rejected for it.
-PROMPT_VERSION = "v6"
+PROMPT_VERSION = "v7"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -101,6 +101,8 @@ Absolute rules:
   also 0.0 to 1.0.
 - Most people are not affected. Do not manufacture drama: "nothing has changed for me" is a
   legitimate and common answer.
+- `persona_id` on every turn is the id of the resident that turn is for, copied exactly
+  from the RESIDENT heading above their facts.
 - `remedy`: if and only if this resident is harmed (severity "moderate" or "high"), answer
   one further question in their own words, one sentence: what would make this workable for
   you? Ask for what they need, not for a policy instrument -- "somewhere to sit while I
@@ -215,7 +217,7 @@ def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> Deliberat
             f"round batch returned {len(batch.turns)} turns, expected {len(expected_ids)}")
     if batch.persona_ids != expected_ids:
         raise DeliberationFailed(
-            "round batch came back for the wrong residents, or in the wrong order")
+            f"round batch named {batch.persona_ids or 'nobody'}, expected {expected_ids}")
     return batch
 
 

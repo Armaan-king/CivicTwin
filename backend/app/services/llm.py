@@ -502,15 +502,27 @@ def exact_items(model_cls, field: str, n: int) -> dict:
     spent 508 seconds doing it -- the batch was correctly rejected, and almost all of that
     time went on residents nobody had asked about.
 
-    `minItems`/`maxItems` compile into the grammar as a repetition count, so the sampler
-    cannot run past the end. Unlike `minimum`/`maximum` on a number, which do not compile
-    and must still be caught by validation.
+    **`minItems` is not enforced by llama.cpp when the array items are a `$ref`.** Measured,
+    not assumed: with `minItems: 4` set on `turns`, the model returned `{"turns": []}` and
+    stopped after 43 tokens. An earlier note here claimed the opposite; the batch of four
+    that appeared to prove it was the prompt complying, not the grammar binding.
+
+    `maxItems` is still worth setting -- it is the ceiling that stops a 39-voice
+    over-generation -- and the array is also marked required, so the key cannot be dropped
+    entirely. Neither prevents an empty array, so the explicit count check in
+    `run_opening`/`run_round` remains the thing that actually rejects a short batch.
     """
     schema = model_cls.model_json_schema()
     target = schema.get("properties", {}).get(field)
     if isinstance(target, dict) and target.get("type") == "array":
         target["minItems"] = n
         target["maxItems"] = n
+        target.pop("default", None)
+    # A Pydantic field with default_factory is absent from `required`, which lets a
+    # grammar drop the key altogether rather than merely leave it empty.
+    required = schema.setdefault("required", [])
+    if field not in required:
+        required.append(field)
     return schema
 
 

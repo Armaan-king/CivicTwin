@@ -51,8 +51,8 @@ class HarmedStub:
                             "severity": "none", "response": "unaffected",
                             "grounded_in": facts[pid][:1]}]}
                 for pid in ids]})
-        return json.dumps({"persona_ids": ids, "turns": [
-            {"round": 1, "position": 0.1, "confidence": 0.9,
+        return json.dumps({"turns": [
+            {"persona_id": pid, "round": 1, "position": 0.1, "confidence": 0.9,
              "reasoning": "The stop I use is closing and I cannot walk to the next one.",
              "severity": "high", "response": "giving_up",
              "grounded_in": facts[pid],

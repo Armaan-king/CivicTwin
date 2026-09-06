@@ -54,15 +54,12 @@ class StubCompletion:
                             "grounded_in": facts[pid][:1]}]}
                 for pid in ids
             ]})
-        return json.dumps({
-            "persona_ids": ids,
-            "turns": [
-                {"round": 1, "position": 0.3, "confidence": 0.7,
-                 "reasoning": "Stub round view.", "severity": "moderate",
-                 "response": "adapting", "grounded_in": facts[pid]}
-                for pid in ids
-            ],
-        })
+        return json.dumps({"turns": [
+            {"persona_id": pid, "round": 1, "position": 0.3, "confidence": 0.7,
+             "reasoning": "Stub round view.", "severity": "moderate",
+             "response": "adapting", "grounded_in": facts[pid]}
+            for pid in ids
+        ]})
 
 
 @pytest.fixture(scope="module")

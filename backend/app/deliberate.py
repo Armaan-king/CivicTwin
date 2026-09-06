@@ -275,7 +275,7 @@ def deliberate(
                     continue
                 from app.schemas.deliberation import DeliberationBatch
                 batch = DeliberationBatch.model_validate(raw)
-                by_id = dict(zip(batch.persona_ids, batch.turns))
+                by_id = {t.persona_id: t for t in batch.turns if t.persona_id}
                 for pid in group:
                     turn = by_id.get(pid)
                     if turn is None:
