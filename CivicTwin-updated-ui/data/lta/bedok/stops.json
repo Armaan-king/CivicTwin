@@ -1,0 +1,1269 @@
+[
+ {
+  "BusStopCode": "74941",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp Blk 961A",
+  "Latitude": 1.3402645,
+  "Longitude": 103.9361875
+ },
+ {
+  "BusStopCode": "74949",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Blk 961A",
+  "Latitude": 1.340276,
+  "Longitude": 103.936345
+ },
+ {
+  "BusStopCode": "74951",
+  "RoadName": "Tampines St 96",
+  "Description": "Blk 962A",
+  "Latitude": 1.3396495,
+  "Longitude": 103.9380655
+ },
+ {
+  "BusStopCode": "74959",
+  "RoadName": "Tampines St 96",
+  "Description": "Blk 969C",
+  "Latitude": 1.340033,
+  "Longitude": 103.937911
+ },
+ {
+  "BusStopCode": "74961",
+  "RoadName": "Tampines St 96",
+  "Description": "Blk 966",
+  "Latitude": 1.338423,
+  "Longitude": 103.939921
+ },
+ {
+  "BusStopCode": "74969",
+  "RoadName": "Tampines St 96",
+  "Description": "Opp Blk 966",
+  "Latitude": 1.3384905,
+  "Longitude": 103.9401585
+ },
+ {
+  "BusStopCode": "74979",
+  "RoadName": "Tampines St 95",
+  "Description": "Blk 967A",
+  "Latitude": 1.341129,
+  "Longitude": 103.9396815
+ },
+ {
+  "BusStopCode": "75069",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Blk 970A",
+  "Latitude": 1.341667,
+  "Longitude": 103.937323
+ },
+ {
+  "BusStopCode": "75341",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp The Clearwater Condo",
+  "Latitude": 1.33832204097015,
+  "Longitude": 103.933861255669
+ },
+ {
+  "BusStopCode": "75349",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "The Clearwater Condo",
+  "Latitude": 1.33811824869625,
+  "Longitude": 103.9339578151498
+ },
+ {
+  "BusStopCode": "83081",
+  "RoadName": "Sims Ave East",
+  "Description": "Opp Perpetual Succour Ch",
+  "Latitude": 1.32138694232025,
+  "Longitude": 103.91736615804473
+ },
+ {
+  "BusStopCode": "83099",
+  "RoadName": "Changi Rd",
+  "Description": "Aft Perpetual Succour Ch",
+  "Latitude": 1.32076378388187,
+  "Longitude": 103.91810427638708
+ },
+ {
+  "BusStopCode": "83181",
+  "RoadName": "Frankel Ave",
+  "Description": "Aft Bethesda Frankel Ch",
+  "Latitude": 1.31662343088137,
+  "Longitude": 103.91755342481619
+ },
+ {
+  "BusStopCode": "83189",
+  "RoadName": "Frankel Ave",
+  "Description": "Bef Bethesda Frankel Ch",
+  "Latitude": 1.31683972198045,
+  "Longitude": 103.91749277802164
+ },
+ {
+  "BusStopCode": "83229",
+  "RoadName": "Siglap Dr",
+  "Description": "Bef Carlton Ave",
+  "Latitude": 1.31661259109687,
+  "Longitude": 103.92083645128875
+ },
+ {
+  "BusStopCode": "83231",
+  "RoadName": "Siglap Rd",
+  "Description": "Bef Siglap Dr",
+  "Latitude": 1.31726812920156,
+  "Longitude": 103.92214229972099
+ },
+ {
+  "BusStopCode": "83239",
+  "RoadName": "Siglap Rd",
+  "Description": "Opp Cheviot Hill",
+  "Latitude": 1.3169597007985,
+  "Longitude": 103.92246139079549
+ },
+ {
+  "BusStopCode": "83249",
+  "RoadName": "Siglap Rd",
+  "Description": "Flamingo Valley",
+  "Latitude": 1.31786650545216,
+  "Longitude": 103.92174594601859
+ },
+ {
+  "BusStopCode": "83251",
+  "RoadName": "Fidelio St",
+  "Description": "Bef Jln Khairuddin",
+  "Latitude": 1.31923829366992,
+  "Longitude": 103.92199914721091
+ },
+ {
+  "BusStopCode": "83261",
+  "RoadName": "Fidelio St",
+  "Description": "Opera Est Pr Sch",
+  "Latitude": 1.3190690667828,
+  "Longitude": 103.9242469847813
+ },
+ {
+  "BusStopCode": "83269",
+  "RoadName": "Fidelio St",
+  "Description": "Opp Opera Est Pr Sch",
+  "Latitude": 1.31895097253228,
+  "Longitude": 103.92346501346623
+ },
+ {
+  "BusStopCode": "83271",
+  "RoadName": "Fidelio St",
+  "Description": "Aft Swan Lake Ave",
+  "Latitude": 1.31928964158986,
+  "Longitude": 103.92588543589487
+ },
+ {
+  "BusStopCode": "83279",
+  "RoadName": "Fidelio St",
+  "Description": "Aft Carmen St",
+  "Latitude": 1.3188308339316,
+  "Longitude": 103.92510530820441
+ },
+ {
+  "BusStopCode": "83281",
+  "RoadName": "Fidelio St",
+  "Description": "Bef Tosca St",
+  "Latitude": 1.31965172299504,
+  "Longitude": 103.9270176945798
+ },
+ {
+  "BusStopCode": "84009",
+  "RoadName": "Bedok Nth Dr",
+  "Description": "Bedok Int",
+  "Latitude": 1.32453874317344,
+  "Longitude": 103.92903818515839
+ },
+ {
+  "BusStopCode": "84011",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Chai Chee Ind Pk",
+  "Latitude": 1.32257749632692,
+  "Longitude": 103.92233358172962
+ },
+ {
+  "BusStopCode": "84019",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Opp Chai Chee Ind Pk",
+  "Latitude": 1.32221972730517,
+  "Longitude": 103.92262015530929
+ },
+ {
+  "BusStopCode": "84021",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Blk 32",
+  "Latitude": 1.32338320435233,
+  "Longitude": 103.92508721683168
+ },
+ {
+  "BusStopCode": "84029",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Opp Blk 32",
+  "Latitude": 1.32295305994698,
+  "Longitude": 103.92517704260585
+ },
+ {
+  "BusStopCode": "84031",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Bedok Stn Exit B",
+  "Latitude": 1.32428292329305,
+  "Longitude": 103.93003627080394
+ },
+ {
+  "BusStopCode": "84039",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Bedok Stn Exit A",
+  "Latitude": 1.32353645344906,
+  "Longitude": 103.92886300203479
+ },
+ {
+  "BusStopCode": "84041",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Blk 221A",
+  "Latitude": 1.3246905167586,
+  "Longitude": 103.93468799273933
+ },
+ {
+  "BusStopCode": "84049",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Blk 27",
+  "Latitude": 1.32432719820227,
+  "Longitude": 103.93471220144858
+ },
+ {
+  "BusStopCode": "84051",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Bedok Sports Cplx",
+  "Latitude": 1.325207,
+  "Longitude": 103.938755
+ },
+ {
+  "BusStopCode": "84059",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Blk 65",
+  "Latitude": 1.32493504095045,
+  "Longitude": 103.93953481204565
+ },
+ {
+  "BusStopCode": "84061",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "The Tanamera Condo",
+  "Latitude": 1.32584790501258,
+  "Longitude": 103.94223128727671
+ },
+ {
+  "BusStopCode": "84069",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Blk 55",
+  "Latitude": 1.32548742810424,
+  "Longitude": 103.94219019887281
+ },
+ {
+  "BusStopCode": "84071",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Blk 71",
+  "Latitude": 1.32067138376849,
+  "Longitude": 103.9426000755741
+ },
+ {
+  "BusStopCode": "84079",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Opp Blk 71",
+  "Latitude": 1.32099303797206,
+  "Longitude": 103.94325305782594
+ },
+ {
+  "BusStopCode": "84081",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Opp Blk 40",
+  "Latitude": 1.3204380811482,
+  "Longitude": 103.94022038903293
+ },
+ {
+  "BusStopCode": "84089",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Blk 40",
+  "Latitude": 1.3206814195738,
+  "Longitude": 103.9400309260245
+ },
+ {
+  "BusStopCode": "84101",
+  "RoadName": "Bedok Sth Ave 3",
+  "Description": "ECO Condo",
+  "Latitude": 1.32298200464523,
+  "Longitude": 103.94421518494586
+ },
+ {
+  "BusStopCode": "84109",
+  "RoadName": "Bedok Sth Ave 3",
+  "Description": "Bef Bedok View Sec Sch",
+  "Latitude": 1.32350836424044,
+  "Longitude": 103.9441209521673
+ },
+ {
+  "BusStopCode": "84111",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Opp Blk 17",
+  "Latitude": 1.31958802627855,
+  "Longitude": 103.93574197184712
+ },
+ {
+  "BusStopCode": "84119",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Blk 18",
+  "Latitude": 1.31964,
+  "Longitude": 103.935232
+ },
+ {
+  "BusStopCode": "84121",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Aft Bedok Sth Ave 1",
+  "Latitude": 1.318437,
+  "Longitude": 103.931033
+ },
+ {
+  "BusStopCode": "84129",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Fujitec S'pore Ltd",
+  "Latitude": 1.31875790465263,
+  "Longitude": 103.93158674239623
+ },
+ {
+  "BusStopCode": "84131",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Opp Panasonic",
+  "Latitude": 1.3214133317439,
+  "Longitude": 103.92757312069912
+ },
+ {
+  "BusStopCode": "84139",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Panasonic",
+  "Latitude": 1.321745,
+  "Longitude": 103.92772
+ },
+ {
+  "BusStopCode": "84141",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Opp Lion Hme for Elders",
+  "Latitude": 1.32021707852141,
+  "Longitude": 103.93816948878941
+ },
+ {
+  "BusStopCode": "84149",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Lion Hme For Elders",
+  "Latitude": 1.32047933475714,
+  "Longitude": 103.93839375752798
+ },
+ {
+  "BusStopCode": "84151",
+  "RoadName": "Bedok Sth Ave 1",
+  "Description": "Casafina",
+  "Latitude": 1.31656999665769,
+  "Longitude": 103.93334015990408
+ },
+ {
+  "BusStopCode": "84159",
+  "RoadName": "Bedok Sth Ave 1",
+  "Description": "Opp Casafina/Temasek JC",
+  "Latitude": 1.31664972197451,
+  "Longitude": 103.93304055596909
+ },
+ {
+  "BusStopCode": "84161",
+  "RoadName": "Bedok Sth Ave 1",
+  "Description": "Blk 3",
+  "Latitude": 1.321651111,
+  "Longitude": 103.9324025
+ },
+ {
+  "BusStopCode": "84169",
+  "RoadName": "Bedok Sth Ave 1",
+  "Description": "Opp Blk 3",
+  "Latitude": 1.322133056,
+  "Longitude": 103.9321144
+ },
+ {
+  "BusStopCode": "84191",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Blk 220 CP",
+  "Latitude": 1.32566318975139,
+  "Longitude": 103.93533757051014
+ },
+ {
+  "BusStopCode": "84199",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Opp Blk 220 CP",
+  "Latitude": 1.32553283664673,
+  "Longitude": 103.9355563841307
+ },
+ {
+  "BusStopCode": "84201",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Bedok Resvr Stn Exit A",
+  "Latitude": 1.336576,
+  "Longitude": 103.933159
+ },
+ {
+  "BusStopCode": "84209",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Bedok Resvr Stn Exit B",
+  "Latitude": 1.33702513693776,
+  "Longitude": 103.93333589306084
+ },
+ {
+  "BusStopCode": "84211",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Blk 403",
+  "Latitude": 1.33012,
+  "Longitude": 103.93447
+ },
+ {
+  "BusStopCode": "84219",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Blk 139",
+  "Latitude": 1.32940888887166,
+  "Longitude": 103.9348130555732
+ },
+ {
+  "BusStopCode": "84221",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 109",
+  "Latitude": 1.33185798500032,
+  "Longitude": 103.93512740972372
+ },
+ {
+  "BusStopCode": "84229",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 111",
+  "Latitude": 1.3315995317556,
+  "Longitude": 103.93531396427683
+ },
+ {
+  "BusStopCode": "84231",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 85",
+  "Latitude": 1.33173871602405,
+  "Longitude": 103.93855496527853
+ },
+ {
+  "BusStopCode": "84239",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Opp Blk 85",
+  "Latitude": 1.33151836127292,
+  "Longitude": 103.9383568845181
+ },
+ {
+  "BusStopCode": "84241",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 81",
+  "Latitude": 1.32861392886029,
+  "Longitude": 103.94004872476815
+ },
+ {
+  "BusStopCode": "84249",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 124",
+  "Latitude": 1.32941668893627,
+  "Longitude": 103.93960622332179
+ },
+ {
+  "BusStopCode": "84251",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Blk 99",
+  "Latitude": 1.33346832060545,
+  "Longitude": 103.93883800719165
+ },
+ {
+  "BusStopCode": "84259",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Blk 88",
+  "Latitude": 1.33328807616427,
+  "Longitude": 103.93910677080204
+ },
+ {
+  "BusStopCode": "84261",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "St. Anthony's Cano Sch",
+  "Latitude": 1.334189,
+  "Longitude": 103.941658
+ },
+ {
+  "BusStopCode": "84269",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Blk 95",
+  "Latitude": 1.33402333297056,
+  "Longitude": 103.94185027798375
+ },
+ {
+  "BusStopCode": "84271",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Aft Bedok Ind Pk E",
+  "Latitude": 1.336735,
+  "Longitude": 103.94411
+ },
+ {
+  "BusStopCode": "84279",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Aft Bedok Nth St 5",
+  "Latitude": 1.33664160677812,
+  "Longitude": 103.94439635871171
+ },
+ {
+  "BusStopCode": "84281",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 180",
+  "Latitude": 1.32657714220068,
+  "Longitude": 103.9403951168328
+ },
+ {
+  "BusStopCode": "84289",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Opp Blk 180",
+  "Latitude": 1.32663077053638,
+  "Longitude": 103.94017072989195
+ },
+ {
+  "BusStopCode": "84299",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Bedok Nth Depot",
+  "Latitude": 1.33800081413595,
+  "Longitude": 103.94750053856653
+ },
+ {
+  "BusStopCode": "84301",
+  "RoadName": "Bedok Nth Ave 1",
+  "Description": "Blk 41",
+  "Latitude": 1.32782140214678,
+  "Longitude": 103.92656628872025
+ },
+ {
+  "BusStopCode": "84309",
+  "RoadName": "Bedok Nth Ave 1",
+  "Description": "Blk 423",
+  "Latitude": 1.32802803259661,
+  "Longitude": 103.92687404688121
+ },
+ {
+  "BusStopCode": "84311",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 521",
+  "Latitude": 1.330067,
+  "Longitude": 103.927858
+ },
+ {
+  "BusStopCode": "84319",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 428",
+  "Latitude": 1.32980564460578,
+  "Longitude": 103.92771515822335
+ },
+ {
+  "BusStopCode": "84321",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 516",
+  "Latitude": 1.33060063600662,
+  "Longitude": 103.92977387914273
+ },
+ {
+  "BusStopCode": "84329",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 414",
+  "Latitude": 1.33029323198176,
+  "Longitude": 103.92970061275057
+ },
+ {
+  "BusStopCode": "84331",
+  "RoadName": "Bedok Nth Ave 2",
+  "Description": "Opp Blk 416",
+  "Latitude": 1.32898829919632,
+  "Longitude": 103.93099993868753
+ },
+ {
+  "BusStopCode": "84339",
+  "RoadName": "Bedok Nth Ave 2",
+  "Description": "Blk 416",
+  "Latitude": 1.3289,
+  "Longitude": 103.930777
+ },
+ {
+  "BusStopCode": "84341",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Opp Fengshan Pr Sch",
+  "Latitude": 1.33110349338955,
+  "Longitude": 103.93198370934411
+ },
+ {
+  "BusStopCode": "84349",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Fengshan Pr Sch",
+  "Latitude": 1.33091748609947,
+  "Longitude": 103.93233223449336
+ },
+ {
+  "BusStopCode": "84351",
+  "RoadName": "Bedok Nth St 1",
+  "Description": "Bedok Ctrl PO",
+  "Latitude": 1.32766562447954,
+  "Longitude": 103.93409675152876
+ },
+ {
+  "BusStopCode": "84359",
+  "RoadName": "Bedok Nth St 1",
+  "Description": "Opp Bedok Ctrl PO",
+  "Latitude": 1.32787704925987,
+  "Longitude": 103.934076210002
+ },
+ {
+  "BusStopCode": "84361",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 547",
+  "Latitude": 1.32936638901809,
+  "Longitude": 103.92462499999526
+ },
+ {
+  "BusStopCode": "84369",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Blk 45",
+  "Latitude": 1.329162,
+  "Longitude": 103.924608
+ },
+ {
+  "BusStopCode": "84371",
+  "RoadName": "Bedok Nth Ave 1",
+  "Description": "Blk 546",
+  "Latitude": 1.33055000001009,
+  "Longitude": 103.9262383330096
+ },
+ {
+  "BusStopCode": "84379",
+  "RoadName": "Bedok Nth Ave 1",
+  "Description": "Opp Blk 546",
+  "Latitude": 1.33041495636834,
+  "Longitude": 103.92645503858006
+ },
+ {
+  "BusStopCode": "84381",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Blk 544",
+  "Latitude": 1.33078667404046,
+  "Longitude": 103.92426011381585
+ },
+ {
+  "BusStopCode": "84391",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Blk 534",
+  "Latitude": 1.33274999618407,
+  "Longitude": 103.92447655289592
+ },
+ {
+  "BusStopCode": "84401",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Opp Blk 550",
+  "Latitude": 1.33316500001136,
+  "Longitude": 103.9269811109948
+ },
+ {
+  "BusStopCode": "84409",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Blk 550",
+  "Latitude": 1.33291002440884,
+  "Longitude": 103.92669166477268
+ },
+ {
+  "BusStopCode": "84411",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Blk 526",
+  "Latitude": 1.33383806396564,
+  "Longitude": 103.92928425024714
+ },
+ {
+  "BusStopCode": "84419",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Blk 512",
+  "Latitude": 1.33361648978155,
+  "Longitude": 103.9292288767243
+ },
+ {
+  "BusStopCode": "84421",
+  "RoadName": "Bedok Nth Ave 2",
+  "Description": "Blk 510",
+  "Latitude": 1.33232270053889,
+  "Longitude": 103.93032045625178
+ },
+ {
+  "BusStopCode": "84429",
+  "RoadName": "Bedok Nth Ave 2",
+  "Description": "Blk 515",
+  "Latitude": 1.33222526253562,
+  "Longitude": 103.93014326693238
+ },
+ {
+  "BusStopCode": "84431",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Blk 3014",
+  "Latitude": 1.33513644378005,
+  "Longitude": 103.9502227306511
+ },
+ {
+  "BusStopCode": "84439",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Opp Blk 3014",
+  "Latitude": 1.33474732352614,
+  "Longitude": 103.95024017522437
+ },
+ {
+  "BusStopCode": "84449",
+  "RoadName": "Bedok Nth St 3",
+  "Description": "Blk 509",
+  "Latitude": 1.33322170084132,
+  "Longitude": 103.93155200621871
+ },
+ {
+  "BusStopCode": "84451",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Bedok Nth Stn Exit A",
+  "Latitude": 1.335644,
+  "Longitude": 103.918055
+ },
+ {
+  "BusStopCode": "84459",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Bet Blks 705/706",
+  "Latitude": 1.336324,
+  "Longitude": 103.918288
+ },
+ {
+  "BusStopCode": "84461",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp Blk 701",
+  "Latitude": 1.33807138901241,
+  "Longitude": 103.91939027798064
+ },
+ {
+  "BusStopCode": "84469",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Blk 703",
+  "Latitude": 1.3375152915469,
+  "Longitude": 103.9197283469228
+ },
+ {
+  "BusStopCode": "84471",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Blk 745",
+  "Latitude": 1.3373330466218,
+  "Longitude": 103.92199745160043
+ },
+ {
+  "BusStopCode": "84479",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Blk 713",
+  "Latitude": 1.33742106440195,
+  "Longitude": 103.92253160478627
+ },
+ {
+  "BusStopCode": "84521",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Blk 506",
+  "Latitude": 1.33230500002897,
+  "Longitude": 103.93393805556471
+ },
+ {
+  "BusStopCode": "84529",
+  "RoadName": "Bedok Nth Ave 3",
+  "Description": "Blk 109",
+  "Latitude": 1.33213305553955,
+  "Longitude": 103.93431305555218
+ },
+ {
+  "BusStopCode": "84539",
+  "RoadName": "Bedok Nth Rd",
+  "Description": "Bedok Nth Stn Exit B",
+  "Latitude": 1.3350342184363,
+  "Longitude": 103.91851751540032
+ },
+ {
+  "BusStopCode": "84541",
+  "RoadName": "Chai Chee St",
+  "Description": "Blk 42",
+  "Latitude": 1.32761801937398,
+  "Longitude": 103.92519155563974
+ },
+ {
+  "BusStopCode": "84549",
+  "RoadName": "Chai Chee St",
+  "Description": "Opp Blk 42",
+  "Latitude": 1.32720168851924,
+  "Longitude": 103.92512088883021
+ },
+ {
+  "BusStopCode": "84551",
+  "RoadName": "Chai Chee St",
+  "Description": "Blk 51",
+  "Latitude": 1.32853887137542,
+  "Longitude": 103.9225201285922
+ },
+ {
+  "BusStopCode": "84559",
+  "RoadName": "Chai Chee St",
+  "Description": "Opp Blks 50/51",
+  "Latitude": 1.32833305090006,
+  "Longitude": 103.92287121813423
+ },
+ {
+  "BusStopCode": "84561",
+  "RoadName": "Chai Chee St",
+  "Description": "Blk 53",
+  "Latitude": 1.32804725721627,
+  "Longitude": 103.91973825722668
+ },
+ {
+  "BusStopCode": "84569",
+  "RoadName": "Chai Chee St",
+  "Description": "Opp Blk 53",
+  "Latitude": 1.3279697494091,
+  "Longitude": 103.92011115886494
+ },
+ {
+  "BusStopCode": "84571",
+  "RoadName": "Chai Chee Dr",
+  "Description": "Opp Blk 55",
+  "Latitude": 1.32653228537615,
+  "Longitude": 103.9187401751097
+ },
+ {
+  "BusStopCode": "84579",
+  "RoadName": "Chai Chee Dr",
+  "Description": "Aft Chai Chee St",
+  "Latitude": 1.32584772443012,
+  "Longitude": 103.91948961283839
+ },
+ {
+  "BusStopCode": "84581",
+  "RoadName": "Chai Chee Dr",
+  "Description": "Opp Bedok Sth NPC",
+  "Latitude": 1.3238068248883,
+  "Longitude": 103.91945047474212
+ },
+ {
+  "BusStopCode": "84589",
+  "RoadName": "Chai Chee Dr",
+  "Description": "Bef New Upp Changi Rd",
+  "Latitude": 1.32311277295983,
+  "Longitude": 103.91954371811282
+ },
+ {
+  "BusStopCode": "84591",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "SBST Bedok Nth Depot",
+  "Latitude": 1.33774805557922,
+  "Longitude": 103.94699472223161
+ },
+ {
+  "BusStopCode": "84599",
+  "RoadName": "Bedok Nth Ave 4",
+  "Description": "Opp SBST Bedok Nth Depot",
+  "Latitude": 1.33772607555094,
+  "Longitude": 103.94646797815965
+ },
+ {
+  "BusStopCode": "84601",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp Waterfront Key",
+  "Latitude": 1.338186,
+  "Longitude": 103.931113
+ },
+ {
+  "BusStopCode": "84609",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Waterfront Key",
+  "Latitude": 1.337912,
+  "Longitude": 103.931388
+ },
+ {
+  "BusStopCode": "84611",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp Waterfront Isle",
+  "Latitude": 1.33922469822607,
+  "Longitude": 103.92795482353951
+ },
+ {
+  "BusStopCode": "84619",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Waterfront Isle",
+  "Latitude": 1.33896501379939,
+  "Longitude": 103.92746694275839
+ },
+ {
+  "BusStopCode": "84621",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp Blk 716",
+  "Latitude": 1.33831497804809,
+  "Longitude": 103.9249204585602
+ },
+ {
+  "BusStopCode": "84629",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Blk 716",
+  "Latitude": 1.33815749250804,
+  "Longitude": 103.92537872720727
+ },
+ {
+  "BusStopCode": "84631",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Opp Waterfront Waves",
+  "Latitude": 1.33879275233871,
+  "Longitude": 103.92948245969215
+ },
+ {
+  "BusStopCode": "84639",
+  "RoadName": "Bedok Reservoir Rd",
+  "Description": "Aft Waterfront Waves",
+  "Latitude": 1.33857139776249,
+  "Longitude": 103.92937717202952
+ },
+ {
+  "BusStopCode": "84641",
+  "RoadName": "Chai Chee Rd",
+  "Description": "Blk 24",
+  "Latitude": 1.32460611097515,
+  "Longitude": 103.92299333298999
+ },
+ {
+  "BusStopCode": "84649",
+  "RoadName": "Chai Chee Rd",
+  "Description": "Opp Blk 24",
+  "Latitude": 1.32477805597156,
+  "Longitude": 103.92314916696681
+ },
+ {
+  "BusStopCode": "84651",
+  "RoadName": "Bedok Nth St 1",
+  "Description": "Aft Heartbeat @ Bedok",
+  "Latitude": 1.327057,
+  "Longitude": 103.930691
+ },
+ {
+  "BusStopCode": "84659",
+  "RoadName": "Bedok Nth St 1",
+  "Description": "Bef Heartbeat @ Bedok",
+  "Latitude": 1.327201,
+  "Longitude": 103.93063
+ },
+ {
+  "BusStopCode": "84661",
+  "RoadName": "Bedok Sth Ave 3",
+  "Description": "Blk 168",
+  "Latitude": 1.31992811557233,
+  "Longitude": 103.94438908816849
+ },
+ {
+  "BusStopCode": "84669",
+  "RoadName": "Bedok Sth Ave 3",
+  "Description": "Blk 73",
+  "Latitude": 1.31994111212465,
+  "Longitude": 103.94418156021838
+ },
+ {
+  "BusStopCode": "84671",
+  "RoadName": "Bedok Sth Ave 3",
+  "Description": "Aft Blk 156",
+  "Latitude": 1.31759333301805,
+  "Longitude": 103.94509555597209
+ },
+ {
+  "BusStopCode": "84679",
+  "RoadName": "Bedok Sth Ave 3",
+  "Description": "Opp Blk 156",
+  "Latitude": 1.31804305599346,
+  "Longitude": 103.94476555602924
+ },
+ {
+  "BusStopCode": "84681",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Blk 164",
+  "Latitude": 1.32021834435842,
+  "Longitude": 103.94705927934717
+ },
+ {
+  "BusStopCode": "84691",
+  "RoadName": "Bedok Sth Rd",
+  "Description": "Blk 171",
+  "Latitude": 1.32111805602717,
+  "Longitude": 103.94595750002355
+ },
+ {
+  "BusStopCode": "85021",
+  "RoadName": "Bedok Rd",
+  "Description": "Country Pk",
+  "Latitude": 1.32190305598591,
+  "Longitude": 103.95468472199643
+ },
+ {
+  "BusStopCode": "85029",
+  "RoadName": "Bedok Rd",
+  "Description": "Aft Bedok Meth Ch",
+  "Latitude": 1.32261805599904,
+  "Longitude": 103.95429972202514
+ },
+ {
+  "BusStopCode": "85031",
+  "RoadName": "Bedok Rd",
+  "Description": "Excelsior Gdns",
+  "Latitude": 1.32501115145725,
+  "Longitude": 103.95232021806196
+ },
+ {
+  "BusStopCode": "85039",
+  "RoadName": "Bedok Rd",
+  "Description": "Opp Excelsior Gdns",
+  "Latitude": 1.32442497435966,
+  "Longitude": 103.95298594261581
+ },
+ {
+  "BusStopCode": "85041",
+  "RoadName": "Bedok Rd",
+  "Description": "Man Fatt Lam Tp",
+  "Latitude": 1.3264647104527,
+  "Longitude": 103.95116420801885
+ },
+ {
+  "BusStopCode": "85049",
+  "RoadName": "Bedok Rd",
+  "Description": "Opp Man Fatt Lam Tp",
+  "Latitude": 1.32671998700111,
+  "Longitude": 103.95124872703616
+ },
+ {
+  "BusStopCode": "85051",
+  "RoadName": "Bedok Rd",
+  "Description": "Aft Jln Chempaka Kuning",
+  "Latitude": 1.32956968334939,
+  "Longitude": 103.94880115987219
+ },
+ {
+  "BusStopCode": "85059",
+  "RoadName": "Bedok Rd",
+  "Description": "Bef Jln Chempaka Kuning",
+  "Latitude": 1.32950222197902,
+  "Longitude": 103.94906611097686
+ },
+ {
+  "BusStopCode": "85061",
+  "RoadName": "Bedok Rd",
+  "Description": "Opp Bedok Mkt Pl",
+  "Latitude": 1.33146,
+  "Longitude": 103.94739
+ },
+ {
+  "BusStopCode": "85069",
+  "RoadName": "Bedok Rd",
+  "Description": "Bedok Mkt Pl",
+  "Latitude": 1.3318,
+  "Longitude": 103.94738
+ },
+ {
+  "BusStopCode": "85071",
+  "RoadName": "Upp Changi Rd",
+  "Description": "Bef Changi Fire Stn",
+  "Latitude": 1.33407653133395,
+  "Longitude": 103.9498516702887
+ },
+ {
+  "BusStopCode": "85079",
+  "RoadName": "Upp Changi Rd",
+  "Description": "Flextronic",
+  "Latitude": 1.33394889968504,
+  "Longitude": 103.9501523198666
+ },
+ {
+  "BusStopCode": "85081",
+  "RoadName": "Upp Changi Rd",
+  "Description": "Bef Jln Pari Burong",
+  "Latitude": 1.33292331447242,
+  "Longitude": 103.94719977411023
+ },
+ {
+  "BusStopCode": "85089",
+  "RoadName": "Upp Changi Rd",
+  "Description": "Aft Sungei Bedok",
+  "Latitude": 1.33338002405472,
+  "Longitude": 103.94880327361744
+ },
+ {
+  "BusStopCode": "85091",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Tanah Merah Stn Exit 2",
+  "Latitude": 1.32754912682416,
+  "Longitude": 103.94636119805759
+ },
+ {
+  "BusStopCode": "85099",
+  "RoadName": "New Upp Changi Rd",
+  "Description": "Tanah Merah Stn Exit 1",
+  "Latitude": 1.32684437763421,
+  "Longitude": 103.94645987386455
+ },
+ {
+  "BusStopCode": "85101",
+  "RoadName": "Upp Changi Rd East",
+  "Description": "Aft Bedok Rd",
+  "Latitude": 1.329286,
+  "Longitude": 103.950691
+ },
+ {
+  "BusStopCode": "85109",
+  "RoadName": "Upp Changi Rd East",
+  "Description": "Bef Bedok Rd",
+  "Latitude": 1.32945523179761,
+  "Longitude": 103.95134864429271
+ },
+ {
+  "BusStopCode": "94009",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Upp East Coast Ter",
+  "Latitude": 1.31795981372922,
+  "Longitude": 103.95256713632443
+ },
+ {
+  "BusStopCode": "94041",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Aft Parbury Ave",
+  "Latitude": 1.31619439069366,
+  "Longitude": 103.94430577752213
+ },
+ {
+  "BusStopCode": "94049",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Aft Bedok Sth Ave 3",
+  "Latitude": 1.31616443335073,
+  "Longitude": 103.94482108127718
+ },
+ {
+  "BusStopCode": "94051",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Opp Temasek Sec Sch",
+  "Latitude": 1.31710244970995,
+  "Longitude": 103.94737959133388
+ },
+ {
+  "BusStopCode": "94059",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Temasek Sec Sch",
+  "Latitude": 1.31707137658578,
+  "Longitude": 103.94798092494041
+ },
+ {
+  "BusStopCode": "94061",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Kew Green Condo",
+  "Latitude": 1.318036,
+  "Longitude": 103.950595
+ },
+ {
+  "BusStopCode": "94069",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Opp Kew Green Condo",
+  "Latitude": 1.317869,
+  "Longitude": 103.950869
+ },
+ {
+  "BusStopCode": "94071",
+  "RoadName": "Upp East Coast Rd",
+  "Description": "Opp Bedok Camp 2",
+  "Latitude": 1.319719,
+  "Longitude": 103.954968
+ },
+ {
+  "BusStopCode": "96011",
+  "RoadName": "Upp Changi Rd East",
+  "Description": "Bef Simei Ave",
+  "Latitude": 1.33167675245972,
+  "Longitude": 103.9535299850262
+ },
+ {
+  "BusStopCode": "96019",
+  "RoadName": "Upp Changi Rd East",
+  "Description": "Aft Simei Ave",
+  "Latitude": 1.33138833299802,
+  "Longitude": 103.95370361097966
+ },
+ {
+  "BusStopCode": "96071",
+  "RoadName": "Upp Changi Rd",
+  "Description": "Opp ITE Coll East Tec Blk",
+  "Latitude": 1.33552793998608,
+  "Longitude": 103.9532750845244
+ },
+ {
+  "BusStopCode": "96079",
+  "RoadName": "Upp Changi Rd",
+  "Description": "ITE Coll East Tec Blk",
+  "Latitude": 1.33542124082545,
+  "Longitude": 103.95353854906277
+ },
+ {
+  "BusStopCode": "96101",
+  "RoadName": "Simei Ave",
+  "Description": "Blk 3012",
+  "Latitude": 1.33638500905398,
+  "Longitude": 103.9510568939649
+ },
+ {
+  "BusStopCode": "96109",
+  "RoadName": "Simei Ave",
+  "Description": "Opp Blk 3012",
+  "Latitude": 1.33737118239889,
+  "Longitude": 103.95067333143491
+ },
+ {
+  "BusStopCode": "96111",
+  "RoadName": "Simei Ave",
+  "Description": "Opp ITE Coll East Adm Blk",
+  "Latitude": 1.33365307929022,
+  "Longitude": 103.95337833802823
+ },
+ {
+  "BusStopCode": "96119",
+  "RoadName": "Simei Ave",
+  "Description": "ITE Coll East Adm Blk",
+  "Latitude": 1.33373145315305,
+  "Longitude": 103.9537488312858
+ },
+ {
+  "BusStopCode": "96159",
+  "RoadName": "Simei St 1",
+  "Description": "Blk 254",
+  "Latitude": 1.34192167463909,
+  "Longitude": 103.9517629482475
+ },
+ {
+  "BusStopCode": "96251",
+  "RoadName": "Simei St 3",
+  "Description": "Bef Changi General Hosp",
+  "Latitude": 1.34026697859529,
+  "Longitude": 103.95138028105873
+ },
+ {
+  "BusStopCode": "96259",
+  "RoadName": "Simei St 3",
+  "Description": "Aft Changi General Hosp",
+  "Latitude": 1.34043019344412,
+  "Longitude": 103.95124680626643
+ },
+ {
+  "BusStopCode": "96281",
+  "RoadName": "Simei Ave",
+  "Description": "Opp Changi General Hosp",
+  "Latitude": 1.339714,
+  "Longitude": 103.94825
+ },
+ {
+  "BusStopCode": "96289",
+  "RoadName": "Simei Ave",
+  "Description": "Changi General Hosp",
+  "Latitude": 1.34004,
+  "Longitude": 103.948359
+ }
+]
