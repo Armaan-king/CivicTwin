@@ -130,3 +130,34 @@ Never convert a failed model call into plausible-looking output (`AGENTS.md` §1
   when there are enough to justify it, not before.
 - **No persistence layer at all.** `architecture.md` §11 proposes S3 plus DynamoDB with a
   local JSON adapter. Nothing is built.
+
+---
+
+## Running the deliberation on a local model
+
+`LLM_PROVIDER=ollama` points the deliberation at a model on this machine. It uses Ollama's
+**native** `/api/chat` rather than the OpenAI-compatible endpoint, because only the native
+one accepts `format: <json schema>` and constrains decoding to it. That is not a nicety:
+asked politely for a batch of twelve residents, `deepseek-r1:8b` returns `{"voices": []}`;
+constrained, it returns twelve residents.
+
+Three settings interact, and getting any of them wrong looks like a hang rather than an
+error:
+
+| setting | why |
+|---|---|
+| `OLLAMA_NUM_CTX` (8192) | Ollama serves a model at 8192 regardless of what the model advertises — `deepseek-r1:8b` claims 131072. Raising it to 16384 grew the resident set to 9.6 GB against 8 GB of VRAM, pushed 31% of the layers onto CPU, and cost roughly an order of magnitude of throughput. |
+| `DELIBERATION_BATCH_SIZE` (6 locally) | `num_predict` is drawn from the same window as the prompt, not added to it. A batch of twelve filled 8192 with prompt and left no room to generate, so every batch returned truncated and every batch was correctly rejected: 28 batches, nothing produced, every guard working. Shrink the batch, do not grow the window. |
+| `DELIBERATION_CONCURRENCY` (1 locally) | One GPU serves one batch at a time. Eight workers build a queue and make the failure modes concurrent. |
+
+**Point interpretation somewhere else.** `LLM_PROVIDER_INTERPRETER` overrides the provider
+for policy interpretation only. Interpretation is one call per run against a wide schema
+where being wrong makes every downstream number answer a different question; deliberation
+is hundreds of calls against a narrow schema where cost dominates. Running both on the
+local 8B made interpreting a single policy take about fifteen minutes — longer than the
+deliberation it was setting up. `AGENTS.md` §11 already asks for this split.
+
+**What the grammar does and does not enforce.** It enforces types and required fields. It
+does **not** enforce `minimum`/`maximum`, so a `position: -1` against a `ge=0` field still
+arrives. Those are rejected by the Pydantic model and retried, never clamped — a clamped
+value is a number the resident did not say, presented as one they did.
