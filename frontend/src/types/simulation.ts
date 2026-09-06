@@ -182,7 +182,7 @@ export interface PolicyReadingStep {
   assumed: boolean;
 }
 
-export interface ResolvedEntity { label: string; ref: string; }
+export interface ResolvedEntity { kind: string; id: string; label: string; }
 
 export type InterventionKind =
   | "retain_stop_peak" | "add_shuttle_feeder" | "reroute_feeder"

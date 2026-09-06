@@ -1,125 +1,194 @@
-import { Link } from "react-router-dom";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Boundary } from "@/components/Boundary";
 import { Crt } from "@/components/Crt";
-import { Boundary, hasWebGL } from "@/components/Boundary";
-import { Suspense, lazy, useEffect, useState } from "react";
-// three.js is ~450 kB and only the hero needs it, so it never reaches the other routes
-const PolicyOrb = lazy(() =>
-  import("@/components/PolicyOrb").then((m) => ({ default: m.PolicyOrb }))
-);
+import { ThemeToggle, useTheme } from "@/components/ThemeToggle";
 import { useRun } from "@/lib/useRun";
-import { secondOrderVictims } from "@/lib/run";
+import "@/styles/landing.css";
+
+const TransportHeroScene = lazy(() =>
+  import("@/components/TransportHeroScene").then((module) => ({ default: module.TransportHeroScene })),
+);
+
+function Wordmark() {
+  return (
+    <Link to="/" className="hero-wordmark" aria-label="CivicTwin home">
+      <svg viewBox="0 0 42 28" aria-hidden="true">
+        <path d="M3 7h22c7 0 7 14 14 14" />
+        <path d="M3 21h22c7 0 7-14 14-14" />
+        <circle cx="3" cy="7" r="2.4" />
+        <circle cx="3" cy="21" r="2.4" />
+        <circle cx="39" cy="7" r="2.4" />
+        <circle cx="39" cy="21" r="2.4" />
+      </svg>
+      <span>CivicTwin</span>
+    </Link>
+  );
+}
+
+type HeroPhase = "idle" | "revealing" | "ready" | "loading";
 
 export function Hero() {
   const { run, error } = useRun();
+  const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
+  const [phase, setPhase] = useState<HeroPhase>("idle");
+  const loadingTimer = useRef<number | null>(null);
+  const revealTimer = useRef<number | null>(null);
 
-  // The canvas needs a pixel height, and a window that changes size must not leave a
-  // field sized for the old one. Reading it once at module scope also broke server-side
-  // and first-paint sizing, which is why this is state rather than an inline expression.
-  const [viewport, setViewport] = useState(
-    typeof window !== "undefined" ? window.innerHeight : 860
-  );
-  useEffect(() => {
-    const onResize = () => setViewport(window.innerHeight);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+  useEffect(() => () => {
+    if (loadingTimer.current) window.clearTimeout(loadingTimer.current);
   }, []);
 
-  const severe = run?.metrics.overall.severe_harm_count ?? null;
-  const second = run ? secondOrderVictims(run).length : null;
-  const delta = run?.metrics.overall.avg_journey_time_delta ?? null;
+  useEffect(() => {
+    if (phase !== "revealing") return;
+    // The scene normally signals completion itself. This timeout keeps the
+    // primary journey usable if WebGL is unavailable and the fallback renders.
+    revealTimer.current = window.setTimeout(
+      () => setPhase((current) => current === "revealing" ? "ready" : current),
+      3200,
+    );
+    return () => {
+      if (revealTimer.current) window.clearTimeout(revealTimer.current);
+    };
+  }, [phase]);
+
+  const advanceStage = () => {
+    if (phase === "idle") {
+      setPhase("revealing");
+    } else if (phase === "ready") {
+      setPhase("loading");
+      loadingTimer.current = window.setTimeout(() => navigate("/simulation"), 1100);
+    }
+  };
+  const isBusy = phase === "revealing" || phase === "loading";
+  const buttonCopy = phase === "idle"
+    ? "Reveal resident impact"
+    : phase === "revealing"
+      ? "Revealing impact"
+      : phase === "loading"
+        ? "Loading full simulation"
+        : "Show full simulation";
+  const bodyCopy = phase === "idle"
+    ? "Start with Service 265 as it runs today."
+    : phase === "revealing"
+      ? "Tracing how two stop closures change daily journeys."
+      : "See which journeys become harder—and why.";
 
   return (
-    <Crt>
-      {/* The visual is inset rather than pushed down. It used to sit 14vh from the top at
-          92vh tall, which is 106% of the viewport: the bottom of the field was always
-          below the fold, and on a short window most of it was. Filling the space and
-          letting the canvas centre itself is both simpler and correct at any height. */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "flex",
-                    alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-        {run && hasWebGL() && (
-          <Boundary label="The hero visual" fallback={null}>
-          <Suspense fallback={null}>
-          <PolicyOrb
-            height={viewport}
-            harmed={severe}
-            population={run.personas.length}
-          />
-          </Suspense>
-          </Boundary>
-        )}
-      </div>
+    <Crt ambient={false}>
+      <div className="hero-page">
+        <header className="hero-header">
+          <Wordmark />
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        </header>
 
-      <div
-        style={{
-          position: "relative", zIndex: 3, display: "flex", flexDirection: "column",
-          padding: "38px 52px", minHeight: "100vh", boxSizing: "border-box",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
-          <span className="gold" style={{ fontWeight: 600, fontSize: "var(--fs-14)", letterSpacing: ".16em" }}>
-            CIVICTWIN
-          </span>
-          <span className="t3" style={{ fontSize: "var(--fs-12)" }}>POLICY STRESS TESTING</span>
-        </div>
+        <main className="hero-main">
+          <section className="hero-visual" aria-label="Ang Mo Kio transport digital twin">
+            <div className="hero-visual__wash" />
+            {run && (
+              <Boundary label="The transport digital twin" fallback={<div className="hero-scene-fallback" />}>
+                <Suspense fallback={<div className="hero-scene-fallback" />}>
+                  <TransportHeroScene
+                    run={run}
+                    stage={phase === "idle" ? 0 : 2}
+                    theme={theme}
+                    onRevealComplete={() => setPhase((current) => current === "revealing" ? "ready" : current)}
+                  />
+                </Suspense>
+              </Boundary>
+            )}
+            {error && <div className="hero-error" role="alert">Simulation data unavailable.</div>}
+            {run && phase !== "idle" && <HeroInsights run={run} />}
+          </section>
 
-        <div style={{ marginTop: "auto", maxWidth: 920 }}>
-          <h1
-            className="display t1"
-            style={{
-              fontSize: "var(--fs-112)", lineHeight: 0.94, margin: "0 0 26px",
-              letterSpacing: "-.035em",
-            }}
-          >
-            AVERAGES
-            <br />
-            HIDE PEOPLE
-            <span className="caret">_</span>
-          </h1>
-
-          <p className="t2" style={{ fontSize: "var(--fs-20)", lineHeight: 1.55, margin: "0 0 30px", maxWidth: "64ch" }}>
-            Remove two bus stops and the city gets faster on average. CivicTwin finds the
-            residents it quietly breaks, and the ones nobody counted.
-          </p>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link to="/simulation" className="btn" style={{ textDecoration: "none" }}>
-              RUN A POLICY
-            </Link>
-            <a href="#method" className="btn-ghost" style={{ textDecoration: "none" }}>
-              SEE THE METHOD
-            </a>
-            <span className="t3" style={{ fontSize: "var(--fs-12)", marginLeft: "var(--s-1)" }}>
-              drag to turn the population
-            </span>
-          </div>
-        </div>
-
-        <div style={{ marginTop: 40, borderTop: "1px solid var(--rule)", paddingTop: 18 }}>
-          {error && (
-            <p className="alert" style={{ fontSize: "var(--fs-16)", margin: 0 }}>
-              {error}. The run fixture could not be read, so no figures are shown.
-            </p>
-          )}
-          {!run && !error && (
-            <p className="t3" style={{ fontSize: "var(--fs-16)", margin: 0 }}>
-              Loading the run<span className="caret">_</span>
-            </p>
-          )}
-          {run && (
-            <p className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.65, margin: 0, maxWidth: "104ch" }}>
-              A synthetic population of {run.personas.length.toLocaleString()}, built from
-              Singapore open transport data. The policy moves the average journey by{" "}
-              <span className="gold" style={{ fontWeight: 600 }}>
-                {delta !== null ? `${delta > 0 ? "+" : ""}${delta.toFixed(1)} min` : "n/a"}
-              </span>{" "}
-              and severely harms{" "}
-              <span className="alert" style={{ fontWeight: 600 }}>{severe} people</span>, of whom{" "}
-              <span className="alert" style={{ fontWeight: 600 }}>{second}</span> are harmed only
-              because of who they look after.
-            </p>
-          )}
-        </div>
+          <section className="hero-copy" aria-labelledby="hero-title">
+            <div className="hero-copy__body">
+              <div className="hero-eyebrow">
+                <span>Transport policy simulator</span>
+              </div>
+              <h1 id="hero-title">
+                Test the impact.
+                <em>Improve the plan.</em>
+              </h1>
+              <p className="hero-stage-copy" aria-live="polite">{bodyCopy}</p>
+              <div className="hero-actions">
+                <button
+                  type="button"
+                  className="hero-primary"
+                  onClick={advanceStage}
+                  disabled={isBusy}
+                  aria-busy={isBusy}
+                >
+                  {isBusy && <span className="hero-spinner" aria-hidden="true" />}
+                  {buttonCopy}
+                  {!isBusy && <span aria-hidden="true">→</span>}
+                </button>
+                <Link className="hero-secondary" to="/policy">Amend policy</Link>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     </Crt>
+  );
+}
+
+function HeroInsights({ run }: { run: NonNullable<ReturnType<typeof useRun>["run"]> }) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const severe = run.metrics.overall.severe_harm_count;
+  const indirect = run.outcomes.filter((outcome) => outcome.second_order).length;
+  const cards = [
+    {
+      label: "Policy applied",
+      value: run.policy.modifications.remove_stops.length + " stops close",
+      body: "Service 265 runs express towards Ang Mo Kio interchange.",
+    },
+    {
+      label: "Impact found",
+      value: severe + " residents at risk",
+      body: "Their essential journey is no longer reachable within their limits.",
+    },
+    {
+      label: "Household effect",
+      value: indirect + " carers affected",
+      body: "They take over another person’s trip and miss their own obligation.",
+    },
+  ];
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = window.setInterval(() => setActive((index) => (index + 1) % cards.length), 5400);
+    return () => window.clearInterval(timer);
+  }, [paused, cards.length]);
+
+  const show = (index: number) => setActive((index + cards.length) % cards.length);
+  const card = cards[active];
+  return (
+    <aside
+      className="hero-insight"
+      aria-label="Live simulation findings"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div className="hero-insight__top">
+        <span>{card.label}</span>
+        <span>{active + 1} / {cards.length}</span>
+      </div>
+      <strong>{card.value}</strong>
+      <p>{card.body}</p>
+      <div className="hero-insight__controls">
+        <button type="button" onClick={() => show(active - 1)} aria-label="Previous finding">←</button>
+        <div aria-hidden="true">
+          {cards.map((_, index) => (
+            <span key={index} className={index === active ? "active" : ""} />
+          ))}
+        </div>
+        <button type="button" onClick={() => show(active + 1)} aria-label="Next finding">→</button>
+      </div>
+    </aside>
   );
 }

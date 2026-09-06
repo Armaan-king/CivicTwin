@@ -8,15 +8,6 @@ import { traceToRoot } from "@/lib/run";
 import { PatternNote } from "@/components/PatternNote";
 import type { HarmPattern, SimEvent, SimulationRun } from "@/types/simulation";
 
-/**
- * Two zones, not four.
- *
- * The previous version showed findings, cohort charts and a root-cause trace at once
- * across three columns plus a header band. Everything competed and nothing led. Now the
- * left column holds the findings and the right holds the evidence for whichever one is
- * selected, so the screen answers one question at a time.
- */
-
 interface Finding {
   id: string;
   title: string;
@@ -24,70 +15,81 @@ interface Finding {
   severity: "high" | "moderate";
   n: number;
   leafKind: SimEvent["kind"];
-  /** the shape this instantiates. what makes it legible outside transport. */
   pattern: HarmPattern;
   cohorts: { label: string; rate: number; n: number }[];
   note: string;
 }
 
-const STEP: Record<string, (e: SimEvent) => string> = {
-  THRESHOLD_EXCEEDED: (e) =>
-    `The walk to a usable stop rises to ${(e.after as { walk_distance_m: number }).walk_distance_m} m, past what this resident said they manage.`,
+type DetailView = "summary" | "people" | "cause";
+
+const STEP: Record<string, (event: SimEvent) => string> = {
+  EFFORT_INCREASED: () =>
+    "The walk to the next available stop becomes longer.",
+  SERVICE_ABANDONED: () =>
+    "The usual bus journey is no longer practical.",
+  DURATION_INCREASED: () =>
+    "The replacement journey takes longer.",
+  PATH_UNAVAILABLE: () =>
+    "No suitable public transport route remains.",
+  FRICTION_ADDED: () =>
+    "The new route adds another difficult step to the journey.",
+  THRESHOLD_EXCEEDED: (event) =>
+    "The walk rises to " + (event.after as { walk_distance_m: number }).walk_distance_m + " m, beyond this resident’s stated limit.",
   ESSENTIAL_ACCESS_LOST: () =>
-    "Their weekly polyclinic trip stops being reachable. It is marked essential, so this counts as severe rather than inconvenient.",
+    "Their weekly polyclinic journey is no longer reachable.",
   DEPENDENCY_ABSORBED: () =>
-    "Someone in their household takes over the journey, along a CARES_FOR link.",
+    "A family member takes over the journey.",
   OBLIGATION_MISSED: () =>
-    "That person now arrives after their own shift starts. They have no mobility limitation, and do not live near a removed stop.",
+    "That family member now misses their own work shift.",
 };
 
 function buildFindings(run: SimulationRun): Finding[] {
-  const severe = run.outcomes.filter((o) => o.severity === "high");
-  const second = severe.filter((o) => o.second_order);
-  const direct = severe.filter((o) => !o.second_order);
-  const moderate = run.outcomes.filter((o) => o.severity === "moderate");
+  const severe = run.outcomes.filter((outcome) => outcome.severity === "high");
+  const second = severe.filter((outcome) => outcome.second_order);
+  const direct = severe.filter((outcome) => !outcome.second_order);
+  const moderate = run.outcomes.filter((outcome) => outcome.severity === "moderate");
   const ages = run.metrics.subgroup.age_band;
   const carers = run.metrics.subgroup.is_caregiver;
-  const ratio = carers.True.severe_harm_rate / Math.max(carers.False.severe_harm_rate, 1e-4);
+  const ratio = carers.True.severe_harm_rate / Math.max(carers.False.severe_harm_rate, 0.0001);
 
   return [
     {
-      id: "carers",
-      pattern: "dependency_cascade" as HarmPattern,
-      title: "Carers absorbing the loss",
-      severity: "high",
-      n: second.length,
-      body: "They drive a household member to the clinic, and miss their own shift.",
-      leafKind: "OBLIGATION_MISSED",
-      cohorts: [
-        { label: "Is a carer", rate: carers.True.severe_harm_rate, n: carers.True.n },
-        { label: "Not a carer", rate: carers.False.severe_harm_rate, n: carers.False.n },
-      ],
-      note: `Carers are ${ratio.toFixed(1)} times more likely to be severely harmed, and not one of them lost access themselves. This finding does not exist without the dependency graph.`,
-    },
-    {
       id: "access",
-      pattern: "threshold_cliff" as HarmPattern,
-      title: "Polyclinic access lost",
+      pattern: "threshold_cliff",
+      title: "Polyclinic journey becomes unreachable",
       severity: "high",
       n: direct.length,
-      body: "They can no longer reach the polyclinic inside their time budget.",
+      body: "The longer walk pushes an essential journey beyond what some residents can manage.",
       leafKind: "ESSENTIAL_ACCESS_LOST",
       cohorts: (["75+", "65-74", "55-64", "35-54", "18-34"] as const)
-        .filter((b) => ages[b])
-        .map((b) => ({ label: b, rate: ages[b].severe_harm_rate, n: ages[b].n })),
-      note: "Harm climbs steeply with age, because clinic dependency and mobility limitation both do.",
+        .filter((band) => ages[band])
+        .map((band) => ({ label: "Age " + band, rate: ages[band].severe_harm_rate, n: ages[band].n })),
+      note: "Older residents are affected most because mobility limits and clinic dependence overlap.",
+    },
+    {
+      id: "carers",
+      pattern: "dependency_cascade",
+      title: "Family caregivers miss work",
+      severity: "high",
+      n: second.length,
+      body: "They help someone reach the clinic, then miss an obligation of their own.",
+      leafKind: "OBLIGATION_MISSED",
+      cohorts: [
+        { label: "Family caregiver", rate: carers.True.severe_harm_rate, n: carers.True.n },
+        { label: "Not a caregiver", rate: carers.False.severe_harm_rate, n: carers.False.n },
+      ],
+      note: "Caregivers are " + ratio.toFixed(1) + "× more likely to face severe impact. Their own bus stop did not close—the effect reaches them through someone they support.",
     },
     {
       id: "walk",
-      pattern: "threshold_cliff" as HarmPattern,
-      title: "Longer walk, trip still made",
+      pattern: "threshold_cliff",
+      title: "Longer walk, journey still possible",
       severity: "moderate",
       n: moderate.length,
-      body: "They walk past their stated tolerance, but complete the journey.",
+      body: "These residents travel further but can still complete the journey.",
       leafKind: "THRESHOLD_EXCEEDED",
       cohorts: [],
-      note: "Inconvenience rather than exclusion. Reported separately so it is not mistaken for either.",
+      note: "This is inconvenience rather than lost access, so it is reported separately.",
     },
   ];
 }
@@ -95,154 +97,159 @@ function buildFindings(run: SimulationRun): Finding[] {
 export function ImpactAudit() {
   const { run, error } = useRun();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState("carers");
-
+  const [selected, setSelected] = useState("access");
+  const [view, setView] = useState<DetailView>("summary");
   const findings = useMemo(() => (run ? buildFindings(run) : []), [run]);
-  const active = findings.find((f) => f.id === selected) ?? findings[0];
+  const active = findings.find((finding) => finding.id === selected) ?? findings[0];
 
   const trace = useMemo(() => {
     if (!run || !active) return [];
-    const leaf = run.events.find((e) => e.kind === active.leafKind);
+    const leaf = run.events.find((event) => event.kind === active.leafKind);
     return leaf ? traceToRoot(run.events, leaf.event_id) : [];
   }, [run, active]);
 
   if (error) return <Crt><TopBar /><Failed message={error} /></Crt>;
-  if (!run || !active) return <Crt><TopBar /><Loading what="the audit" /></Crt>;
+  if (!run || !active) return <Crt><TopBar /><Loading what="the impact audit" /></Crt>;
 
-  const m = run.metrics.overall;
-  const second = run.outcomes.filter((o) => o.second_order).length;
-  const maxRate = Math.max(...active.cohorts.map((c) => c.rate), 0.0001);
+  const maxRate = Math.max(...active.cohorts.map((cohort) => cohort.rate), 0.0001);
+  const detailViews: DetailView[] = active.cohorts.length
+    ? ["summary", "people", "cause"]
+    : ["summary", "cause"];
+  const chooseFinding = (id: string) => {
+    setSelected(id);
+    setView("summary");
+  };
 
   return (
     <Crt>
-      <TopBar meta={`RUN ${run.run_id.toUpperCase()}`} />
+      <TopBar meta={"RUN " + run.run_id.toUpperCase()} />
 
-      <div style={{ padding: "var(--s-5) var(--s-6) var(--s-4)", flexShrink: 0 }}>
-        <p className="t2" style={{ fontSize: "var(--fs-20)", lineHeight: 1.75, margin: 0, maxWidth: "64ch" }}>
-          The policy moved the mean journey by{" "}
-          <span className="gold" style={{ fontWeight: 600 }}>{m.avg_journey_time_delta.toFixed(1)} minutes</span>
-          {" "}and severely harmed{" "}
-          <span className="alert" style={{ fontWeight: 600 }}>{m.severe_harm_count} people</span>,{" "}
-          <span className="alert" style={{ fontWeight: 600 }}>{second}</span> of them through
-          someone else's dependency.
-        </p>
-      </div>
+      <main className="impact-page">
+        <header className="impact-header">
+          <div>
+            <span className="page-kicker">Step 3 · Impact</span>
+            <h1>{run.metrics.overall.severe_harm_count} residents face severe transport barriers</h1>
+          </div>
+          <div className="impact-header__summary">
+            <span>
+              <strong>{Math.abs(run.metrics.overall.avg_journey_time_delta).toFixed(1)} min</strong>
+              {run.metrics.overall.avg_journey_time_delta < 0 ? "faster overall" : "slower overall"}
+            </span>
+            <span><strong>{run.metrics.overall.walk_distance_p90} m</strong>90th-percentile walk</span>
+          </div>
+          <button type="button" className="btn" onClick={() => navigate("/interventions")}>
+            COMPARE SAFER OPTIONS
+          </button>
+        </header>
 
-      <div className="grid-split"
-        style={{
-          flexGrow: 1, display: "grid",
-          gridTemplateColumns: "minmax(0, 400px) minmax(0, 1fr)",
-          gap: "var(--s-6)", padding: "0 var(--s-6) var(--s-5)", minHeight: 0,
-        }}
-      >
-        <nav style={{ display: "flex", flexDirection: "column", gap: "var(--s-2)", overflowY: "auto" }}>
-          {findings.map((f) => {
-            const on = f.id === selected;
-            return (
-              <button
-                key={f.id}
-                onClick={() => setSelected(f.id)}
-                aria-pressed={on}
-                style={{
-                  textAlign: "left", cursor: "pointer", fontFamily: "inherit",
-                  borderRadius: 0, border: "none", background: "transparent",
-                  padding: "var(--s-3) var(--s-3) var(--s-3) var(--s-2)",
-                  borderLeft: `2px solid ${on ? "var(--gold)" : "transparent"}`,
-                  transition: "border-color .18s ease, opacity .18s ease",
-                  opacity: on ? 1 : 0.55,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s-2)" }}>
-                  <span
-                    className={f.severity === "high" ? "alert" : "gold"}
-                    style={{ fontSize: "var(--fs-40)", fontWeight: 500, lineHeight: 1 }}
+        <div className="impact-workspace">
+          <nav className="impact-findings" aria-label="Impact findings ranked by severity and reach">
+            <div className="impact-findings__heading">
+              <h2>Priority findings</h2>
+              <p>Ranked by severity, then residents affected</p>
+            </div>
+            {findings.map((finding, index) => {
+              const on = finding.id === selected;
+              return (
+                <button
+                  type="button"
+                  key={finding.id}
+                  className={`impact-finding-card severity-${finding.severity}${on ? " active" : ""}`}
+                  onClick={() => chooseFinding(finding.id)}
+                  aria-pressed={on}
+                >
+                  <span className="impact-finding-card__rank">{index + 1}</span>
+                  <div>
+                    <span className="impact-finding-card__severity">
+                      {finding.severity === "high" ? "Severe" : "Moderate"} · {finding.n} residents
+                    </span>
+                    <strong>{finding.title}</strong>
+                  </div>
+                  <i aria-hidden="true">→</i>
+                </button>
+              );
+            })}
+          </nav>
+
+          <section className="impact-detail" aria-labelledby="impact-detail-title">
+            <div className="impact-detail__head">
+              <div>
+                <span className={`impact-severity-badge severity-${active.severity}`}>
+                  {active.severity === "high" ? "Severe impact" : "Moderate impact"}
+                </span>
+                <h2 id="impact-detail-title">{active.title}</h2>
+              </div>
+              <div className="segmented" aria-label="Finding details">
+                {detailViews.map((name) => (
+                  <button
+                    type="button"
+                    key={name}
+                    aria-pressed={view === name}
+                    onClick={() => setView(name)}
                   >
-                    {f.n}
-                  </span>
-                  <span className="t1" style={{ fontSize: "var(--fs-16)", fontWeight: 600 }}>
-                    {f.title}
-                  </span>
-                </div>
-                <p className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.6, margin: "var(--s-1) 0 0" }}>
-                  {f.body}
-                </p>
-              </button>
-            );
-          })}
-        </nav>
-
-        <section style={{ display: "flex", flexDirection: "column", gap: "var(--s-5)", overflowY: "auto", paddingRight: "var(--s-2)" }}>
-          {active.cohorts.length > 0 && (
-            <div>
-              <h2 className="t3" style={{ fontSize: "var(--fs-14)", fontWeight: 400, margin: "0 0 var(--s-3)" }}>
-                Who carries it
-              </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-3)" }}>
-                {active.cohorts.map((c) => {
-                  const hot = c.rate > maxRate * 0.45;
-                  return (
-                    <div
-                      key={c.label}
-                      style={{ display: "grid", gridTemplateColumns: "110px 1fr 150px", gap: "var(--s-2)", alignItems: "center" }}
-                    >
-                      <span className="t2" style={{ fontSize: "var(--fs-16)" }}>{c.label}</span>
-                      <div style={{ height: 4, background: "var(--rule)" }}>
-                        <div
-                          style={{
-                            height: "100%", width: "100%", transformOrigin: "left",
-                            transform: `scaleX(${(c.rate / maxRate).toFixed(4)})`,
-                            background: hot ? "var(--alert)" : "var(--fig-quiet)",
-                            transition: "transform .6s cubic-bezier(.16,1,.3,1)",
-                          }}
-                        />
-                      </div>
-                      <span className={hot ? "alert" : "t2"} style={{ fontSize: "var(--fs-16)" }}>
-                        {(c.rate * 100).toFixed(1)}%
-                        <span className="t3" style={{ fontSize: "var(--fs-12)" }}> n {c.n.toLocaleString()}</span>
-                      </span>
-                    </div>
-                  );
-                })}
+                    {name === "summary" ? "Summary" : name === "people" ? "Affected groups" : "Why it happens"}
+                  </button>
+                ))}
               </div>
             </div>
-          )}
 
-          <p className="t1" style={{ fontSize: "var(--fs-16)", lineHeight: 1.7, margin: 0, maxWidth: "60ch" }}>
-            {active.note}
-          </p>
+            <div className="impact-detail__body">
+              {view === "summary" && (
+                <div className="impact-summary-grid">
+                  <section className={`impact-count-card severity-${active.severity}`}>
+                    <span>Affected residents</span>
+                    <strong>{active.n}</strong>
+                    <small>{active.severity === "high" ? "Severe barrier" : "Journey still possible"}</small>
+                  </section>
+                  <div className="impact-summary-copy">
+                    <section>
+                      <span>What changed</span>
+                      <p>{active.body}</p>
+                    </section>
+                    <section>
+                      <span>Why it matters</span>
+                      <p>{active.note}</p>
+                    </section>
+                  </div>
+                </div>
+              )}
 
-          {trace.length > 0 && (
-            <div>
-              <h2 className="t3" style={{ fontSize: "var(--fs-14)", fontWeight: 400, margin: "0 0 var(--s-3)" }}>
-                Why it happened
-              </h2>
-              <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "var(--s-3)" }}>
-                {trace.map((e, i) => (
-                  <li key={e.event_id} style={{ display: "grid", gridTemplateColumns: "30px 1fr", gap: "var(--s-2)" }}>
-                    <span className="t3" style={{ fontSize: "var(--fs-14)", paddingTop: 3 }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.65, maxWidth: "56ch" }}>
-                      {STEP[e.kind]?.(e) ?? e.kind}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-              <p className="t3" style={{ fontSize: "var(--fs-14)", lineHeight: 1.6, margin: "var(--s-3) 0 0", maxWidth: "56ch" }}>
-                Each step is a recorded event carrying a cause id. Nothing here is written by a model.
-              </p>
+              {view === "people" && (
+                <div className="impact-cohorts">
+                  <h3>Impact rate by group</h3>
+                  {active.cohorts.map((cohort) => (
+                    <div key={cohort.label}>
+                      <span>{cohort.label}</span>
+                      <div><i style={{ width: (cohort.rate / maxRate) * 100 + "%" }} /></div>
+                      <strong>{(cohort.rate * 100).toFixed(1)}%</strong>
+                      <small>{cohort.n.toLocaleString()} residents</small>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {view === "cause" && (
+                <div className="impact-cause-grid">
+                  <div className="impact-trace">
+                    <h3>How the impact unfolds</h3>
+                    <ol>
+                      {trace.map((event, index) => (
+                        <li key={event.event_id}>
+                          <span>{index + 1}</span>
+                          <p>{STEP[event.kind]?.(event) ?? event.kind}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                  <aside className="impact-pattern-card" aria-label="Impact pattern explanation">
+                    <PatternNote run={run} pattern={active.pattern} bare />
+                  </aside>
+                </div>
+              )}
             </div>
-          )}
-
-          <PatternNote run={run} pattern={active.pattern} />
-
-          <div style={{ marginTop: "auto", paddingTop: "var(--s-3)" }}>
-            <button className="btn" onClick={() => navigate("/interventions")}>
-              FIND ALTERNATIVES
-            </button>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      </main>
     </Crt>
   );
 }

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Boundary } from "@/components/Boundary";
 import { Hero } from "@/pages/Hero";
 import { PolicyInput } from "@/pages/PolicyInput";
@@ -11,8 +11,9 @@ import { SystemMap } from "@/pages/SystemMap";
 import { Voices } from "@/pages/Voices";
 
 export function App() {
+  const { pathname } = useLocation();
   return (
-    <Boundary label="This screen">
+    <Boundary key={pathname} label="This screen">
     <Routes>
       <Route path="/" element={<Hero />} />
       <Route path="/policy" element={<PolicyInput />} />

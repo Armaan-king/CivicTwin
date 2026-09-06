@@ -10,12 +10,20 @@ import type { HarmPattern, SimulationRun } from "@/types/simulation";
  * The descriptions come from the run, not from this file. `core.PATTERNS` is their one
  * home, so the UI can never describe a pattern the engine does not have.
  */
-export function PatternNote({ run, pattern }: { run: SimulationRun; pattern: HarmPattern }) {
+export function PatternNote({
+  run,
+  pattern,
+  bare = false,
+}: {
+  run: SimulationRun;
+  pattern: HarmPattern;
+  bare?: boolean;
+}) {
   const p = run.harm_patterns?.[pattern];
   if (!p) return null;
 
   return (
-    <div style={{ borderTop: "1px solid var(--rule)", paddingTop: "var(--s-3)" }}>
+    <div style={{ borderTop: bare ? 0 : "1px solid var(--rule)", paddingTop: bare ? 0 : "var(--s-3)" }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s-2)", flexWrap: "wrap" }}>
         <span className="t3" style={{ fontSize: "var(--fs-12)", letterSpacing: ".08em" }}>
           PATTERN

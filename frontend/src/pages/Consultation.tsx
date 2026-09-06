@@ -1,241 +1,232 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Crt } from "@/components/Crt";
+import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
 import { api, NotAvailableOffline } from "@/lib/api";
+import { TRANSPORT } from "@/lib/config";
+import type { Intervention } from "@/types/simulation";
 
-/**
- * The citizen surface. A different audience from the operator screens: plain language,
- * no metrics table, and the model described honestly as possibly wrong about you.
- * Phone width on purpose. Consultation happens on a phone.
- */
+type ValidIntervention = Intervention & { metrics: NonNullable<Intervention["metrics"]> };
+
+const ACTION_COPY: Record<Intervention["kind"], string> = {
+  retain_stop_peak: "Keep both stops open during peak travel periods.",
+  add_shuttle_feeder: "Add a short feeder service along the affected corridor.",
+  reroute_feeder: "Move Service 265 closer to residents who lose a stop.",
+  targeted_support: "Provide assisted travel for clinic-dependent residents.",
+  phase_rollout: "Close one stop first and review the effect before continuing.",
+};
+
+const SUPPORT_LABELS = ["Strongly oppose", "Oppose", "Unsure", "Support", "Strongly support"];
+const FAIRNESS_LABELS = ["Not fair", "Slightly fair", "Unsure", "Mostly fair", "Completely fair"];
+
+/** Citizen feedback stays in the CivicTwin workflow, but uses plain public-facing copy. */
 export function Consultation() {
   const { run, error } = useRun();
-  const [support, setSupport] = useState<number | null>(4);
+  const [support, setSupport] = useState<number | null>(null);
   const [fairness, setFairness] = useState<number | null>(null);
+  const [comment, setComment] = useState("");
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
 
-  async function submit() {
-    if (support === null) return;
-    setSending(true); setSendError(null);
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (support === null || fairness === null) return;
+    setSending(true);
+    setSendError(null);
     try {
       await api.submitFeedback("c1", {
         support: support as 1 | 2 | 3 | 4 | 5,
-        perceived_fairness: fairness ?? 3,
+        perceived_fairness: fairness,
         clarity_of_explanation: 4,
         confidence_in_delivery: 3,
         expected_personal_impact: 0,
-        comment: null,
+        comment: comment.trim() || null,
         cohort: {},
       });
       setSent(true);
-    } catch (e) {
-      // never let a failed write look like a successful one (AGENTS.md 28)
-      setSendError(e instanceof NotAvailableOffline
-        ? "Not recorded: the consultation service is not running."
-        : (e as Error).message);
+    } catch (caught) {
+      setSendError(caught instanceof NotAvailableOffline
+        ? "Preview only — this response was not recorded. Connect the live service to accept feedback."
+        : (caught as Error).message);
     } finally {
       setSending(false);
     }
   }
 
-  if (error) return <Crt><Failed message={error} /></Crt>;
-  if (!run) return <Crt><Loading what="the proposal" /></Crt>;
+  if (error) return <Crt><TopBar /><Failed message={error} /></Crt>;
+  if (!run) return <Crt><TopBar /><Loading what="the proposal" /></Crt>;
 
-  const severe = run.metrics.overall.severe_harm_count;
-  const alts = run.interventions.filter((i) => i.valid);
-  const chosen = alts[0];
+  const valid = run.interventions.filter(
+    (item): item is ValidIntervention => item.valid && item.metrics !== null,
+  );
+  const ranked = [...valid].sort((left, right) => {
+    const harmDifference = left.metrics.severe_harm_count - right.metrics.severe_harm_count;
+    return harmDifference !== 0
+      ? harmDifference
+      : left.estimated_cost_index - right.estimated_cost_index;
+  });
+  const selectedId = window.sessionStorage.getItem("civictwin-selected-option");
+  const chosen = ranked.find((item) => item.intervention_id === selectedId) ?? ranked[0];
+
+  if (!chosen) return <Crt><TopBar /><Failed message="No consultation option is available." /></Crt>;
+
+  const baseSevere = run.metrics.overall.severe_harm_count;
+  const remainingSevere = chosen.metrics.severe_harm_count;
+  const prevented = Math.max(0, baseSevere - remainingSevere);
+  const costChange = Math.round((chosen.estimated_cost_index - 1) * 100);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh", background: "#080807" }}>
-      <div style={{ width: 390, borderLeft: "1px solid var(--rule)", borderRight: "1px solid var(--rule)" }}>
-        <Crt>
-          <header
-            style={{
-              padding: "17px 20px 14px", borderBottom: "1px solid var(--rule)",
-              display: "flex", alignItems: "center", gap: 10,
-            }}
-          >
-            <span className="gold" style={{ fontWeight: 600, fontSize: "var(--fs-14)", letterSpacing: ".16em" }}>
-              CIVICTWIN
-            </span>
-            <span className="t3" style={{ fontSize: "var(--fs-12)" }}>HAVE YOUR SAY</span>
-          </header>
+    <Crt>
+      <TopBar meta="PUBLIC FEEDBACK" />
 
-          <div style={{ padding: "22px 20px", borderBottom: "1px solid var(--rule-dim)" }}>
-            <h1
-              className="display t1"
-              style={{ fontSize: "var(--fs-28)", lineHeight: 1.14, letterSpacing: "-.02em", margin: "0 0 14px" }}
-            >
-              TWO BUS STOPS ON AVE 3 MAY CLOSE
-            </h1>
-            <p className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.6, margin: 0 }}>
-              Service 265 would run non-stop to the interchange. We want to know what that
-              means for you before anything is decided.
-            </p>
+      <main className="consultation-page">
+        <header className="consultation-header">
+          <div>
+            <span className="page-kicker">Step 5 · Consult</span>
+            <h1>Have your say on Service 265</h1>
           </div>
+          {TRANSPORT === "fixture" && (
+            <span className="consultation-preview">Preview · responses are not saved</span>
+          )}
+        </header>
 
-          <div style={{ padding: "var(--s-3)", borderBottom: "1px solid var(--rule-dim)" }}>
-            <div style={{ marginBottom: 13 }}>
-              <div className="t1" style={{ fontSize: "var(--fs-14)", fontWeight: 600 }}>
-                Most journeys get shorter
+        <div className="consultation-workspace">
+          <section className="consultation-brief" aria-labelledby="consultation-option-title">
+            <div className="consultation-brief__intro">
+              <span>Option selected for consultation</span>
+              <h2 id="consultation-option-title">{chosen.name}</h2>
+              <p>{ACTION_COPY[chosen.kind]}</p>
+            </div>
+
+            <div className="consultation-change">
+              <span>Service change</span>
+              <strong>Two Ave 3 stops close</strong>
+              <p>Service 265 runs express through this section.</p>
+            </div>
+
+            <div className="consultation-results" aria-label="Expected results">
+              <div className="improved">
+                <strong>{prevented}</strong>
+                <span>severe impacts avoided</span>
               </div>
-              <div className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.5, marginTop: 3 }}>
-                About {Math.abs(run.metrics.overall.avg_journey_time_delta).toFixed(0)} minutes
-                faster on average to the interchange.
+              <div className={remainingSevere > 0 ? "attention" : "improved"}>
+                <strong>{remainingSevere}</strong>
+                <span>residents still severely affected</span>
+              </div>
+              <div>
+                <strong>{costChange > 0 ? "+" : ""}{costChange}%</strong>
+                <span>estimated operating cost</span>
               </div>
             </div>
-            <div>
-              <div className="alert" style={{ fontSize: "var(--fs-14)", fontWeight: 600 }}>
-                Some get much harder
-              </div>
-              <div className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.5, marginTop: 3 }}>
-                If you use the Ave 3 stops, your walk could go from 380 m to about{" "}
-                {run.metrics.overall.walk_distance_p90} m.
-              </div>
-            </div>
-          </div>
 
-          <div style={{ padding: "var(--s-3)", borderBottom: "1px solid var(--rule-dim)" }}>
-            <p className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.6, margin: 0 }}>
-              Our modelling points to {severe} residents being seriously affected, mostly older
-              people with limited mobility and the family members who would end up driving them
-              to appointments.
-            </p>
-            <div className="box" style={{ marginTop: 14, padding: "13px 14px" }}>
-              <p className="t3" style={{ fontSize: "var(--fs-14)", lineHeight: 1.6, margin: 0 }}>
-                This is a computer model of a made-up group of residents. It is not a survey of
-                real people, and it may be wrong about you. That is why we are asking.
+            <details className="consultation-method">
+              <summary>About these estimates</summary>
+              <p>
+                Results use synthetic residents, not survey responses. Public feedback helps
+                identify what the simulation missed.
               </p>
-            </div>
-          </div>
+            </details>
+          </section>
 
-          <div style={{ padding: "var(--s-3)", borderBottom: "1px solid var(--rule-dim)" }}>
-            {alts.map((a, i) => (
-              <div
-                key={a.intervention_id}
-                style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "baseline",
-                  gap: 10, padding: i === 0 ? "0 0 10px" : "10px 0",
-                  borderBottom: i < alts.length - 1 ? "1px solid var(--rule-faint)" : undefined,
-                }}
-              >
-                <span className={a === chosen ? "t1" : "t2"} style={{ fontSize: "var(--fs-14)", fontWeight: a === chosen ? 600 : 400 }}>
-                  {a.name}
-                </span>
-                <span className={a === chosen ? "gold" : "t3"} style={{ fontSize: "var(--fs-12)", flexShrink: 0 }}>
-                  {a === chosen ? "CHOSEN" : (a.newly_harmed_elsewhere ?? 0) > 0
-                    ? `HARMS ${a.newly_harmed_elsewhere} ELSEWHERE`
-                    : `COSTS ${Math.round((a.estimated_cost_index - 1) * 100)}% MORE`}
-                </span>
+          <section className="consultation-response" aria-labelledby="consultation-response-title">
+            <div className="consultation-response__head">
+              <div>
+                <span>Your response</span>
+                <h2 id="consultation-response-title">What do you think?</h2>
               </div>
-            ))}
-          </div>
+              <small>2 choices · 1 optional note</small>
+            </div>
 
-          <div style={{ padding: 20 }}>
             {sent ? (
-              <div className="box" style={{ padding: "18px 16px" }}>
-                <div className="gold" style={{ fontSize: "var(--fs-16)", fontWeight: 600 }}>Thank you.</div>
-                <p className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.6, margin: "6px 0 0" }}>
-                  Your answer joins {run.consultation.response_count} others. If enough people
-                  tell us the model missed something, it gets re-run rather than ignored.
-                </p>
+              <div className="consultation-success" role="status">
+                <span aria-hidden="true">✓</span>
+                <h3>Feedback recorded</h3>
+                <p>Thank you. Your response will be included in the consultation summary.</p>
+                <Link className="btn" to="/calibration">VIEW CONSULTATION RESULTS</Link>
               </div>
             ) : (
-              <>
+              <form className="consultation-form" onSubmit={submit}>
                 <Scale
-                  label="Do you support this change?"
-                  low="STRONGLY OPPOSE" high="STRONGLY SUPPORT"
-                  value={support} onChange={setSupport}
+                  label="Do you support this option?"
+                  labels={SUPPORT_LABELS}
+                  value={support}
+                  onChange={setSupport}
                 />
-                <div style={{ height: 19 }} />
                 <Scale
-                  label="Does it feel fair?"
-                  low="NOT AT ALL" high="COMPLETELY"
-                  value={fairness} onChange={setFairness}
+                  label="Does this option feel fair?"
+                  labels={FAIRNESS_LABELS}
+                  value={fairness}
+                  onChange={setFairness}
                 />
 
-                <label className="t1" style={{ fontSize: "var(--fs-14)", fontWeight: 600, display: "block", margin: "19px 0 9px" }}>
-                  Is there something we have missed?
+                <label className="consultation-comment">
+                  <span>What have we missed? <i>Optional</i></span>
+                  <textarea
+                    value={comment}
+                    onChange={(event) => setComment(event.target.value)}
+                    placeholder="For example: an uncovered walkway or a regular trip this change affects."
+                    rows={3}
+                  />
                 </label>
-                <textarea
-                  placeholder="A slope, a gap in the covered walkway, a trip we have not thought about."
-                  rows={3}
-                  style={{
-                    width: "100%", padding: 13, background: "transparent", color: "var(--t1)",
-                    border: "1px solid var(--rule)", borderRadius: 0, resize: "vertical",
-                    fontFamily: "inherit", fontSize: "var(--fs-14)", lineHeight: 1.55,
-                  }}
-                />
-                <p className="t3" style={{ fontSize: "var(--fs-12)", margin: "7px 0 0" }}>
-                  Optional, and the answer that most often changes the model.
-                </p>
 
-                <button
-                  className="btn"
-                  style={{ marginTop: 16, width: "100%", justifyContent: "flex-start" }}
-                  onClick={submit}
-                  disabled={support === null || sending}
-                >
-                  {sending ? "SENDING" : "SUBMIT"}
-                </button>
+                <div className="consultation-submit">
+                  <button
+                    className="btn"
+                    type="submit"
+                    disabled={support === null || fairness === null || sending}
+                  >
+                    {sending ? "SENDING…" : "SUBMIT FEEDBACK"}
+                  </button>
+                  <span>No name or account required.</span>
+                </div>
+
                 {sendError && (
-                  <p className="alert" style={{ fontSize: "var(--fs-12)", margin: "var(--s-1) 0 0", lineHeight: 1.6 }}>
-                    {sendError}
-                  </p>
+                  <div className="consultation-submit-error" role="alert">
+                    <strong>Feedback not sent</strong>
+                    <span>{sendError}</span>
+                    {TRANSPORT === "fixture" && <Link to="/calibration">View the demo results →</Link>}
+                  </div>
                 )}
-                <p className="t3" style={{ fontSize: "var(--fs-12)", margin: "10px 0 0", textAlign: "center" }}>
-                  No account needed. We do not ask for your name.
-                </p>
-              </>
+              </form>
             )}
-          </div>
-        </Crt>
-      </div>
-    </div>
+          </section>
+        </div>
+      </main>
+    </Crt>
   );
 }
 
 function Scale({
-  label, low, high, value, onChange,
+  label, labels, value, onChange,
 }: {
-  label: string; low: string; high: string;
-  value: number | null; onChange: (v: number) => void;
+  label: string;
+  labels: string[];
+  value: number | null;
+  onChange: (value: number) => void;
 }) {
   return (
-    <div>
-      <label className="t1" style={{ fontSize: "var(--fs-14)", fontWeight: 600, display: "block", marginBottom: 9 }}>
-        {label}
-      </label>
-      <div style={{ display: "flex", gap: 6 }}>
-        {[1, 2, 3, 4, 5].map((v) => {
-          const on = value === v;
+    <fieldset className="consultation-scale">
+      <legend>{label}</legend>
+      <div>
+        {labels.map((option, index) => {
+          const rating = index + 1;
           return (
             <button
-              key={v}
-              onClick={() => onChange(v)}
-              aria-pressed={on}
-              aria-label={`${label} ${v} of 5`}
-              style={{
-                flexGrow: 1, minHeight: 44, cursor: "pointer", fontFamily: "inherit",
-                fontSize: "var(--fs-14)", borderRadius: 0,
-                border: `1px solid ${on ? "var(--gold)" : "var(--rule)"}`,
-                background: on ? "var(--gold)" : "transparent",
-                color: on ? "var(--ground)" : "var(--t2)",
-                fontWeight: on ? 600 : 400,
-              }}
+              type="button"
+              key={option}
+              className={value === rating ? "active" : ""}
+              onClick={() => onChange(rating)}
+              aria-pressed={value === rating}
             >
-              {v}
+              <b>{rating}</b>
+              <span>{option}</span>
             </button>
           );
         })}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-        <span className="t3" style={{ fontSize: "var(--fs-12)" }}>{low}</span>
-        <span className="t3" style={{ fontSize: "var(--fs-12)" }}>{high}</span>
-      </div>
-    </div>
+    </fieldset>
   );
 }

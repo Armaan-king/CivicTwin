@@ -30,7 +30,7 @@ export function Note({ children, tone = "quiet" }: { children: ReactNode; tone?:
       className={tone === "alert" ? "box-alert" : "box"}
       style={{
         padding: "14px 16px",
-        background: tone === "alert" ? "rgba(239,78,54,.08)" : undefined,
+        background: tone === "alert" ? "rgba(180,35,24,.06)" : undefined,
       }}
     >
       {children}
