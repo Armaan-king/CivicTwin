@@ -257,8 +257,16 @@ def check_continuity(turn: AgentTurn, previous: AgentTurn | None) -> list[str]:
     adapting -> absorbing with `changed_because` empty throughout and their position
     frozen at 0.30, which reads as four unrelated answers rather than one person thinking.
 
-    Reported like any other grounding problem, so the turn is dropped and counted rather
-    than quietly kept.
+    **This is a quality flag, never grounds to discard the turn.** Rejecting on it was
+    tried and measured, and it biased the run in the one direction that matters: a turn
+    moving from `unaffected` to `giving_up` needs an explanation, a turn that stays
+    `unaffected` does not, so the guard deleted exactly the residents who declared harm
+    and kept the ones reporting nothing. Twelve residents, seven turns dropped, every
+    survivor unaffected -- a run made to look harmless by its own safeguard.
+
+    A resident who cannot articulate what changed their mind has still declared what
+    happened to them. Recording that their account is thin is honest; converting it into
+    "nothing happened" is the same error as blanking a rejected turn to severity "none".
     """
     if previous is None:
         return []

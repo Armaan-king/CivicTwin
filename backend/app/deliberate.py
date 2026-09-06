@@ -81,6 +81,9 @@ class DeliberationRun:
     cohort_strata: dict[str, int] = field(default_factory=dict)
     #: residents whose every turn was rejected, so nothing they said can be counted
     ungrounded: list[str] = field(default_factory=list)
+    #: turns that changed course without saying why. Kept and counted: a resident who
+    #: cannot articulate what moved them has still declared what happened to them.
+    unexplained_moves: int = 0
 
     def ordered(self) -> list[AgentVoice]:
         """Most-moved first: the residents who changed their mind are the story."""
@@ -111,6 +114,7 @@ class DeliberationRun:
             "evaluated": len(ev),
             "unevaluated": max(0, self.population - len(ev)),
             "ungrounded": len(self.ungrounded),
+            "unexplained_moves": self.unexplained_moves,
             "strata": dict(self.cohort_strata),
         }
 
@@ -297,11 +301,15 @@ def deliberate(
                     # Their household is who they live with, not who they heard from.
                     heard_from = {n for n, _ in heard.get(pid, [])}
                     normalise_citations(turn, pid)
-                    prior = run.voices[pid].turns[-1] if run.voices[pid].turns else None
-                    if (check_grounding(turn, world[pid], rnd, heard_from)
-                            or check_continuity(turn, prior)):
+                    if check_grounding(turn, world[pid], rnd, heard_from):
                         run.rejected += 1
                         continue
+                    # Continuity is recorded, not enforced. Rejecting on it deleted every
+                    # resident who declared harm and kept every one who reported nothing,
+                    # because only a change needs explaining.
+                    prior = run.voices[pid].turns[-1] if run.voices[pid].turns else None
+                    if check_continuity(turn, prior):
+                        run.unexplained_moves += 1
                     turn.round = rnd
                     run.voices[pid].turns.append(turn)
                     if on_voice:

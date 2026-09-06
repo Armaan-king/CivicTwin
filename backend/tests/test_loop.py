@@ -131,3 +131,60 @@ def test_the_cohort_is_chosen_not_sliced(loop):
     affected = set(cohort.affected)
     assert any(pid in affected for pid in run.cohort), \
         "a capped run must still reach the residents the policy touches"
+
+
+def test_an_unexplained_change_is_counted_but_never_deletes_a_harm_claim():
+    """The bias that rejecting on continuity introduced, held shut by a test.
+
+    Only a *change* needs explaining, so a guard that rejects unexplained moves removes
+    residents who declared harm and keeps residents who reported nothing. Measured on a
+    real run: seven turns dropped from twelve residents, every survivor unaffected -- a
+    run made to look harmless by its own safeguard.
+    """
+    import json
+
+    from app.deliberate import deliberate
+    from app.engine import study_area
+    from app.population import build_population
+    from app.services.llm import LLMClient
+    from app.social import build_social_graph
+    from app.world import build_world
+
+    class SilentlyMoves:
+        """Declares harm in round 1 and never says what changed it."""
+
+        name = "stub"
+
+        def complete(self, system, prompt, max_tokens, schema=None):
+            ids = [l.split()[1] for l in prompt.splitlines() if l.startswith("RESIDENT ")]
+            facts = {
+                pid: [w.strip("[]") for w in
+                      prompt.split(f"RESIDENT {pid}\n")[1].split("\n\n")[0].split()
+                      if w.startswith("[") and w.endswith("]")]
+                for pid in ids
+            }
+            if "OpeningBatch" in prompt:
+                return json.dumps({"voices": [
+                    {"persona_id": pid, "name": "Tan Wei Ming", "summary": "s",
+                     "turns": [{"round": 0, "position": 0.5, "confidence": 0.5,
+                                "reasoning": "Only heard it will be faster.",
+                                "severity": "none", "response": "unaffected",
+                                "grounded_in": facts[pid][:1]}]} for pid in ids]})
+            return json.dumps({"turns": [
+                {"persona_id": pid, "round": 1, "position": 0.1, "confidence": 0.9,
+                 "reasoning": "My stop is closing and I cannot walk the distance.",
+                 "severity": "high", "response": "giving_up",
+                 "grounded_in": facts[pid]}          # no changed_because
+                for pid in ids]})
+
+    geo, closed, _ = study_area()
+    pop = build_population(geo, 120)
+    world = build_world(pop, geo, closed)
+    run = deliberate(pop, world, "unexplained movement policy", LLMClient(SilentlyMoves()),
+                     social=build_social_graph(pop), limit=8)
+
+    assert run.unexplained_moves > 0, "the flag must fire"
+    harmed = [v for v in run.voices.values()
+              if any(t.severity == "high" for t in v.turns)]
+    assert harmed, "a harm claim was deleted for being inarticulate"
+    assert run.coverage()["unexplained_moves"] == run.unexplained_moves

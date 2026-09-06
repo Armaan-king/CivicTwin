@@ -161,10 +161,13 @@ def test_expansion_cannot_borrow_another_residents_fact():
 
 
 # ---------------------------------------------------------------- continuity
-def test_changing_course_without_a_reason_is_rejected():
-    """A real run produced unaffected -> giving_up -> adapting -> absorbing with
-    `changed_because` empty throughout and position frozen, which reads as four unrelated
-    answers rather than one person thinking."""
+def test_changing_course_without_a_reason_is_flagged():
+    """Flagged, never rejected.
+
+    Rejecting on this was measured and biased the run: only a *change* needs explaining,
+    so the guard deleted every resident who declared harm and kept every one reporting
+    nothing. Seven turns dropped from twelve residents, every survivor unaffected.
+    """
     from app.agents.deliberation import check_continuity
 
     before = turn(response="giving_up", severity="high")
