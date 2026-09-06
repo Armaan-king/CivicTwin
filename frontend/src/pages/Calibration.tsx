@@ -206,30 +206,36 @@ Residents on ${constraint.location} report that ${
                   <span>Walking-condition weight</span>
                   <strong>{adjustment.from.toFixed(2)} → {adjustment.to.toFixed(2)}</strong>
                 </div>
+                <p className="calibration-adjustment__note">
+                  A coefficient is one answer. The other is a different policy — the walkway
+                  is the constraint, and a planner can write for it.
+                </p>
                 {decision === "pending" ? (
                   <div className="calibration-adjustment__buttons">
                     <button type="button" className="btn-ghost" onClick={() => decide(false)}>KEEP CURRENT</button>
+                    <button
+                      type="button"
+                      className="btn-ghost"
+                      onClick={() => navigate("/policy", { state: { revision: revisionDraft } })}
+                    >
+                      REVISE POLICY
+                    </button>
                     <button type="button" className="btn" onClick={() => decide(true)}>APPLY UPDATE</button>
                   </div>
                 ) : (
-                  <p className={decision === "applied" ? "success" : "t2"} role="status">
-                    {decision === "applied" ? "Update applied and recorded." : "Current model kept."}
-                  </p>
+                  <div className="calibration-adjustment__buttons">
+                    <p className={decision === "applied" ? "success" : "t2"} role="status">
+                      {decision === "applied" ? "Update applied and recorded." : "Current model kept."}
+                    </p>
+                    <button
+                      type="button"
+                      className="btn-ghost"
+                      onClick={() => navigate("/policy", { state: { revision: revisionDraft } })}
+                    >
+                      REVISE POLICY
+                    </button>
+                  </div>
                 )}
-
-                <div className="calibration-adjustment__revise">
-                  <p className="t3">
-                    A coefficient is one answer. The other is a different policy — the
-                    walkway is the constraint, and a planner can write for it.
-                  </p>
-                  <button
-                    type="button"
-                    className="btn-ghost"
-                    onClick={() => navigate("/policy", { state: { revision: revisionDraft } })}
-                  >
-                    DRAFT A REVISED POLICY
-                  </button>
-                </div>
                 {decideError && <p className="calibration-decision-error" role="alert">{decideError}</p>}
               </section>
             </div>
