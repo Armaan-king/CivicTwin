@@ -1,6 +1,6 @@
 import { stepKicker } from "@/lib/workflow";
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -12,7 +12,12 @@ type ReviewTab = "change" | "assumptions" | "locations";
 export function PolicyInput() {
   const { run, error } = useRun();
   const navigate = useNavigate();
-  const [draft, setDraft] = useState<string | null>(null);
+  // A revision carried back from the Learn step. Calibration finds what the model did not
+  // know -- an uncovered walkway, a slope -- and the answer to that is usually a different
+  // policy rather than a different coefficient. The constraint arrives as text the planner
+  // edits, not as a change made on their behalf.
+  const carried = (useLocation().state as { revision?: string } | null)?.revision ?? null;
+  const [draft, setDraft] = useState<string | null>(carried);
   const [tab, setTab] = useState<ReviewTab>("change");
   const [running, setRunning] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);

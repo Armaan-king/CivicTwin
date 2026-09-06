@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { stepKicker } from "@/lib/workflow";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -42,6 +43,18 @@ export function Calibration() {
   const [tab, setTab] = useState<CalibrationTab>("overview");
   const [filter, setFilter] = useState<GroupFilter>("attention");
   const [decision, setDecision] = useState<"pending" | "applied" | "rejected">("pending");
+  const navigate = useNavigate();
+
+  // What the model did not know, written as a starting draft rather than applied for them.
+  // The planner edits it; CivicTwin re-reads it like any other proposal.
+  const constraint = run?.consultation?.discovered_constraint;
+  const revisionDraft = constraint
+    ? `${run?.policy?.text ?? ""}
+
+Residents on ${constraint.location} report that ${
+        (constraint.note ?? "").replace(/^The /, "the ").trim()
+      } Account for the harder walk there.`
+    : (run?.policy?.text ?? "");
   const [decideError, setDecideError] = useState<string | null>(null);
 
   async function decide(approved: boolean) {
@@ -203,6 +216,20 @@ export function Calibration() {
                     {decision === "applied" ? "Update applied and recorded." : "Current model kept."}
                   </p>
                 )}
+
+                <div className="calibration-adjustment__revise">
+                  <p className="t3">
+                    A coefficient is one answer. The other is a different policy — the
+                    walkway is the constraint, and a planner can write for it.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn-ghost"
+                    onClick={() => navigate("/policy", { state: { revision: revisionDraft } })}
+                  >
+                    DRAFT A REVISED POLICY
+                  </button>
+                </div>
                 {decideError && <p className="calibration-decision-error" role="alert">{decideError}</p>}
               </section>
             </div>

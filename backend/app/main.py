@@ -181,6 +181,11 @@ def apply_calibration(run_id: str, body: CalibrationDecision) -> dict[str, Any]:
     """
     from app import calibration_state
 
+    # A demo wants the human-approval boundary visible without a stray click rebuilding
+    # every screen mid-presentation. The decision is still recorded -- that is the part
+    # L3 actually requires -- but it is not put into force.
+    ceremonial = os.getenv("CALIBRATION_APPLY_CEREMONIAL", "").strip().lower() in {"1", "true", "yes"}
+
     run = get_run(run_id)
     proposal = run.consultation.proposed_adjustment
     if not proposal or not proposal.parameter:
@@ -190,19 +195,22 @@ def apply_calibration(run_id: str, body: CalibrationDecision) -> dict[str, Any]:
     live = calibration_state.record(calibration_state.Decision(
         parameter=proposal.parameter,
         value=float(proposal.to),
-        approved=body.approved,
+        # recorded either way; only put into force when this is not a demo
+        approved=body.approved and not ceremonial,
         prompted_by_error_pp=float(worst.signed_error) if worst else 0.0,
         cohort=worst.cohort_value if worst else "",
     ))
 
-    # the next run must be built against the corrected model, not the cached old one
-    global _run_cache
-    _run_cache = None
-    _runs.pop(run_id, None)
+    if not ceremonial:
+        # the next run must be built against the corrected model, not the cached old one
+        global _run_cache
+        _run_cache = None
+        _runs.pop(run_id, None)
 
     return {
         "status": "applied" if body.approved else "rejected",
         "recorded": True,
+        "in_force": not ceremonial,
         "parameter": proposal.parameter,
         "value": float(proposal.to) if body.approved else None,
         "corrections_in_force": live,
