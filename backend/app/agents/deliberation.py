@@ -17,14 +17,21 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 
 from app.population import Persona
 from app.schemas.deliberation import AgentTurn, DeliberationBatch, OpeningBatch
 from app.services.llm import LLMClient, LLMOutputInvalid
 from app.world import ResidentWorld
 
-#: residents per model call
-BATCH_SIZE = 12
+#: Residents per model call. `AGENTS.md` §8 requires batching -- residents per call, not a
+#: call per resident -- and the right size is bounded from above by the context window,
+#: because a round prompt carries each resident's facts, their last position and up to four
+#: neighbours' views. Twelve of those overflowed an 8192-token window, and `num_predict`
+#: draws from the same window, so every batch came back truncated and was rejected.
+#: Six fits with room to generate on a local 8B; a hosted model with a wide context can
+#: raise it and save calls.
+BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 
 #: Bump when a prompt OR the output schema changes, so cached deliberations produced under
 #: older rules are not replayed as if they had passed the current ones. v3: grounding is

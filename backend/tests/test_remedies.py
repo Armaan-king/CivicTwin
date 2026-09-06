@@ -96,3 +96,38 @@ def test_a_harmed_resident_who_offered_nothing_is_counted_as_silent():
     collected = collect_remedies(run)
     assert collected == {"p_1": ""}
     assert cluster_remedies(collected).silent == 1
+
+
+def test_resident_proposals_go_through_the_same_validator():
+    """J4: no shortcut, no exemption. And they arrive unscored."""
+    from app.interventions import validate
+    from app.remedies import resident_candidates
+
+    report = cluster_remedies({
+        "p_1": "Keep the stop open at peak hours.",
+        "p_2": "A shuttle bus would fix it.",
+    })
+    cands = resident_candidates(report, removed={"54231", "54239"})
+    assert {c.kind for c in cands} == {"retain_stop_peak", "add_shuttle_feeder"}
+    for c in cands:
+        assert c.result is None, "a candidate must carry no outcome before it is evaluated"
+
+    # the constraint the policy declares still binds a resident's proposal
+    shuttle = next(c for c in cands if c.kind == "add_shuttle_feeder")
+    validate(shuttle, fleet_increase_allowed=False)
+    assert shuttle.valid is False
+    assert any("fleet" in e for e in shuttle.validation_errors)
+    assert shuttle.result is None, "a rejected candidate is never scored"
+
+    keep = next(c for c in cands if c.kind == "retain_stop_peak")
+    validate(keep, fleet_increase_allowed=False)
+    assert keep.valid is True
+
+
+def test_a_resident_proposal_carries_who_asked_and_in_whose_words():
+    from app.remedies import resident_candidates
+
+    report = cluster_remedies({"p_1": "Keep the stop open.", "p_2": "Do not close the stop."})
+    c = resident_candidates(report, removed={"54231"})[0]
+    assert "2 residents asked for this" in c.rationale
+    assert "Keep the stop open." in c.rationale

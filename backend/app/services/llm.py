@@ -213,7 +213,13 @@ class OllamaCompletion:
     #: rejected -- a whole run of 28 batches producing nothing, with the guards working
     #: perfectly and the cause two layers down. Sized to fit beside 5.2 GB of weights on
     #: an 8 GB card; raise it if the card is bigger.
-    NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "16384"))
+    #:
+    #: 8192 rather than more, and the ceiling is the card, not the model. Raising this to
+    #: 16384 grew the resident set to 9.6 GB against 8 GB of VRAM, Ollama offloaded 31% of
+    #: the layers to CPU, and throughput fell by roughly an order of magnitude while
+    #: looking, from the outside, exactly like a hang. The prompt is made to fit by
+    #: shrinking the batch (`DELIBERATION_BATCH_SIZE`), not by growing the window.
+    NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "8192"))
 
     def __init__(self, model_id: str, temperature: float = 0.0,
                  base_url: str = "http://localhost:11434/api/chat"):
@@ -397,11 +403,12 @@ def build_client(temperature: float = 0.0, role: str = "interpreter") -> LLMClie
     `deliberate()` refuses it outright rather than emitting text that reads like a
     resident and is not one.
     """
-    default = os.getenv("LLM_PROVIDER", "mock")
-    if role == "interpreter":
-        provider = os.getenv("LLM_PROVIDER_INTERPRETER", default).lower()
-    else:
-        provider = default.lower()
+    # `.env` files carry empty assignments to document a knob that is not in use, and
+    # os.getenv only falls back when a name is absent -- not when it is set to "". Reading
+    # the default on empty is what makes `LLM_PROVIDER_INTERPRETER=` mean "unset".
+    default = os.getenv("LLM_PROVIDER", "").strip() or "mock"
+    override = os.getenv("LLM_PROVIDER_INTERPRETER", "").strip()
+    provider = (override if (role == "interpreter" and override) else default).lower()
     if provider in {"grok", "xai"}:
         return LLMClient(ChatCompletion(
             model_id=os.getenv("GROK_MODEL_ID", "grok-4.3"),

@@ -112,3 +112,28 @@ def test_voice_routes_explain_provider_failures(monkeypatch, method, path):
     response = getattr(TestClient(main.app), method)(path)
     assert response.status_code == 502
     assert "XAI_API_KEY" in response.json()["detail"]
+
+
+def test_an_empty_provider_override_means_unset_not_empty(monkeypatch):
+    """`.env` documents unused knobs as `NAME=`, and getenv does not fall back on "".
+
+    Left unhandled this made an empty LLM_PROVIDER_INTERPRETER resolve to the provider ""
+    and take down every route that builds a client.
+    """
+    from app.services.llm import build_client
+
+    monkeypatch.setenv("LLM_PROVIDER", "mock")
+    monkeypatch.setenv("LLM_PROVIDER_INTERPRETER", "")
+    assert build_client(role="interpreter").provider_name == "mock"
+
+
+def test_the_interpreter_can_be_pointed_at_a_different_provider(monkeypatch):
+    """AGENTS.md 11: the cheap model deliberates, a stronger one reads the policy."""
+    from app.services.llm import build_client
+
+    monkeypatch.setenv("LLM_PROVIDER", "ollama")
+    monkeypatch.setenv("OLLAMA_MODEL_ID", "local-model")
+    monkeypatch.setenv("LLM_PROVIDER_INTERPRETER", "groq")
+    monkeypatch.setenv("GROQ_MODEL_ID", "strong-model")
+    assert build_client(role="interpreter").provider_name == "strong-model"
+    assert build_client(role="deliberation").provider_name == "local-model"

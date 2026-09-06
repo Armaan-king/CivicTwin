@@ -171,3 +171,59 @@ def collect_remedies(run) -> dict[str, str]:
             if voice.turns and voice.turns[-1].severity != "none":
                 out[pid] = ""          # harmed, asked, said nothing usable
     return out
+
+
+#: Cost index per typed action, relative to baseline 1.00x (J3). Illustrative coefficients,
+#: never currency: no real costing exists here and inventing one would be fabricated
+#: provenance (`AGENTS.md` §16). Shown beside the comparison, labelled as illustrative.
+RESIDENT_COST_INDEX = {
+    "retain_stop_peak": 0.99,
+    "add_shuttle_feeder": 1.12,
+    "reroute_feeder": 0.96,
+    "targeted_support": 1.03,
+    "phase_rollout": 1.01,
+}
+
+
+def resident_candidates(report: RemedyReport, removed: set[str]):
+    """Turn clustered resident requests into candidates for the ordinary validator.
+
+    J4 is explicit that these get "the same validator and the same re-simulation as a
+    planner candidate. No shortcut, no exemption." So this builds `Candidate` objects and
+    hands them back unvalidated and unscored -- the caller runs `validate()` and, only if
+    that passes, evaluates them.
+
+    `add_shuttle_feeder` carries `vehicles: 1` deliberately. The validator rejects it when
+    the policy declares no fleet increase, which is the correct outcome and a real finding:
+    the thing most residents asked for is the thing the policy's own constraint forbids.
+    Softening it to zero vehicles to make it pass would be inventing a shuttle that needs
+    no bus.
+    """
+    from app.interventions import Candidate
+
+    out = []
+    for i, cluster in enumerate(report.mapped, start=1):
+        params: dict = {}
+        if cluster.action_type == "retain_stop_peak":
+            params = {"stop_ids": sorted(removed), "hours": ["07:00-09:30", "17:00-19:30"]}
+        elif cluster.action_type == "add_shuttle_feeder":
+            params = {"headway_min": 15, "vehicles": 1}
+        elif cluster.action_type == "reroute_feeder":
+            params = {"via_stop": sorted(removed)[0] if removed else None}
+        elif cluster.action_type == "targeted_support":
+            params = {"cohort": "residents reporting harm", "subsidy_type": "fare"}
+        elif cluster.action_type == "phase_rollout":
+            params = {"delay_weeks": 12, "stages": 2}
+
+        out.append(Candidate(
+            intervention_id=f"resident_{i:02d}",
+            kind=cluster.action_type,
+            name=cluster.label,
+            params=params,
+            rationale=(f"{cluster.count} resident"
+                       f"{'s' if cluster.count != 1 else ''} asked for this during "
+                       f"deliberation. Example: \"{cluster.examples[0]}\""
+                       if cluster.examples else f"{cluster.count} residents asked for this."),
+            estimated_cost_index=RESIDENT_COST_INDEX.get(cluster.action_type, 1.0),
+        ))
+    return out
