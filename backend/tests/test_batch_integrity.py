@@ -104,3 +104,48 @@ def test_the_schema_is_offered_to_a_provider_that_can_constrain_decoding():
         OpeningBatch, "sys", "prompt")
     assert seen["schema"]["title"] == "OpeningBatch"
     assert "voices" in seen["schema"]["properties"]
+
+
+def test_the_grammar_schema_pins_how_many_residents_may_be_returned():
+    """Grammar constrains the shape of a value, not how many of them there are.
+
+    An unbounded array is a legal place to keep going, and a small model obligingly does:
+    asked for four residents it returned thirty-nine and spent 508 seconds on it. The
+    count check caught that, but the cheaper fix is to make the sampler unable to run past
+    the end.
+    """
+    from app.services.llm import exact_items
+
+    schema = exact_items(OpeningBatch, "voices", 6)
+    assert schema["properties"]["voices"]["minItems"] == 6
+    assert schema["properties"]["voices"]["maxItems"] == 6
+    # the Pydantic model itself is untouched: validation still accepts any length, and the
+    # explicit count check remains the thing that rejects a wrong one
+    assert OpeningBatch(voices=[]).voices == []
+
+
+def test_the_pinned_schema_is_what_reaches_the_provider():
+    seen = {}
+
+    class Recorder(Canned):
+        def complete(self, system, prompt, max_tokens, schema=None):
+            seen["schema"] = schema
+            return json.dumps(self.payload)
+
+    payload = {"voices": [voice(f"p_000{i}") for i in range(3)]}
+    run_opening("prompt", LLMClient(Recorder(payload), max_attempts=1), expected=3)
+    assert seen["schema"]["properties"]["voices"]["maxItems"] == 3
+
+
+def test_a_round_batch_pins_its_turn_count_too():
+    seen = {}
+
+    class Recorder(Canned):
+        def complete(self, system, prompt, max_tokens, schema=None):
+            seen["schema"] = schema
+            return json.dumps(self.payload)
+
+    payload = {"turns": [turn(), turn()], "persona_ids": ["p_0001", "p_0002"]}
+    run_round("prompt", LLMClient(Recorder(payload), max_attempts=1),
+              expected_ids=["p_0001", "p_0002"])
+    assert seen["schema"]["properties"]["turns"]["maxItems"] == 2

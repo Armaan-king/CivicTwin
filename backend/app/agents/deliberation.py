@@ -21,7 +21,7 @@ import os
 
 from app.population import Persona
 from app.schemas.deliberation import AgentTurn, DeliberationBatch, OpeningBatch
-from app.services.llm import LLMClient, LLMOutputInvalid
+from app.services.llm import LLMClient, LLMOutputInvalid, exact_items
 from app.world import ResidentWorld
 
 #: Residents per model call. `AGENTS.md` §8 requires batching -- residents per call, not a
@@ -37,8 +37,10 @@ BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 #: older rules are not replayed as if they had passed the current ones. v3: grounding is
 #: scoped to the round, a citation must reach a policy fact to support a harm claim, and
 #: identity is validated rather than overwritten. v4: harmed residents are asked
-#: what would make the policy workable for them (J4).
-PROMPT_VERSION = "v4"
+#: what would make the policy workable for them (J4). v5: the 0..1 support scale is
+#: stated explicitly, after a local model read a field named `position` as a signed
+#: -1..+1 scale and every turn was rejected for it.
+PROMPT_VERSION = "v5"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -54,9 +56,12 @@ Absolute rules:
   language, no quotation marks around the whole thing.
 - `name` is a plausible Singapore name fitting their age. It is synthetic and labelled as
   such, so make it ordinary rather than distinctive.
-- `position` is support for the policy, 0 against to 1 for. This is round 0: most people
-  have only heard that buses will be faster and have not worked out what it means for them.
-- `confidence` is how settled they are, not how strongly they feel.
+- `position` is a number from 0.0 to 1.0 and is NEVER negative. 0.0 is completely against,
+  0.5 is neutral, 1.0 is completely in favour. Do not use a -1 to +1 scale. This is round 0:
+  most people have only heard that buses will be faster and have not worked out what it
+  means for them, so most sit near 0.5 to 0.7.
+- `confidence` is how settled they are, not how strongly they feel. Also 0.0 to 1.0.
+- `summary` is one short phrase describing this person. Do not put fact ids in it.
 - `severity` is "none" at round 0 unless a fact already says otherwise.
 - Vary the voices. These are different people.
 
@@ -90,6 +95,9 @@ Absolute rules:
   when they have. Only someone named in their facts.
 - `reasoning` is 2 to 4 sentences, first person. Say what changed and why it matters to
   them specifically.
+- `position` is a number from 0.0 to 1.0 and is NEVER negative. 0.0 is completely against,
+  0.5 is neutral, 1.0 is completely in favour. Do not use a -1 to +1 scale. `confidence` is
+  also 0.0 to 1.0.
 - Most people are not affected. Do not manufacture drama: "nothing has changed for me" is a
   legitimate and common answer.
 - `remedy`: if and only if this resident is harmed (severity "moderate" or "high"), answer
@@ -173,7 +181,9 @@ def run_opening(prompt: str, llm: LLMClient, expected: int) -> OpeningBatch:
     they were everyone.
     """
     try:
-        batch = llm.structured(OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=8000)
+        batch = llm.structured(
+            OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=8000,
+            schema_override=exact_items(OpeningBatch, "voices", expected))
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("opening batch was not valid", exc.raw) from exc
     if len(batch.voices) != expected:
@@ -192,7 +202,9 @@ def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> Deliberat
     twelve people is worse than a rejected batch, because it still looks like evidence.
     """
     try:
-        batch = llm.structured(DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000)
+        batch = llm.structured(
+            DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000,
+            schema_override=exact_items(DeliberationBatch, "turns", len(expected_ids)))
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("round batch was not valid", exc.raw) from exc
     if len(batch.turns) != len(expected_ids):

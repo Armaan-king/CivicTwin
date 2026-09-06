@@ -336,8 +336,15 @@ class LLMClient:
         return self.completion.name
 
     def structured(self, schema: type[T], system: str, prompt: str,
-                   max_tokens: int = 1024) -> T:
-        json_schema = schema.model_json_schema()
+                   max_tokens: int = 1024, schema_override: dict | None = None) -> T:
+        """`schema_override` replaces the JSON Schema sent to the provider, without
+        changing the Pydantic model the result is validated against.
+
+        It exists for grammar-constrained providers, where the schema is not a hint but
+        the set of strings the sampler may produce. Pinning a list length there is the
+        difference between asking for four residents and receiving four.
+        """
+        json_schema = schema_override or schema.model_json_schema()
         system = f"{system}\n\nReturn JSON matching this schema:\n{json.dumps(json_schema)}"
         last: LLMOutputInvalid | None = None
         started = time.monotonic()
@@ -484,3 +491,24 @@ _DEFAULT_MOCKS = {
         ],
     }),
 }
+
+
+def exact_items(model_cls, field: str, n: int) -> dict:
+    """The model's JSON Schema with one array pinned to exactly `n` items.
+
+    Grammar-constrained decoding enforces the shape of a value, not how many of them
+    there are: an unbounded array is a legal place to keep going, and a small model
+    obligingly does. Asked for four residents, `deepseek-r1:8b` produced thirty-nine and
+    spent 508 seconds doing it -- the batch was correctly rejected, and almost all of that
+    time went on residents nobody had asked about.
+
+    `minItems`/`maxItems` compile into the grammar as a repetition count, so the sampler
+    cannot run past the end. Unlike `minimum`/`maximum` on a number, which do not compile
+    and must still be caught by validation.
+    """
+    schema = model_cls.model_json_schema()
+    target = schema.get("properties", {}).get(field)
+    if isinstance(target, dict) and target.get("type") == "array":
+        target["minItems"] = n
+        target["maxItems"] = n
+    return schema
