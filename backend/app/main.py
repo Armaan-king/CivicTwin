@@ -412,3 +412,86 @@ def _geometry_outcomes(run: SimulationRun):
             journey_time_delta_min=float(getattr(o, "journey_time_delta_min", 0.0) or 0.0),
         ))
     return out
+
+
+# ------------------------------------------------- resident-authored alternatives
+#: Human selections, by run. Recorded rather than acted on: `AGENTS.md` §14 forbids
+#: autonomous enactment, and L3 requires the same for calibration.
+_selections: dict[str, dict] = {}
+
+
+@app.get("/api/runs/{run_id}/alternatives")
+def list_alternatives(run_id: str) -> dict:
+    """What residents asked for, mapped onto the typed action space and validated.
+
+    Listing does not evaluate. Putting an alternative back to the residents is another
+    full deliberation -- the expensive operation in this product -- so it happens only
+    when a human asks for it, which is also the human-in-the-loop boundary `AGENTS.md` §14
+    requires. Everything here is therefore unscored by construction, and says so.
+    """
+    from app.deliberate import NoModelConfigured
+    from app.interventions import validate
+    from app.remedies import cluster_remedies, collect_remedies, resident_candidates
+
+    try:
+        d = get_deliberation(run_id)
+    except NoModelConfigured as exc:
+        raise HTTPException(503, str(exc)) from exc
+    except LLMError as exc:
+        raise HTTPException(502, str(exc)) from exc
+
+    run = get_run(run_id)
+    _, closed, _ = study_area_for(run)
+    report = cluster_remedies(collect_remedies(d))
+    fleet_ok = bool(run.policy.constraints.fleet_increase_allowed)
+
+    rows = []
+    for c in resident_candidates(report, set(closed)):
+        validate(c, fleet_increase_allowed=fleet_ok)
+        rows.append({
+            "intervention_id": c.intervention_id,
+            "kind": c.kind,
+            "name": c.name,
+            "params": c.params,
+            "rationale": c.rationale,
+            "estimated_cost_index": c.estimated_cost_index,
+            "valid": c.valid,
+            "validation_errors": c.validation_errors,
+            # never scored until a human asks for it to be evaluated
+            "metrics": None,
+            "evaluated": False,
+        })
+    return {
+        "run_id": run_id,
+        "source": "residents, during deliberation (J4)",
+        "asked": report.asked(),
+        "silent": report.silent,
+        "alternatives": rows,
+        "unmappable": [{"label": u.label, "count": u.count, "examples": u.examples}
+                       for u in report.unmappable],
+        "cost_index_note": "illustrative coefficients relative to baseline 1.00x, never currency (J3)",
+    }
+
+
+class Selection(BaseModel):
+    intervention_id: str
+    note: str | None = Field(default=None, max_length=2000)
+
+
+@app.post("/api/runs/{run_id}/alternatives/select")
+def select_alternative(run_id: str, body: Selection) -> dict:
+    """Record which alternative a human chose. Recording only.
+
+    `AGENTS.md` §14: no autonomous enactment of policy decisions. This is the point in the
+    loop where a person takes responsibility for a choice, so it is stored and echoed back
+    rather than applied to anything.
+    """
+    _selections[run_id] = {"intervention_id": body.intervention_id, "note": body.note}
+    return {"run_id": run_id, "selected": body.intervention_id,
+            "status": "recorded", "enacted": False}
+
+
+@app.get("/api/runs/{run_id}/alternatives/selected")
+def get_selection(run_id: str) -> dict:
+    chosen = _selections.get(run_id)
+    return {"run_id": run_id, "selected": chosen, "enacted": False}
