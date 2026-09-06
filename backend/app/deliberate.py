@@ -148,6 +148,7 @@ def deliberate(
     social: nx.Graph | None = None,
     limit: int | None = None,
     on_voice=None,
+    cohort_ids: list[str] | None = None,
 ) -> DeliberationRun:
     """Run the whole deliberation. Raises if no model is configured.
 
@@ -170,7 +171,16 @@ def deliberate(
     # Who reasons. The cohort is the honest middle between asking everyone -- four hours
     # locally, most of it spent on residents the policy never reaches -- and asking only
     # the harmed, which leaves every rate without a denominator.
-    if limit:
+    if cohort_ids is not None:
+        # An explicit cohort, for comparing an alternative against the policy over the
+        # same residents. Re-selecting here would be wrong twice: under an alternative
+        # that reopens the stop nobody is "affected", so selection returns an empty
+        # cohort -- and a delta measured across two different groups of people is not a
+        # delta at all.
+        ordered_ids = [pid for pid in cohort_ids if pid in world]
+        run.cohort_strata = {"affected": 0, "tied": 0, "comparison": 0,
+                             "carried_over": len(ordered_ids)}
+    elif limit:
         # An explicit cap still selects rather than slicing: `personas[:12]` returns
         # whoever the generator happened to emit first, and on this population that is
         # twelve people nowhere near the closure, all of whom correctly report nothing.
