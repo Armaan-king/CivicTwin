@@ -42,7 +42,7 @@ BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 #: what would make the policy workable for them (J4). v5: the 0..1 support scale is
 #: stated explicitly, after a local model read a field named `position` as a signed
 #: -1..+1 scale and every turn was rejected for it.
-PROMPT_VERSION = "v9"
+PROMPT_VERSION = "v10"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -108,6 +108,9 @@ Absolute rules:
   from the RESIDENT heading above their facts, like "p_0098".
 - fact ids in `grounded_in` are written in full, exactly as they appear in the brackets:
   "p_0098:f3", not "f3".
+- `changed_because` is required whenever your `response` or `severity` differs from what
+  you said last round: one short phrase naming what changed it, an event or something a
+  neighbour said. Changing your mind is fine and expected; changing it silently is not.
 - `remedy`: if and only if this resident is harmed (severity "moderate" or "high"), answer
   one further question in their own words, one sentence: what would make this workable for
   you? Ask for what they need, not for a policy instrument -- "somewhere to sit while I
@@ -242,6 +245,28 @@ def normalise_citations(turn: AgentTurn, persona_id: str) -> None:
         f"{persona_id}:{fid}" if _SHORT_FACT.match(fid) else fid
         for fid in turn.grounded_in
     ]
+
+
+def check_continuity(turn: AgentTurn, previous: AgentTurn | None) -> list[str]:
+    """A resident who changes course has to say what changed it.
+
+    Changing course is not itself suspect -- hearing a neighbour and reconsidering is the
+    whole point of deliberating rather than polling, and `giving_up` in one round followed
+    by `adapting` in the next can be exactly that. What cannot stand is the move with no
+    account of itself: a real run produced a resident going unaffected -> giving_up ->
+    adapting -> absorbing with `changed_because` empty throughout and their position
+    frozen at 0.30, which reads as four unrelated answers rather than one person thinking.
+
+    Reported like any other grounding problem, so the turn is dropped and counted rather
+    than quietly kept.
+    """
+    if previous is None:
+        return []
+    moved = (turn.response != previous.response or turn.severity != previous.severity)
+    if moved and not (turn.changed_because and turn.changed_because.strip()):
+        return [f"changed from {previous.response}/{previous.severity} to "
+                f"{turn.response}/{turn.severity} without saying what changed it"]
+    return []
 
 
 def check_grounding(

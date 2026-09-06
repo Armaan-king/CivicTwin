@@ -158,3 +158,40 @@ def test_expansion_cannot_borrow_another_residents_fact():
     normalise_citations(t, "p_0001")
     assert t.grounded_in == ["p_0002:f4"], "a full id is left alone"
     assert any("p_0002:f4" in p for p in check_grounding(t, world_with(), 1, set()))
+
+
+# ---------------------------------------------------------------- continuity
+def test_changing_course_without_a_reason_is_rejected():
+    """A real run produced unaffected -> giving_up -> adapting -> absorbing with
+    `changed_because` empty throughout and position frozen, which reads as four unrelated
+    answers rather than one person thinking."""
+    from app.agents.deliberation import check_continuity
+
+    before = turn(response="giving_up", severity="high")
+    after = turn(response="adapting", severity="moderate", changed_because=None)
+    problems = check_continuity(after, before)
+    assert any("without saying what changed it" in p for p in problems)
+
+
+def test_changing_course_with_a_reason_is_allowed():
+    """Reconsidering after hearing a neighbour is the point of deliberating."""
+    from app.agents.deliberation import check_continuity
+
+    before = turn(response="giving_up", severity="high")
+    after = turn(response="adapting", severity="moderate",
+                 changed_because="my neighbour told me the 265 still runs early")
+    assert check_continuity(after, before) == []
+
+
+def test_holding_the_same_position_needs_no_explanation():
+    from app.agents.deliberation import check_continuity
+
+    before = turn(response="adapting", severity="moderate")
+    after = turn(response="adapting", severity="moderate")
+    assert check_continuity(after, before) == []
+
+
+def test_the_first_turn_has_nothing_to_be_consistent_with():
+    from app.agents.deliberation import check_continuity
+
+    assert check_continuity(turn(), None) == []

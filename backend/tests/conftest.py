@@ -1,0 +1,22 @@
+"""Test-wide fixtures.
+
+The deliberation cache is keyed on prompt version, model name and prompt text -- but not
+on the *behaviour* of whatever produced the answer. Two different stubs called "stub"
+therefore share entries, so changing a stub silently replays the old one's output and the
+failure appears in an unrelated assertion. That cost a confusing debugging detour, so the
+suite gets its own cache directory per session and the project's real one is never
+touched by a test.
+"""
+from __future__ import annotations
+
+import pytest
+
+
+@pytest.fixture(autouse=True, scope="session")
+def isolated_deliberation_cache(tmp_path_factory):
+    from app import deliberate
+
+    original = deliberate.CACHE
+    deliberate.CACHE = tmp_path_factory.mktemp("deliberation_cache")
+    yield deliberate.CACHE
+    deliberate.CACHE = original

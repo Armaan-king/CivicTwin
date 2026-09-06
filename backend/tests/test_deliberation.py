@@ -57,7 +57,8 @@ class StubCompletion:
         return json.dumps({"turns": [
             {"persona_id": pid, "round": 1, "position": 0.3, "confidence": 0.7,
              "reasoning": "Stub round view.", "severity": "moderate",
-             "response": "adapting", "grounded_in": facts[pid]}
+             "response": "adapting", "grounded_in": facts[pid],
+             "changed_because": "the policy landed"}
             for pid in ids
         ]})
 

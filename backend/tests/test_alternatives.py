@@ -44,7 +44,8 @@ class Stub:
         return json.dumps({"turns": [
             {"persona_id": pid, "round": 1, "position": 0.2, "confidence": 0.8,
              "reasoning": "The stop I use is closing.", "severity": sev,
-             "response": resp, "grounded_in": facts[pid]} for pid in ids]})
+             "response": resp, "grounded_in": facts[pid],
+             "changed_because": "the policy landed"} for pid in ids]})
 
 
 @pytest.fixture(scope="module")

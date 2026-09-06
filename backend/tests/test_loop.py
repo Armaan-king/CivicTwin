@@ -56,6 +56,7 @@ class HarmedStub:
              "reasoning": "The stop I use is closing and I cannot walk to the next one.",
              "severity": "high", "response": "giving_up",
              "grounded_in": facts[pid],
+             "changed_because": "my stop is closing",
              "remedy": "Keep the stop open at peak hours."}
             for pid in ids]})
 

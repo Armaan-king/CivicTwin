@@ -28,6 +28,7 @@ from app.agents.deliberation import (
     BATCH_SIZE,
     DeliberationFailed,
     cache_key,
+    check_continuity,
     check_grounding,
     normalise_citations,
     opening_prompt,
@@ -296,7 +297,9 @@ def deliberate(
                     # Their household is who they live with, not who they heard from.
                     heard_from = {n for n, _ in heard.get(pid, [])}
                     normalise_citations(turn, pid)
-                    if check_grounding(turn, world[pid], rnd, heard_from):
+                    prior = run.voices[pid].turns[-1] if run.voices[pid].turns else None
+                    if (check_grounding(turn, world[pid], rnd, heard_from)
+                            or check_continuity(turn, prior)):
                         run.rejected += 1
                         continue
                     turn.round = rnd
