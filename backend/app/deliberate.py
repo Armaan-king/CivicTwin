@@ -47,6 +47,11 @@ from app.world import ResidentWorld
 
 CACHE = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "deliberation_cache"
 
+#: Serve only what has already been run. Set for a demo, where a cache miss must not
+#: silently become a model call. The run still reports honestly: residents whose batch is
+#: missing are counted as unevaluated, never as unaffected.
+REPLAY_ONLY = os.getenv("DELIBERATION_REPLAY_ONLY", "").strip().lower() in {"1", "true", "yes"}
+
 #: How many batches are in flight at once. Bounded so a run cannot become a stampede
 #: (`AGENTS.md` §8). The right ceiling depends on what is behind the client: a hosted
 #: API wants several, one local GPU wants one, and eight against Ollama merely builds a
@@ -56,6 +61,10 @@ CONCURRENCY = env_int("DELIBERATION_CONCURRENCY", 8)
 ROUNDS = (1, 2, 3)
 #: how many neighbours a resident hears from in a round
 HEARD = 4
+
+
+class CacheMiss(RuntimeError):
+    """Replay-only, and this batch was never run. Skipped rather than called."""
 
 
 class NoModelConfigured(RuntimeError):
@@ -139,6 +148,13 @@ def _cached_or_call(prompt: str, model: str, fn, run: DeliberationRun):
         except json.JSONDecodeError:
             path.unlink(missing_ok=True)      # a corpse from an interrupted run
 
+    if REPLAY_ONLY:
+        # A demo replays a real run from disk (`AGENTS.md` §22). What it must never do is
+        # quietly call the model for the parts that were never run -- on a local GPU that
+        # turns a page load into hours. The batch is skipped, the residents in it stay
+        # unevaluated, and coverage reports them as unknown rather than unaffected.
+        raise CacheMiss(cache_key(prompt, model))
+
     result = fn(prompt)
     run.calls += 1
     tmp = path.with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
@@ -217,7 +233,7 @@ def deliberate(
             raw = _cached_or_call(
                 prompt, run.model,
                 lambda pr: run_opening(pr, llm, len(ids)).model_dump(), run)
-        except DeliberationFailed:
+        except (DeliberationFailed, CacheMiss):
             run.failed_batches += 1
             return []
         from app.schemas.deliberation import OpeningBatch
@@ -284,7 +300,7 @@ def deliberate(
                 return _cached_or_call(
                     prompt, run.model,
                     lambda pr: run_round(pr, llm, list(group)).model_dump(), run)
-            except DeliberationFailed:
+            except (DeliberationFailed, CacheMiss):
                 run.failed_batches += 1
                 return None
 

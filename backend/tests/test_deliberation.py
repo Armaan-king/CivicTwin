@@ -173,3 +173,30 @@ def test_a_resident_with_no_opening_view_is_not_asked_to_continue(small):
     speakers = _participants(run, world, social, 1, index)
     assert spoke in speakers
     assert silent not in speakers, "a resident with no opening view was asked to continue"
+
+
+def test_replay_only_skips_a_cache_miss_instead_of_calling_the_model(small, monkeypatch):
+    """A demo replays a real run from disk; it must not quietly call the model for the
+    parts that were never run.
+
+    On a local GPU that turns a page load into hours, and the residents in a missing batch
+    must come back as unevaluated -- unknown -- never as unaffected.
+    """
+    from app import deliberate as D
+
+    pop, world, social = small
+
+    class NeverCalled:
+        name = "stub"
+
+        def complete(self, system, prompt, max_tokens, schema=None):
+            raise AssertionError("replay-only called the model")
+
+    monkeypatch.setattr(D, "REPLAY_ONLY", True)
+    run = D.deliberate(pop, world, "replay only policy", LLMClient(NeverCalled()),
+                       social=social, limit=8)
+    assert run.calls == 0
+    assert run.failed_batches > 0, "the miss must be counted, not hidden"
+    cov = run.coverage()
+    assert cov["evaluated"] == 0
+    assert cov["unevaluated"] == cov["population"]

@@ -32,6 +32,37 @@ const ADAPTATION: Record<string, { label: string; tone: "alert" | "gold" | "quie
 
 type Filter = "affected" | "moved" | "all";
 
+/**
+ * How fast residents appear on screen.
+ *
+ * The whole set is already in memory when this starts -- the run is served from the
+ * content-hash cache, and the header says so ("0 calls, N cached"). Revealing them one at
+ * a time is presentation, not pretence: a town reacting is a thing you watch, and 109
+ * accounts appearing at once is a wall of text nobody reads. At 26ms the entire estate
+ * arrived in under three seconds, which read as a page load rather than a deliberation.
+ */
+const REVEAL_MS = 210;
+
+/**
+ * The model occasionally writes a fact id into its own prose -- "without too much trouble
+ * due to p_0848:f4" -- alongside citing it properly in `grounded_in`. The citation is the
+ * part that matters and it is kept; this only tidies the sentence a reader sees. The
+ * stored record is untouched, so an export still carries exactly what the model wrote.
+ */
+function readable(reasoning: string): string {
+  return reasoning
+    // the fact id itself, with any brackets around it
+    .replace(/\s*\(?p_\d+:f\d+\)?/g, "")
+    // a preposition whose object has just been removed ("...due to, the walk is longer")
+    // Multi-word phrases only, and word-bounded. A bare "in" or "at" here would
+    // turn "cabin," into "cab,": the alternation only has to END at the
+    // punctuation, so a short word matching mid-token is a real hazard.
+    .replace(/\s*\b(due to|as per|because of|based on|given)\s*([,.;])/gi, "$2")
+    .replace(/\s+([,.;])/g, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 export function Voices() {
   const { run, error } = useRun();
   const [data, setData] = useState<VoiceListing | null>(null);
@@ -83,7 +114,7 @@ export function Voices() {
         }
         return r + 1;
       });
-    }, 26);
+    }, REVEAL_MS);
     return () => {
       if (timer.current) window.clearInterval(timer.current);
     };
@@ -203,7 +234,7 @@ export function Voices() {
                 </div>
                 <p className="t3" style={{ fontSize: "var(--fs-12)", margin: "3px 0 0" }}>{v.summary}</p>
                 <p className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.7, margin: "var(--s-2) 0 0", maxWidth: "72ch" }}>
-                  {last.reasoning}
+                  {readable(last.reasoning)}
                 </p>
 
                 {isOpen && v.turns.length > 1 && (
@@ -217,7 +248,7 @@ export function Voices() {
                           </span>
                         </div>
                         <p className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.65, margin: "4px 0 0", maxWidth: "70ch" }}>
-                          {t.reasoning}
+                          {readable(t.reasoning)}
                         </p>
                         {t.changed_because && (
                           <p className="t3" style={{ fontSize: "var(--fs-12)", margin: "4px 0 0" }}>
