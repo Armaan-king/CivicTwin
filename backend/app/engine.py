@@ -97,9 +97,13 @@ def _policy_dict(geo, removed: set[str], resolution=None, text: str = "") -> dic
     # The planner's own words when there are any. Only when nobody has submitted a policy
     # -- the demo run -- is a description generated, and the reading says which it is.
     stated = bool(text and text.strip())
+    # Phrased by stop code rather than stop name, and worded exactly as the committed
+    # deliberation was run. The deliberation cache is keyed on the prompt, and the policy
+    # line sits in every prompt -- so a demo whose default text differs from the run's by
+    # a single word replays nothing and calls the model for every resident.
     policy_text = text.strip() if stated else (
-        f"Close the {len(names)} stops on {roads[0]} ({', '.join(names)}) and run service "
-        f"{feeder} express through the segment, without increasing the fleet."
+        f"Close bus stops {' and '.join(sorted(removed))} on {roads[0]} and let service "
+        f"{feeder} run non-stop between them. No extra buses, no budget increase."
     )
 
     named = bool(resolution and resolution.closures)
