@@ -168,9 +168,55 @@ class CalibrationDecision(BaseModel):
 
 
 @app.post("/api/runs/{run_id}/calibration/apply")
-def apply_calibration(run_id: str, body: CalibrationDecision) -> dict[str, str]:
-    """Human approval, always. Never applied automatically (scenario-v1.md L3)."""
-    return {"status": "applied" if body.approved else "rejected", "recorded": "true"}
+def apply_calibration(run_id: str, body: CalibrationDecision) -> dict[str, Any]:
+    """Record a human ruling on the proposed correction, and act on it. L3.
+
+    Never automatic: calibration proposes, a person decides, and the decision is stored
+    either way. An approval puts the correction into force for subsequent runs, so the next
+    calibration is computed against a model that has been told what it was missing -- and
+    reports a smaller error, which is the point of measuring one.
+
+    A rejection is recorded just as carefully. Knowing a change was put to someone and
+    turned down is part of the audit trail, not the absence of one.
+    """
+    from app import calibration_state
+
+    run = get_run(run_id)
+    proposal = run.consultation.proposed_adjustment
+    if not proposal or not proposal.parameter:
+        raise HTTPException(422, "There is no proposed correction to rule on.")
+
+    worst = min(run.consultation.calibration, key=lambda c: c.signed_error, default=None)
+    live = calibration_state.record(calibration_state.Decision(
+        parameter=proposal.parameter,
+        value=float(proposal.to),
+        approved=body.approved,
+        prompted_by_error_pp=float(worst.signed_error) if worst else 0.0,
+        cohort=worst.cohort_value if worst else "",
+    ))
+
+    # the next run must be built against the corrected model, not the cached old one
+    global _run_cache
+    _run_cache = None
+    _runs.pop(run_id, None)
+
+    return {
+        "status": "applied" if body.approved else "rejected",
+        "recorded": True,
+        "parameter": proposal.parameter,
+        "value": float(proposal.to) if body.approved else None,
+        "corrections_in_force": live,
+        "history": len(calibration_state.history()),
+    }
+
+
+@app.get("/api/runs/{run_id}/calibration/history")
+def calibration_history(run_id: str) -> dict[str, Any]:
+    """Every ruling, approved or rejected, and what is in force now."""
+    from app import calibration_state
+
+    return {"in_force": calibration_state.applied(),
+            "history": calibration_state.history()}
 
 
 # ----------------------------------------------------- streaming rounds

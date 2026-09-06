@@ -178,11 +178,20 @@ class DiscoveredConstraint(BaseModel):
 
 
 class ProposedAdjustment(BaseModel):
-    parameter: str
-    from_: float = Field(alias="from")
-    to: float
+    #: None once there is nothing left to correct, which is what success looks like
+    parameter: str | None = None
+    from_: float | None = Field(default=None, alias="from")
+    to: float | None = None
     #: never "applied" without a human. scenario-v1.md L3.
-    status: Literal["awaiting_human_approval", "applied", "rejected"]
+    #: "nothing_to_correct" means no cohort is off by more than the flag threshold on a
+    #: sample large enough to support the claim -- the state an approved correction is
+    #: trying to reach.
+    status: Literal["awaiting_human_approval", "applied", "rejected", "nothing_to_correct"]
+    #: the signed error, in percentage points, that prompted this
+    prompted_by_error_pp: float | None = None
+    cohort: str | None = None
+    n: int | None = None
+    note: str | None = None
 
     model_config = {"populate_by_name": True}
 

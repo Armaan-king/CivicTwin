@@ -283,13 +283,31 @@ Ang Mo Kio Ave 3    predicted 67%    reported 53%    −14.1 pts    n = 92
 
   what the model missed:  the covered walkway ends partway and there is a slope.
                           The model costed the distance and not the walk.
-  proposed:               walk_cost_multiplier[AMK Ave 3]   1.00 → 1.35
+  proposed:               walk_cost_multiplier[Ang Mo Kio Ave 3]   1.00 → 1.56
   status:                 awaiting human approval
 ```
 
-The proposal is presented for a decision and is never self-applied. A model that adjusts its
-own parameters because it was contradicted is a model nobody can audit — so the boundary is
-explicit, the decision is recorded either way, and the history is kept.
+The size of the correction comes from the size of the error — a 14.1-point over-prediction
+is 0.56 Likert points, and the multiplier is whatever closes that over the walk those
+residents actually face. A number a person is asked to approve should be derived from the
+evidence that prompted it, or the approval is theatre.
+
+Approve it and the model is corrected where it was wrong, and nowhere else:
+
+```
+  Ang Mo Kio Ave 3     −14.1 pts   flagged        ──approve──►   −7.1 pts   not flagged
+  every other cohort    unchanged                                 unchanged
+```
+
+It does not fall to zero, and it should not: the correction is derived from the aggregate
+gap, so it under-corrects the residents with the longest walks. A loop that landed exactly
+on zero would mean the answer had been fitted rather than learned.
+
+Nothing is ever self-applied. A model that adjusts its own parameters because it was
+contradicted is a model nobody can audit, so the boundary is explicit: calibration proposes,
+a person rules, and the decision is recorded either way — a rejection as carefully as an
+approval, because knowing a change was put to someone and turned down is part of the audit
+trail rather than the absence of one.
 
 The same principle governs the rest: an intervention is selected by a person, never enacted
 by the system; a rejected candidate carries no metrics at all, because scoring something that

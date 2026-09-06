@@ -27,7 +27,8 @@ import os
 from dataclasses import replace
 from typing import TYPE_CHECKING
 
-from app.consultation import build_consultation
+from app import calibration_state
+from app.consultation import build_consultation, walk_cost_key
 from app.geography import build_geography, display_dict
 from app.graph import build_graph
 from app.interventions import POLICY_COST_INDEX, candidates, run_candidate, validate
@@ -270,7 +271,8 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
     # ------------------------------------------------------------------ consultation
     # the blind spot lands on the road the policy touches, whichever town this is
     terrain_road = _road_of(geo, sorted(removed)[0])
-    con = build_consultation(pop, policy.outcomes, terrain_road)
+    corrections = calibration_state.applied()
+    con = build_consultation(pop, policy.outcomes, terrain_road, corrections)
     flagged = next((r for r in con.calibration if r.flagged), None)
 
     return {
@@ -338,12 +340,7 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
                         "costed the distance and not the walk, so it over-predicted "
                         "support here and nowhere else.",
             },
-            "proposed_adjustment": {
-                "parameter": "walk_cost_multiplier[AMK Ave 3]",
-                "from": 1.00, "to": 1.35,
-                # L3. A human decides, always.
-                "status": "awaiting_human_approval",
-            },
+            "proposed_adjustment": _proposed_adjustment(con, corrections),
         },
         "harm_patterns": {k: v.model_dump() for k, v in PATTERNS.items()},
     }
@@ -364,3 +361,40 @@ def ablation_second_order() -> tuple[int, int]:
     without = simulate(geo, cut, removed, EXPRESS_SAVING_MIN, record_events=False)
     n_without = sum(1 for o in without.outcomes.values() if o.second_order)
     return n_with, n_without
+
+
+def _proposed_adjustment(con, corrections: dict[str, float]) -> dict:
+    """The correction calibration is asking a human to approve, sized by the error itself.
+
+    This used to be the constant 1.35, which happened to look plausible beside a 14.1-point
+    gap and was related to it only by coincidence. A proposal a person is asked to approve
+    should be derived from the evidence that prompted it, or the approval is theatre.
+
+    The worst flagged cohort sets the size. A signed error of -14.1 points means the model
+    over-predicted support there by 0.564 on the 1-5 scale, and the multiplier is whatever
+    closes that on the walk those residents actually face.
+    """
+    flagged = [r for r in con.calibration if r.flagged]
+    if not flagged:
+        return {"parameter": None, "status": "nothing_to_correct",
+                "note": "No cohort is off by more than 10 points on a large enough sample."}
+
+    worst = min(flagged, key=lambda r: r.signed_error)
+    parameter = walk_cost_key(worst.cohort_value)
+    live = corrections.get(parameter, 1.0)
+
+    # percentage points -> Likert points -> a multiplier over the walk that produced it
+    likert_gap = abs(worst.signed_error) / 100 * 4
+    proposed = round(live + likert_gap, 2)
+
+    if parameter in corrections:
+        return {"parameter": parameter, "from": live, "to": proposed,
+                "status": "applied", "applied_value": live,
+                "prompted_by_error_pp": worst.signed_error, "cohort": worst.cohort_value,
+                "note": f"A correction is in force for {worst.cohort_value}. The remaining "
+                        f"error is {worst.signed_error:+.1f} points."}
+
+    return {"parameter": parameter, "from": live, "to": proposed,
+            "prompted_by_error_pp": worst.signed_error, "cohort": worst.cohort_value, "n": worst.n,
+            # L3. A human decides, always.
+            "status": "awaiting_human_approval"}

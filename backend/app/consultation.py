@@ -98,15 +98,39 @@ def _impact_score(o: Outcome) -> int:
     return 0
 
 
-def predicted_support(p: Persona, o: Outcome) -> float:
+def walk_cost_key(subzone: str) -> str:
+    """The name a correction is stored under, so proposal and application agree."""
+    return f"walk_cost_multiplier[{subzone}]"
+
+
+def predicted_support(p: Persona, o: Outcome,
+                      corrections: dict[str, float] | None = None) -> float:
     """L1. An explicit function of three persona quantities and the computed outcome.
 
     Deliberately does not know about terrain. That omission is the thing calibration is
     supposed to find, and `baseline_trust` is therefore the parameter it tests.
+
+    `corrections` are the adjustments a human has approved. Unapplied -- the default -- this
+    is the original function and reproduces the original error, which is what makes the
+    error attributable in the first place. With a walk-cost multiplier in force for a
+    subzone, the model finally costs the *walk* rather than the distance, and its prediction
+    for that road drops toward what residents there actually reported.
+
+    Three declared coefficients and one optional correction, all visible here. `goal.md` §20
+    forbids hiding weights inside prompts; the same applies to a correction, which is why it
+    is a number in a file a human approved rather than a nudge buried in a model call.
     """
     base = 1.6 + 2.6 * p.baseline_trust
     base += 0.55 * _impact_score(o)
     base += 0.40 * p.inconvenience_tolerance
+
+    if corrections:
+        multiplier = corrections.get(walk_cost_key(p.home_subzone))
+        if multiplier and multiplier > 1.0:
+            # the walk this resident actually faces, priced at the corrected rate
+            share = min(1.0, o.walk_distance_m / TERRAIN_FULL_EFFECT_M)
+            base -= (multiplier - 1.0) * share
+
     return max(1.0, min(5.0, base))
 
 
@@ -160,7 +184,14 @@ COMMENTS = {
 
 
 def build_consultation(pop: Population, outcomes: dict[str, Outcome],
-                       terrain_road: str = DEFAULT_TERRAIN_ROAD) -> ConsultationResult:
+                       terrain_road: str = DEFAULT_TERRAIN_ROAD,
+                       corrections: dict[str, float] | None = None) -> ConsultationResult:
+    """`corrections` are the adjustments a human has approved.
+
+    They move the *prediction* only. What residents reported is fixed -- `observed_support`
+    is seeded per persona and does not change -- so applying a correction narrows the gap
+    from one side, which is the side that was wrong.
+    """
     by_id = pop.by_id()
     responses: list[Response] = []
 
@@ -169,8 +200,11 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
         rng = derived_rng(f"{p.persona_id}:respond")
         if rng.random() > response_probability(p, o):
             continue
-        pred = predicted_support(p, o)
-        obs = observed_support(p, o, pred, terrain_road)
+        # The reported answer is anchored to the *uncorrected* prediction: a resident's
+        # experience does not change because the model revised its opinion of the walk.
+        baseline_pred = predicted_support(p, o)
+        pred = predicted_support(p, o, corrections)
+        obs = observed_support(p, o, baseline_pred, terrain_road)
         pool = COMMENTS[o.severity if o.severity in COMMENTS else "none"]
         responses.append(Response(
             response_id=f"r_{len(responses):04d}",
@@ -187,7 +221,7 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
                     "home_subzone": p.home_subzone, "is_caregiver": str(p.is_caregiver)},
         ))
 
-    calibration = _calibrate(responses, by_id, outcomes)
+    calibration = _calibrate(responses, by_id, outcomes, corrections)
     blind = _blind_spots(pop, outcomes)
 
     def avg(field_: str) -> int:
@@ -207,7 +241,7 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
     )
 
 
-def _calibrate(responses, by_id, outcomes) -> list[CalibrationRow]:
+def _calibrate(responses, by_id, outcomes, corrections=None) -> list[CalibrationRow]:
     """Predicted against observed, both averaged over **the same respondents**.
 
     Averaging the prediction over the whole population and the observation over the people
@@ -217,7 +251,7 @@ def _calibrate(responses, by_id, outcomes) -> list[CalibrationRow]:
     rows: list[CalibrationRow] = []
 
     def row(axis: str, value: str, members: list[Response]) -> CalibrationRow:
-        pred = sum(predicted_support(by_id[r.persona_id], outcomes[r.persona_id])
+        pred = sum(predicted_support(by_id[r.persona_id], outcomes[r.persona_id], corrections)
                    for r in members) / len(members)
         obs = sum(r.support for r in members) / len(members)
         # on the 1-5 scale, one point is 25 percentage points of the usable range
