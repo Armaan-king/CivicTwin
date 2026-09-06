@@ -149,3 +149,29 @@ def test_a_round_batch_pins_its_turn_count_too():
     run_round("prompt", LLMClient(Recorder(payload), max_attempts=1),
               expected_ids=["p_0001", "p_0002"])
     assert seen["schema"]["properties"]["turns"]["maxItems"] == 2
+
+
+def test_the_grammar_makes_citations_mandatory():
+    """A field with a default is optional in the schema, and a sampler reads that as
+    permission to omit it.
+
+    Given that permission `deepseek-r1:8b` did something worse than omit it: it wrote the
+    fact ids into the prose -- "as per p_0120:f3" -- so the reasoning read as grounded
+    while `grounded_in` was empty and every turn was correctly rejected.
+    """
+    from app.services.llm import exact_items, require_citations
+
+    schema = require_citations(exact_items(OpeningBatch, "voices", 4))
+    turn_def = schema["$defs"]["AgentTurn"]
+    assert "grounded_in" in turn_def["required"]
+    assert turn_def["properties"]["grounded_in"]["minItems"] == 1
+    assert "default" not in turn_def["properties"]["grounded_in"]
+
+
+def test_requiring_citations_leaves_the_python_model_alone():
+    """The grammar obliges the model to cite. The guard still judges the citations, and
+    an empty list stays constructible so the guard can be tested against one."""
+    from app.schemas.deliberation import AgentTurn
+
+    t = AgentTurn(round=1, position=0.5, confidence=0.5, reasoning="x", grounded_in=[])
+    assert t.grounded_in == []

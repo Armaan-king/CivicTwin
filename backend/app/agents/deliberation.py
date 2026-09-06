@@ -21,7 +21,8 @@ import os
 
 from app.population import Persona
 from app.schemas.deliberation import AgentTurn, DeliberationBatch, OpeningBatch
-from app.services.llm import LLMClient, LLMOutputInvalid, exact_items
+from app.services.llm import (LLMClient, LLMOutputInvalid, exact_items,
+                              require_citations)
 from app.world import ResidentWorld
 
 #: Residents per model call. `AGENTS.md` §8 requires batching -- residents per call, not a
@@ -40,7 +41,7 @@ BATCH_SIZE = int(os.getenv("DELIBERATION_BATCH_SIZE", "12"))
 #: what would make the policy workable for them (J4). v5: the 0..1 support scale is
 #: stated explicitly, after a local model read a field named `position` as a signed
 #: -1..+1 scale and every turn was rejected for it.
-PROMPT_VERSION = "v5"
+PROMPT_VERSION = "v6"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -183,7 +184,8 @@ def run_opening(prompt: str, llm: LLMClient, expected: int) -> OpeningBatch:
     try:
         batch = llm.structured(
             OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=8000,
-            schema_override=exact_items(OpeningBatch, "voices", expected))
+            schema_override=require_citations(
+                exact_items(OpeningBatch, "voices", expected)))
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("opening batch was not valid", exc.raw) from exc
     if len(batch.voices) != expected:
@@ -204,7 +206,8 @@ def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> Deliberat
     try:
         batch = llm.structured(
             DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000,
-            schema_override=exact_items(DeliberationBatch, "turns", len(expected_ids)))
+            schema_override=require_citations(
+                exact_items(DeliberationBatch, "turns", len(expected_ids))))
     except LLMOutputInvalid as exc:
         raise DeliberationFailed("round batch was not valid", exc.raw) from exc
     if len(batch.turns) != len(expected_ids):

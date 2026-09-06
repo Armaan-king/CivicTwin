@@ -512,3 +512,33 @@ def exact_items(model_cls, field: str, n: int) -> dict:
         target["minItems"] = n
         target["maxItems"] = n
     return schema
+
+
+def require_citations(schema: dict, defn: str = "AgentTurn",
+                      field: str = "grounded_in") -> dict:
+    """Make a turn's citation list mandatory and non-empty *in the grammar*.
+
+    A Pydantic field with a default is optional in the emitted JSON Schema, and a
+    grammar-constrained sampler reads that as permission to leave it out. Given the
+    chance, `deepseek-r1:8b` does something worse than omit it: it writes the fact ids
+    into the prose instead -- "as per p_0120:f3" -- so the reasoning looks grounded to a
+    reader while `grounded_in` is empty and the guard correctly rejects the turn.
+
+    Requiring the field with `minItems: 1` moves the obligation into the only place the
+    sampler cannot route around. The guard still decides whether the citations are any
+    good; this only ensures there are some to check.
+    """
+    target = schema.get("$defs", {}).get(defn)
+    if not isinstance(target, dict):
+        return schema
+    prop = target.get("properties", {}).get(field)
+    if isinstance(prop, dict):
+        prop.pop("default", None)
+        # the field is `list[str] | None`-free, but Pydantic still emits it as a plain
+        # array; guard anyway so a schema shape change fails loudly rather than silently
+        if prop.get("type") == "array":
+            prop["minItems"] = 1
+    required = target.setdefault("required", [])
+    if field not in required:
+        required.append(field)
+    return schema
