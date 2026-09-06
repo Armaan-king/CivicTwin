@@ -30,4 +30,10 @@ testing/
 # Model output cached by content hash. Machine-local: it is a record of what this machine
 # paid for, not part of the project, and committing stub output would pass a test double's
 # text off as a run.
+# The cached model output IS the demo artefact: a run costs hours once and
+# replays for free forever after (AGENTS.md 22). It is gitignored only because
+# it is 45MB of machine-generated JSON and still holds entries from earlier
+# stub and hosted-model runs. The readable, committed record of a run is
+# data/runs/, written by scripts/export_run.py.
 data/deliberation_cache/
+data/llm_cache/

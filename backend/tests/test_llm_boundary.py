@@ -51,3 +51,73 @@ def test_interpreter_returns_a_typed_change():
     })}))
     change = interpret("Remove a stop on Ang Mo Kio Avenue 3", llm)
     assert change.modifications.remove_stops == ["55079"]
+
+
+# ---------------------------------------------------------------- replay
+def test_a_repeated_call_is_served_from_disk_without_the_model():
+    """The demo's whole basis: a run replays for free.
+
+    The deliberation had this from the start; interpretation did not, so a demo could read
+    hundreds of residents off disk in seconds and then sit for fifteen minutes on the one
+    call that reads the policy. AGENTS.md 22 permits replaying a cached run precisely
+    because it is a real run shown again.
+    """
+    from app.services.llm import LLMClient
+
+    class CountingStub:
+        name = "counting"
+
+        def __init__(self):
+            self.calls = 0
+
+        def complete(self, system, prompt, max_tokens, schema=None):
+            self.calls += 1
+            return '{"value": 42}'
+
+    stub = CountingStub()
+    client = LLMClient(stub)
+    assert client.structured(Shape, "sys", "go").value == 42
+    assert stub.calls == 1
+    assert client.structured(Shape, "sys", "go").value == 42
+    assert stub.calls == 1, "the second call reached the model instead of the cache"
+
+
+def test_a_different_prompt_is_not_served_the_cached_answer():
+    from app.services.llm import LLMClient
+
+    class Echo:
+        name = "echo"
+
+        def __init__(self):
+            self.seen = []
+
+        def complete(self, system, prompt, max_tokens, schema=None):
+            self.seen.append(prompt)
+            return '{"value": %d}' % len(self.seen)
+
+    stub = Echo()
+    client = LLMClient(stub)
+    assert client.structured(Shape, "sys", "first").value == 1
+    assert client.structured(Shape, "sys", "second").value == 2
+    assert len(stub.seen) == 2
+
+
+def test_caching_can_be_switched_off():
+    """Tests of the transport must exercise the transport."""
+    from app.services.llm import LLMClient
+
+    class CountingStub:
+        name = "nocache"
+
+        def __init__(self):
+            self.calls = 0
+
+        def complete(self, system, prompt, max_tokens, schema=None):
+            self.calls += 1
+            return '{"value": 1}'
+
+    stub = CountingStub()
+    client = LLMClient(stub, cache=False)
+    client.structured(Shape, "sys", "go")
+    client.structured(Shape, "sys", "go")
+    assert stub.calls == 2

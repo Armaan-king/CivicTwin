@@ -20,3 +20,17 @@ def isolated_deliberation_cache(tmp_path_factory):
     deliberate.CACHE = tmp_path_factory.mktemp("deliberation_cache")
     yield deliberate.CACHE
     deliberate.CACHE = original
+
+
+@pytest.fixture(autouse=True)
+def isolated_llm_cache(tmp_path, monkeypatch):
+    """Per test, not per session.
+
+    Every structured call is now cached on (model, system, prompt), and test doubles all
+    call themselves "canned" or "stub" while returning different answers -- so a shared
+    cache has one test replaying another's result. That surfaced as `assert 7 == 3` in a
+    test that had nothing to do with caching.
+    """
+    from app.services import llm
+
+    monkeypatch.setattr(llm, "LLM_CACHE", tmp_path / "llm_cache")

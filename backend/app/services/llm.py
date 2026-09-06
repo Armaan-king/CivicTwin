@@ -14,8 +14,11 @@ rather than degrading into something that looks like an answer (AGENTS.md sectio
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
+import pathlib
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any, Protocol, TypeVar
@@ -322,12 +325,28 @@ def _strip_fence(text: str) -> str:
     return t.strip()
 
 
+#: Every structured model call, cached on a content hash. The deliberation had this from
+#: the start; interpretation did not, which meant a demo could replay two thousand
+#: residents from disk in seconds and then sit for fifteen minutes on the one call that
+#: reads the policy. `AGENTS.md` §22 sanctions replaying a cached run for demo
+#: reliability -- that is a real run shown again, not a template -- and it only holds if
+#: the whole path is cached.
+LLM_CACHE = pathlib.Path(__file__).resolve().parents[3] / "data" / "llm_cache"
+
+
+def _cache_key(model: str, system: str, prompt: str) -> str:
+    return hashlib.sha256(f"{model}|{system}|{prompt}".encode()).hexdigest()[:32]
+
+
 class LLMClient:
     """Structured output or an exception. Never a plausible-looking fallback."""
 
-    def __init__(self, completion: Completion, max_attempts: int = 2):
+    def __init__(self, completion: Completion, max_attempts: int = 2,
+                 cache: bool = True):
         self.completion = completion
         self.max_attempts = max_attempts
+        #: Off for tests, which must exercise the transport rather than a disk read.
+        self.cache = cache
 
     @property
     def provider_name(self) -> str:
@@ -346,6 +365,20 @@ class LLMClient:
         """
         json_schema = schema_override or schema.model_json_schema()
         system = f"{system}\n\nReturn JSON matching this schema:\n{json.dumps(json_schema)}"
+
+        # Replay before calling. A demo that reads two thousand residents off disk in
+        # seconds and then waits fifteen minutes on the one call that interprets the
+        # policy is not a cached run, it is a cached half of one.
+        path = None
+        if self.cache:
+            path = LLM_CACHE / f"{_cache_key(self.completion.name, system, prompt)}.json"
+            if path.exists():
+                try:
+                    return schema.model_validate_json(path.read_text(encoding="utf-8"))
+                except (ValidationError, ValueError):
+                    # written under an older schema, or truncated by an interrupted run
+                    path.unlink(missing_ok=True)
+
         last: LLMOutputInvalid | None = None
         started = time.monotonic()
         input_tokens = output_tokens = 0
@@ -378,6 +411,12 @@ class LLMClient:
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
             ))
+            if path is not None:
+                # atomic, because several threads share this directory
+                path.parent.mkdir(parents=True, exist_ok=True)
+                tmp = path.with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
+                tmp.write_text(parsed.model_dump_json(), encoding="utf-8")
+                tmp.replace(path)
             return parsed
 
         assert last is not None
