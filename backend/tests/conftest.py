@@ -18,8 +18,19 @@ def isolated_deliberation_cache(tmp_path_factory):
 
     original = deliberate.CACHE
     deliberate.CACHE = tmp_path_factory.mktemp("deliberation_cache")
+
+    # Session scope, because a module-scoped fixture elsewhere in the suite runs before
+    # any function-scoped one and would otherwise execute under the demo's settings.
+    # `DELIBERATION_REPLAY_ONLY=1` lives in `.env` so a demo cannot accidentally call the
+    # model, and `app.config` loads `.env` on import -- so the suite silently inherited it
+    # and every test expecting a stub to be called broke at once.
+    replay = deliberate.REPLAY_ONLY
+    deliberate.REPLAY_ONLY = False
+
     yield deliberate.CACHE
+
     deliberate.CACHE = original
+    deliberate.REPLAY_ONLY = replay
 
 
 @pytest.fixture(autouse=True)
@@ -34,3 +45,4 @@ def isolated_llm_cache(tmp_path, monkeypatch):
     from app.services import llm
 
     monkeypatch.setattr(llm, "LLM_CACHE", tmp_path / "llm_cache")
+
