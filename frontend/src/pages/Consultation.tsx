@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { stepKicker } from "@/lib/workflow";
+import { Link, useLocation } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -85,7 +86,7 @@ export function Consultation() {
       <main className="consultation-page">
         <header className="consultation-header">
           <div>
-            <span className="page-kicker">Step 5 · Consult</span>
+            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
             <h1>Have your say on Service 265</h1>
           </div>
           {TRANSPORT === "fixture" && (

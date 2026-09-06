@@ -1,17 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
+import { STEPS } from "@/lib/workflow";
 
-const STEPS = [
-  { to: "/policy", label: "Policy" },
-  { to: "/simulation", label: "Simulate" },
-  { to: "/impact", label: "Impact" },
-  // Who was harmed, then why. The deliberation is the answer to "why", so it belongs in
-  // the flow between the finding and the remedy -- not as a utility link in the corner
-  // that a demo never reaches.
-  { to: "/voices", label: "Voices" },
-  { to: "/interventions", label: "Options" },
-  { to: "/consultation", label: "Consult" },
-  { to: "/calibration", label: "Learn" },
-];
 
 export function TopBar({ meta }: { meta?: string }) {
   const { pathname } = useLocation();

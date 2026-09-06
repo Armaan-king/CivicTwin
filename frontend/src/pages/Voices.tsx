@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { stepKicker } from "@/lib/workflow";
+import { Link, useLocation } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -253,7 +254,7 @@ function VoicesUnavailable() {
       <TopBar meta="RECORDED RUN" />
       <main className="voices-unavailable">
         <section>
-          <span className="page-kicker">Resident voices</span>
+          <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
           <h1>No recorded deliberation for this run</h1>
           <p>
             The prepared demo includes verified transport outcomes, but no model-written

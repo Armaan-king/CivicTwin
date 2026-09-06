@@ -1,5 +1,6 @@
+import { stepKicker } from "@/lib/workflow";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -58,7 +59,7 @@ export function InterventionLab() {
       <main className="options-page">
         <header className="options-header">
           <div>
-            <span className="page-kicker">Step 4 · Options</span>
+            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
             <h1>Choose a safer transport option</h1>
           </div>
           <div className="options-header__baseline">

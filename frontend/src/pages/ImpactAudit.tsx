@@ -1,5 +1,6 @@
+import { stepKicker } from "@/lib/workflow";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -127,7 +128,7 @@ export function ImpactAudit() {
       <main className="impact-page">
         <header className="impact-header">
           <div>
-            <span className="page-kicker">Step 3 · Impact</span>
+            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
             <h1>{run.metrics.overall.severe_harm_count} residents face severe transport barriers</h1>
           </div>
           <div className="impact-header__summary">

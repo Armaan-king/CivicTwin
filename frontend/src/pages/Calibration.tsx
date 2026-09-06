@@ -1,3 +1,5 @@
+import { useLocation } from "react-router-dom";
+import { stepKicker } from "@/lib/workflow";
 import { useState } from "react";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
@@ -75,7 +77,7 @@ export function Calibration() {
       <main className="calibration-page">
         <header className="calibration-header">
           <div>
-            <span className="page-kicker">Step 6 · Learn</span>
+            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
             <h1>Prediction vs public feedback</h1>
             <p>
               {largest
