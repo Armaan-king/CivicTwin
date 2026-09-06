@@ -131,3 +131,58 @@ def declared_support_by_cohort(
         key: {"n": len(vals), "mean_support": round(sum(vals) / len(vals), 4)}
         for key, vals in sorted(buckets.items()) if vals
     }
+
+
+def support_comparison(
+    pop: Population,
+    declared: dict[str, float],
+    outcomes: dict[str, Outcome],
+    axis: str = "age_band",
+) -> list[dict]:
+    """P3: both predictions, side by side, on one documented scale.
+
+    **L1** keeps the logistic and **P3** says why: it is inspectable and its error
+    attributes to a named coefficient, while the reasoning is richer and its error does
+    not. Keeping both turns that weakness into a result -- which is only true if somebody
+    actually computes both, which is what this does.
+
+    Three columns per cohort:
+
+        frozen      the L1 logistic, which does not know about terrain by design
+        declared    what residents said during deliberation
+        n           the denominator, carried per L2 so a cohort of six reads as six
+
+    The gap between the first two is the finding: where structured reasoning and a fitted
+    curve disagree is where one of them is wrong, and the consultation says which.
+    """
+    from app.consultation import predicted_support
+    from app.support_scale import likert_to_fraction, signed_error_pp
+
+    by_id = pop.by_id()
+    buckets: dict[str, dict[str, list[float]]] = {}
+    for pid, position in declared.items():
+        p = by_id.get(pid)
+        o = outcomes.get(pid)
+        if p is None or o is None:
+            continue
+        key = str(getattr(p, axis))
+        cell = buckets.setdefault(key, {"frozen": [], "declared": []})
+        cell["frozen"].append(likert_to_fraction(predicted_support(p, o)))
+        cell["declared"].append(position)
+
+    rows = []
+    for key, cell in sorted(buckets.items()):
+        n = len(cell["declared"])
+        frozen = sum(cell["frozen"]) / n
+        spoken = sum(cell["declared"]) / n
+        rows.append({
+            "cohort_axis": axis,
+            "cohort_value": key,
+            "n": n,
+            "frozen_support": round(frozen, 4),
+            "declared_support": round(spoken, 4),
+            "divergence_pp": signed_error_pp(frozen, spoken),
+            # Under the floor a gap is noise wearing a finding's clothes (L2, I3).
+            "sufficient": n >= 30,
+        })
+    return rows

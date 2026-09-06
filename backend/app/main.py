@@ -320,7 +320,8 @@ def deliberated_outcomes(run_id: str) -> dict:
     and a subgroup below the floor is reported as insufficient evidence rather than as
     zero disparity.
     """
-    from app.aggregate import aggregate, declared_support_by_cohort
+    from app.aggregate import (aggregate, declared_support_by_cohort,
+                               support_comparison)
     from app.cohort import MIN_CELL, reportable_cells
     from app.deliberate import NoModelConfigured
     from app.metrics import disparity_pp, metrics_for, subgroup_metrics
@@ -371,6 +372,13 @@ def deliberated_outcomes(run_id: str) -> dict:
             axis: declared_support_by_cohort(pop, agg.declared_support, axis)
             for axis in ("age_band", "mobility_level", "is_caregiver")
         },
+        # P3/L1: the frozen logistic and the residents, side by side. Keeping both is
+        # what lets calibration say which one the consultation contradicted.
+        "support_comparison": [
+            row
+            for axis in ("age_band", "mobility_level", "is_caregiver")
+            for row in support_comparison(pop, agg.declared_support, agg.outcomes, axis)
+        ],
         "second_order": [{"carer": c, "for": dep} for c, dep in sorted(agg.absorbing.items())],
         "remedies": {
             "asked": remedies.asked(),

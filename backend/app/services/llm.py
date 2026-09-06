@@ -375,14 +375,33 @@ class LLMClient:
         raise last
 
 
-def build_client(temperature: float = 0.0) -> LLMClient:
+def build_client(temperature: float = 0.0, role: str = "interpreter") -> LLMClient:
     """Provider comes from the environment. Default is the mock, so nothing needs AWS.
+
+    Two roles, because they are different jobs with different economics, which
+    `AGENTS.md` §11 already rules on: run the per-resident deliberation on the cheap model,
+    "reserve the strong model for the few calls that need it: interpreting a policy, and
+    writing the explanation a human reads."
+
+    That distinction became load-bearing the moment the deliberation moved to a local 8B
+    model. Interpretation is one call per run against a wide schema with real stakes -- get
+    it wrong and every downstream number answers a question nobody asked -- while
+    deliberation is hundreds of calls against a narrow schema where cost dominates. Pointing
+    both at the same small local model made policy interpretation the slowest step in the
+    system and the least reliable.
+
+    `LLM_PROVIDER_INTERPRETER` overrides the provider for interpretation only. Unset, both
+    roles use `LLM_PROVIDER`.
 
     The mock can drive the API and the interpreter. It cannot drive a deliberation:
     `deliberate()` refuses it outright rather than emitting text that reads like a
     resident and is not one.
     """
-    provider = os.getenv("LLM_PROVIDER", "mock").lower()
+    default = os.getenv("LLM_PROVIDER", "mock")
+    if role == "interpreter":
+        provider = os.getenv("LLM_PROVIDER_INTERPRETER", default).lower()
+    else:
+        provider = default.lower()
     if provider in {"grok", "xai"}:
         return LLMClient(ChatCompletion(
             model_id=os.getenv("GROK_MODEL_ID", "grok-4.3"),
@@ -426,8 +445,11 @@ def build_client(temperature: float = 0.0) -> LLMClient:
 
 
 def build_deliberation_client() -> LLMClient:
-    """The client the population reasons with. Warmer, and it may not be the mock."""
-    return build_client(temperature=float(os.getenv("DELIBERATION_TEMPERATURE", "0.8")))
+    """The client the population reasons with. Warmer, cheaper, and never the mock."""
+    return build_client(
+        temperature=float(os.getenv("DELIBERATION_TEMPERATURE", "0.8")),
+        role="deliberation",
+    )
 
 
 # The interpreter's canned answer, so the API is demoable end to end with no credentials.
