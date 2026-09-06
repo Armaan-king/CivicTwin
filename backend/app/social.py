@@ -91,16 +91,24 @@ def _bridge_components(g: nx.Graph, pop: Population) -> None:
     pretending to be one. Real estates are not like that -- people work together, their
     children are at the same school -- so a few weak ties are added rather than left out.
     """
-    components = sorted(nx.connected_components(g), key=len, reverse=True)
+    # Every ordering here is pinned, because `nx.connected_components` yields *sets* and
+    # `list(a_set)` has process-dependent order in Python. The seeds were honoured all
+    # along; what they indexed into was not, so the same seed built a different graph in
+    # every process -- 6,333 edges each time and never the same 6,333. That broke the
+    # promise in `AGENTS.md` §9 that the world state is reproducible from the seed, and it
+    # broke cache replay downstream: a differently-wired graph selects a different cohort,
+    # so a finished run could not be served back from disk.
+    components = sorted(nx.connected_components(g),
+                        key=lambda c: (-len(c), min(c)))
     if len(components) < 2:
         return
-    main = list(components[0])
+    main = sorted(components[0])
     for other in components[1:]:
         rng = derived_rng(f"bridge:{min(other)}")
-        for node in list(other)[:2]:
+        for node in sorted(other)[:2]:
             partner = main[rng.randrange(len(main))]
             g.add_edge(node, partner, weight=SIMILAR_WEIGHT, tie="bridge")
-        main.extend(other)
+        main.extend(sorted(other))
 
 
 def _similarity(a, b) -> float:

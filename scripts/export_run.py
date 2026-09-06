@@ -152,7 +152,25 @@ def main() -> int:
     if run.calls:
         print(f"note: {run.calls} batches were NOT cached and called the model", flush=True)
 
-    agg = aggregate(run, pop)
+    # Join the computed half. Severity and adaptation are the residents'; distance and
+    # journey time are the network's, and without them the metrics table reports 0 m
+    # walked for people who described walking further.
+    from app.schemas.run import SimulationRun
+    from app.engine import build_run as _build_run
+    from app.simulation import Outcome as _Outcome
+
+    baseline = SimulationRun.model_validate(_build_run())
+    geometry = {
+        o.persona_id: _Outcome(
+            persona_id=o.persona_id,
+            walk_distance_m=int(getattr(o, "walk_distance_m", 0) or 0),
+            baseline_walk_m=int(getattr(o, "baseline_walk_m", 0) or 0),
+            journey_time_min=float(getattr(o, "journey_time_min", 0.0) or 0.0),
+            journey_time_delta_min=float(getattr(o, "journey_time_delta_min", 0.0) or 0.0),
+        )
+        for o in baseline.outcomes
+    }
+    agg = aggregate(run, pop, geometry=geometry)
     outcomes = list(agg.outcomes.values())
     metrics = metrics_for(outcomes)
     sub = subgroup_metrics(pop, agg.outcomes)
