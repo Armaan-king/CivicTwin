@@ -41,3 +41,9 @@ testing/
 data/calibration_state.json
 data/deliberation_cache/
 data/llm_cache/
+
+# Presentation aids, not product code. The script generator and the Word document
+# it produces are for one demo on one day; a binary that changes wholesale on every
+# regeneration is no use in a diff, and the generator has no meaning without it.
+scripts/make_demo_script.py
+CivicTwin-demo-script.docx
