@@ -760,15 +760,15 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 /* ---- simulation workspace ---- */
 .simulation-page {
   width: min(1680px, 100%);
-  height: calc(100dvh - 84px);
+  /* Fills the viewport when there is room and grows past it when there is not, rather
+     than being pinned to an exact height and clipping whatever does not fit. */
+  min-height: calc(100dvh - 84px);
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin: 0 auto;
-  /* A little more room under the map. It is a full-bleed panel and at 24px it sat almost
-     on the edge of the viewport, which reads as clipped rather than as deliberate. */
-  padding: 18px clamp(20px, 3vw, 46px) 38px;
-  overflow: hidden;
+  padding: 18px clamp(20px, 3vw, 46px) clamp(38px, 4.5vh, 60px);
+  overflow: visible;
 }
 .simulation-header {
   min-height: 94px;
@@ -854,7 +854,9 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 }
 .simulation-map-panel {
   position: relative;
-  min-height: 0;
+  /* A floor, so the map stays usable on a short window instead of collapsing to nothing
+     once the header and controls have taken their share of a flexible column. */
+  min-height: min(58vh, 560px);
   flex: 1;
   overflow: hidden;
   border: 1px solid var(--rule);
