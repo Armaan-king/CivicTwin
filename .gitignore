@@ -35,5 +35,9 @@ testing/
 # it is 45MB of machine-generated JSON and still holds entries from earlier
 # stub and hosted-model runs. The readable, committed record of a run is
 # data/runs/, written by scripts/export_run.py.
+# Runtime state, not source. It records every ruling a human makes on a proposed
+# correction, so it changes on every click and would otherwise put demo noise into
+# every diff. Absent, it reads as empty -- which is the correct starting state.
+data/calibration_state.json
 data/deliberation_cache/
 data/llm_cache/
