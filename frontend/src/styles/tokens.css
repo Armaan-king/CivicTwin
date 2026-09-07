@@ -765,7 +765,9 @@ a.gold:hover { opacity: .72; color: var(--gold); }
   flex-direction: column;
   gap: 16px;
   margin: 0 auto;
-  padding: 18px clamp(20px, 3vw, 46px) 24px;
+  /* A little more room under the map. It is a full-bleed panel and at 24px it sat almost
+     on the edge of the viewport, which reads as clipped rather than as deliberate. */
+  padding: 18px clamp(20px, 3vw, 46px) 38px;
   overflow: hidden;
 }
 .simulation-header {
