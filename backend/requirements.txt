@@ -1,6 +1,12 @@
 fastapi>=0.115
 uvicorn[standard]>=0.32
 pydantic>=2.9
+
+# The graph layer. `AGENTS.md` 12 calls for a lightweight in-process graph, and this is
+# it: the dependency graph in graph.py, the undirected opinion graph in social.py, and
+# the neighbour lookup the deliberation reads each round. Five modules import it and it
+# was never declared -- an install following the README got an ImportError on startup.
+networkx>=3.0
 python-dotenv>=1.0
 httpx>=0.27
 
@@ -9,3 +15,7 @@ boto3>=1.35
 
 # tests
 pytest>=8.3
+
+# Optional. Only `scripts/make_demo_script.py` needs it, and nothing the application
+# serves imports it, so it is listed rather than required:
+#     pip install python-docx
