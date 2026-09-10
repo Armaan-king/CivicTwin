@@ -34,7 +34,8 @@ from app.graph import build_graph
 from app.interventions import POLICY_COST_INDEX, candidates, run_candidate, validate
 from app.metrics import disparity_pp, metrics_for, subgroup_metrics
 from app.population import build_population
-from app.scenario import POPULATION_SIZE, ROUNDS, SCENARIO_ID, SCENARIO_SEED, STUDY_AREA
+from app.scenario import (POPULATION_SIZE, ROUNDS, SCENARIO_ID, SCENARIO_SEED,
+                          town_display)
 from app.schemas.core import PATTERNS
 from app.simulation import simulate
 
@@ -151,6 +152,12 @@ def _policy_dict(geo, removed: set[str], resolution=None, text: str = "") -> dic
             [{"kind": "service", "id": feeder, "label": f"Service {feeder}"}]
             + [{"kind": "stop", "id": s, "label": geo.stops[s].name} for s in sorted(removed)]
             + [{"kind": "interchange", "id": geo.work_gateway, "label": gateway}]
+            # The essential destination, as an entity rather than only as prose in the
+            # reading. The interface was hardcoding "Polyclinic" into its findings, which
+            # is wrong the moment the study area is Bedok and the destination is Changi
+            # General -- and it was wrong invisibly, because nothing errors.
+            + ([{"kind": "destination", "id": geo.clinic_stops[0], "label": dest}]
+               if geo.clinic_stops else [])
         ),
     }
 
@@ -215,6 +222,24 @@ def _graph_edges(pop, geo) -> list[dict]:
     ]
 
 
+def study_area_for_town(town: str):
+    """Geography and closures for a named town, ignoring the TOWN environment variable.
+
+    `study_area()` resolves its town from the environment at import, which is right for
+    the API -- the demo run has no policy to resolve from -- and wrong for any script
+    given a `--town` flag. Both scripts grew their own copy of this after the flag was
+    found to select the output filename and nothing else: `--town bedok` would have
+    written two thousand Ang Mo Kio residents into `bedok.json` and labelled them Bedok,
+    without erroring. Two copies of a fix is how the first one goes stale, so it lives
+    here.
+    """
+    if GEOGRAPHY != "real":
+        return build_geography(), {"55079", "55081"}
+    from app.geography_real import build_real_geography, pick_closures
+    geo = build_real_geography(town=town)
+    return geo, pick_closures(geo)
+
+
 def study_area_for(run):
     """Rebuild the study area a finished run was built with.
 
@@ -231,6 +256,15 @@ def study_area_for(run):
     geo = build_real_geography(town=(ref.town if ref and ref.town else DEFAULT_TOWN))
     closures = {s for s in run.policy.modifications.remove_stops if s in geo.stops}
     return geo, (closures or pick_closures(geo)), ref
+
+
+def _discovered_constraint(town: str, cohort_value: str, con) -> dict:
+    """The cached reading for this run's flagged cohort, if one has been generated."""
+    from app.consultation import discover_constraint
+
+    comments = [r.comment for r in con.responses
+                if r.comment and (r.cohort or {}).get("home_subzone") == cohort_value]
+    return discover_constraint(town, cohort_value, comments, llm=None)
 
 
 def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
@@ -286,7 +320,8 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
         "rounds": ROUNDS,
         "generated_by": "backend/app/engine.py",
         "is_synthetic": True,
-        "study_area": STUDY_AREA,
+        # the town this run was actually built for, not a constant
+        "study_area": town_display(getattr(resolution, "town", None) or DEFAULT_TOWN),
         "policy": _policy_dict(geo, removed, resolution, text),
         "personas": _persona_dicts(pop),
         "graph": {"edges": _graph_edges(pop, geo)},
@@ -315,6 +350,11 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
                 for r in con.responses
             ],
             "response_count": len(con.responses),
+            # Counted apart, always. A public confidence score built from synthetic
+            # respondents and real ones has to say how many of each, or it is a number
+            # whose provenance nobody can check.
+            "synthetic_count": sum(1 for r in con.responses if r.is_seeded),
+            "real_count": sum(1 for r in con.responses if not r.is_seeded),
             # never claimed, and shown as such in the UI. K1.
             "is_representative": False,
             "pcs": {"score": con.pcs, "components": con.pcs_components},
@@ -331,15 +371,14 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
                  "score": b.score}
                 for b in con.blind_spots
             ],
-            "discovered_constraint": {
-                "type": "walk_quality",
-                "location": flagged.cohort_value if flagged else terrain_road,
-                "affects": ["walk_distance_m", "inconvenience_tolerance"],
-                "source": "consultation free-text, corroborated by the cohort error",
-                "note": "The covered walkway ends partway and there is a slope. The model "
-                        "costed the distance and not the walk, so it over-predicted "
-                        "support here and nowhere else.",
-            },
+            # Read off the flagged cohort's own comments and cached per town, rather
+            # than a fixed sentence about a covered walkway printed over whichever road
+            # the policy touched. Generated by `scripts/discover_constraint.py`; absent
+            # that cache this reports that no reading exists, which is the honest state
+            # and not a blank to be filled with something plausible.
+            "discovered_constraint": _discovered_constraint(
+                getattr(resolution, "town", None) or DEFAULT_TOWN,
+                flagged.cohort_value if flagged else terrain_road, con),
             "proposed_adjustment": _proposed_adjustment(con, corrections),
         },
         "harm_patterns": {k: v.model_dump() for k, v in PATTERNS.items()},

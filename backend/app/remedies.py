@@ -227,3 +227,109 @@ def resident_candidates(report: RemedyReport, removed: set[str]):
             estimated_cost_index=RESIDENT_COST_INDEX.get(cluster.action_type, 1.0),
         ))
     return out
+
+
+# --------------------------------------------------------------------------- classifier
+"""What a resident meant, decided by a model rather than by a regex.
+
+Measured on the recorded Ang Mo Kio run: of 175 residents who offered a remedy, the
+regex table placed 102, called 10 unmappable, and **matched nothing at all for 63 -- 36%**.
+Those did not fail on exotic phrasing. They fail on the ordinary way people speak:
+
+    "I would need a bus stop closer to my home"
+    "Ensure the revised bus routes still provide convenient access to the hospital"
+    "I would need to find an alternative bus route"
+
+A human places all three immediately. Worse, a miss is silently counted as *asked for
+nothing*, which inflates the exact number this feature exists to report honestly.
+
+The regex is kept and still runs. Not as a fallback -- as a second opinion. Two
+independent classifiers agreeing is evidence; where they disagree is what a person should
+look at, and it costs nothing because the table is already there.
+
+Two rules this classifier must obey, and they are why it is a schema rather than a prompt:
+
+  - **It may refuse.** `action_type` is nullable. A model forced to choose from five
+    options will always choose one, and the gap between what residents need and what the
+    model can represent -- somewhere to sit, a later appointment -- would vanish. That gap
+    is a finding, not a rounding error.
+  - **It classifies, it does not invent.** The five actions are the whole space. A model
+    proposing a sixth is proposing policy, which is not its job.
+"""
+
+from pydantic import BaseModel, Field
+
+#: The whole action space. Mirrors `schemas/run.py`; a model may pick from these or none.
+ACTION_TYPES = ("retain_stop_peak", "add_shuttle_feeder", "reroute_feeder",
+                "targeted_support", "phase_rollout")
+
+
+class RemedyClassification(BaseModel):
+    persona_id: str
+    #: One of ACTION_TYPES, or null when the action space cannot express the request.
+    action_type: str | None = None
+    #: Required when action_type is null: what they asked for, in a few words, so the
+    #: unmappable clusters are readable rather than a count.
+    unmappable_reason: str | None = None
+    #: The model's own reading, for the audit trail and for comparing against the regex.
+    quote: str = Field(default="", max_length=200)
+
+
+class RemedyBatch(BaseModel):
+    classifications: list[RemedyClassification] = Field(default_factory=list)
+
+
+CLASSIFIER_SYSTEM = """You classify what a resident asked for onto a fixed set of transport
+interventions. You are not proposing policy: the five actions below are the entire space.
+
+    retain_stop_peak     keep the closing stop open, at least at certain times
+    add_shuttle_feeder   a new small bus or shuttle linking them to where they need to go
+    reroute_feeder       send an existing service past them instead
+    targeted_support     help with the cost or with door-to-door transport
+    phase_rollout        bring the change in gradually, or delay it
+
+Rules:
+- `action_type` is one of those five, or null.
+- **Use null whenever none of the five genuinely fits.** A request for somewhere to sit
+  while waiting, a shelter, a handrail, a different appointment time, or someone to
+  accompany them is NOT one of these actions. Say null and fill `unmappable_reason` with
+  a few words describing what they actually asked for. Forcing such a request into the
+  nearest action hides the difference between what residents need and what this model can
+  represent, and that difference is the point of asking them.
+- A resident asking for a stop "closer to home", for a route that "still passes" their
+  area, or for "an alternative route" is asking for `reroute_feeder` unless they name a
+  new vehicle, in which case it is `add_shuttle_feeder`.
+- `quote` is the few words from their own sentence that decided it.
+- One classification per resident, in the order given, with persona_id copied exactly.
+
+Respond with a single JSON object matching the RemedyBatch schema."""
+
+
+def classify_remedies(remedies: dict[str, str], llm, batch_size: int = 20,
+                      on_note=None) -> dict[str, RemedyClassification]:
+    """Classify every remedy through the model. Batched, and every batch is validated."""
+    from app.services.llm import call_with_retries, exact_items
+
+    ids = sorted(remedies)
+    out: dict[str, RemedyClassification] = {}
+    for i in range(0, len(ids), batch_size):
+        group = ids[i:i + batch_size]
+        listing = "\n".join(f'{pid}: "{remedies[pid][:300]}"' for pid in group)
+        prompt = (f"{len(group)} residents, each with what they said would make the "
+                  f"policy workable for them:\n\n{listing}\n\n"
+                  f"Return exactly {len(group)} classifications, in this order.")
+        batch = call_with_retries(
+            lambda: llm.structured(
+                RemedyBatch, CLASSIFIER_SYSTEM, prompt, max_tokens=3000,
+                schema_override=exact_items(RemedyBatch, "classifications", len(group))),
+            on_note=on_note)
+        for c in batch.classifications:
+            if c.persona_id in remedies:
+                if c.action_type not in ACTION_TYPES:
+                    # A model naming a sixth action is proposing policy. Treated as a
+                    # refusal, which is the honest reading of "none of these fit".
+                    c.action_type = None
+                out[c.persona_id] = c
+        if on_note:
+            on_note(f"classified {len(out)}/{len(ids)}")
+    return out

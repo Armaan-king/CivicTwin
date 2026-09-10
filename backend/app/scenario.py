@@ -13,7 +13,43 @@ from typing import Final
 
 SCENARIO_ID: Final = "scenario_sg_bus_v1"
 SCENARIO_SEED: Final = 20260118
+#: Fallback display name only. The real study area comes from the policy that was
+#: submitted -- `engine.build_run` derives it from the town the words resolved to -- so
+#: this is what a run built with no policy at all is labelled, and nothing else.
+#:
+#: It was previously shipped as the run's `study_area` unconditionally, which meant a
+#: Bedok policy produced Bedok geography, Bedok stops and Bedok residents under a heading
+#: that said Ang Mo Kio. A label that contradicts the data beneath it is worse than no
+#: label, because it reads as a result.
 STUDY_AREA: Final = "Ang Mo Kio"
+
+
+def town_display(town: str) -> str:
+    """`ang-mo-kio` -> `Ang Mo Kio`. The slug is a directory name, not a place name."""
+    return " ".join(w.capitalize() for w in town.replace("_", "-").split("-") if w)
+#: Residents who exist in the study area. Every town gets this many, and it costs
+#: nothing: the population is pure Python from a seed, built in about 0.3 seconds.
+#:
+#: **Three different numbers get confused for each other, so they are written down here
+#: once.** They are nested, not alternatives:
+#:
+#:     POPULATION_SIZE  2000    everyone in the town. Free. Never the thing being paid for.
+#:       cohort          818    who is asked to reason. `cohort.select_cohort`. THIS is
+#:                              the number that drives model cost, and it is built from
+#:                              three strata:
+#:         affected        43      the policy reaches their own stop
+#:         tied           175      household and care ties to someone affected
+#:         comparison     600      a stratified control group, so every rate has a
+#:                                 denominator and subgroup cells clear MIN_CELL
+#:
+#: The figures above are Ang Mo Kio under the default closures; Bedok comes out at 770
+#: because a different network reaches a different number of people. Quoting "600" as if
+#: it were the population, or the cohort as if it were the town, is how this gets
+#: misread -- the comparison budget is a stratum inside the cohort, and the cohort is a
+#: subset of the population.
+#:
+#: Residents outside the cohort are **unevaluated, never unaffected**, and every rate the
+#: product reports travels with the denominator it was computed over.
 POPULATION_SIZE: Final = 2000
 ROUNDS: Final = 4  # 0..3, scenario-v1.md B1
 

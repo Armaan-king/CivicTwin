@@ -2265,7 +2265,23 @@ a.gold:hover { opacity: .72; color: var(--gold); }
   gap: 16px;
 }
 .consultation-submit .btn { min-width: 208px; justify-content: space-between; }
-.consultation-submit .btn::after { content: "→"; font-size: 18px; }
+/* Swapping the glyph in is not enough: the base .btn::after draws its chevron out of
+   border-right + border-top rotated 45deg, so overriding only `content` leaves that
+   chevron in place and renders it *beside* the arrow. Two arrows, one button. The
+   borders and the rotation have to be cleared along with it. */
+.consultation-submit .btn::after {
+  content: "→";
+  font-size: 18px;
+  border: 0;
+  transform: none;
+  width: auto;
+  height: auto;
+  margin-top: 0;
+  top: 50%;
+  translate: 0 -50%;
+  line-height: 1;
+}
+.consultation-submit .btn:hover::after { right: 14px; }
 .consultation-submit .btn:disabled { cursor: not-allowed; filter: grayscale(.35); opacity: .48; }
 .consultation-submit > span { color: var(--t3); font-size: var(--fs-12); }
 .consultation-submit-error {

@@ -78,9 +78,13 @@ def test_severe_mobility_is_never_given_a_transfer(world):
 
 
 def test_max_walk_comes_from_the_declared_mapping(world):
+    """Varied per person, but always inside its mobility band. See C3 in test_contract."""
     _, pop = world
     for p in pop.personas:
-        assert p.max_walk_m == MAX_WALK_M[p.mobility_level]
+        base = MAX_WALK_M[p.mobility_level]
+        assert 0.8 * base - 5 <= p.max_walk_m <= 1.2 * base + 5, p.persona_id
+    assert len({p.max_walk_m for p in pop.personas}) > 4, (
+        "walk tolerance collapsed back onto the four band centres")
 
 
 # ---------------------------------------------------------------- D3 reassignment

@@ -8,6 +8,7 @@ import { useRun } from "@/lib/useRun";
 import { traceToRoot } from "@/lib/run";
 import { PatternNote } from "@/components/PatternNote";
 import type { HarmPattern, SimEvent, SimulationRun } from "@/types/simulation";
+import { essentialDestination, worstCohort } from "@/lib/naming";
 
 interface Finding {
   id: string;
@@ -44,6 +45,23 @@ const STEP: Record<string, (event: SimEvent) => string> = {
     "That family member now misses their own work shift.",
 };
 
+/**
+ * Age bands as the run reports them, oldest first.
+ *
+ * Ordering comes from the band label rather than a hand-written list, so a run that
+ * introduces or renames a band cannot silently vanish from the page.
+ */
+const BAND_ORDER = ["75+", "65-74", "55-64", "35-54", "18-34", "<18"];
+
+//: The n below which a cohort cannot support a claim. Mirrors MIN_CELL in cohort.py.
+const MIN_REPORTABLE = 30;
+
+function bandsOldestFirst(ages: Record<string, { severe_harm_rate: number; n: number }>): string[] {
+  const known = BAND_ORDER.filter((b) => ages[b]);
+  const unknown = Object.keys(ages).filter((b) => !BAND_ORDER.includes(b)).sort();
+  return [...known, ...unknown];
+}
+
 function buildFindings(run: SimulationRun): Finding[] {
   const severe = run.outcomes.filter((outcome) => outcome.severity === "high");
   const second = severe.filter((outcome) => outcome.second_order);
@@ -57,15 +75,27 @@ function buildFindings(run: SimulationRun): Finding[] {
     {
       id: "access",
       pattern: "threshold_cliff",
-      title: "Polyclinic journey becomes unreachable",
+      title: essentialDestination(run) + " journey becomes unreachable",
       severity: "high",
       n: direct.length,
       body: "The longer walk pushes an essential journey beyond what some residents can manage.",
       leafKind: "ESSENTIAL_ACCESS_LOST",
-      cohorts: (["75+", "65-74", "55-64", "35-54", "18-34"] as const)
-        .filter((band) => ages[band])
+      // Every band the run reports, oldest first -- not a list typed out here.
+      // The hardcoded version omitted "<18", so the page showed 1,561 residents of a
+      // 2,000-strong population with nothing saying where the other 439 went. Dropping
+      // a cohort silently is the exact failure this product exists to object to: a rate
+      // has to travel with the denominator it was computed over.
+      cohorts: bandsOldestFirst(ages)
         .map((band) => ({ label: "Age " + band, rate: ages[band].severe_harm_rate, n: ages[band].n })),
-      note: "Older residents are affected most because mobility limits and clinic dependence overlap.",
+      // Read off the chart printed below it, not asserted. The fixed sentence claimed
+      // older residents were worst hit while the bars showed 65-74 at 5.2% and 75+ at
+      // 1.5%: a caption contradicting its own data.
+      note: (() => {
+        const w = worstCohort(ages);
+        return w
+          ? `Age ${w.label} is hit hardest at ${(w.rate * 100).toFixed(1)}%, where mobility limits and dependence on this trip overlap. Bands below ${MIN_REPORTABLE} residents are excluded from this comparison.`
+          : "No age band has enough residents to compare.";
+      })(),
     },
     {
       id: "carers",
@@ -73,7 +103,7 @@ function buildFindings(run: SimulationRun): Finding[] {
       title: "Family caregivers miss work",
       severity: "high",
       n: second.length,
-      body: "They help someone reach the clinic, then miss an obligation of their own.",
+      body: "They help someone reach " + essentialDestination(run) + ", then miss an obligation of their own.",
       leafKind: "OBLIGATION_MISSED",
       cohorts: [
         { label: "Family caregiver", rate: carers.True.severe_harm_rate, n: carers.True.n },

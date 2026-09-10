@@ -85,6 +85,11 @@ class AgentVoice(BaseModel):
     name: str
     summary: str
     turns: list[AgentTurn] = Field(default_factory=list)
+    #: Which model produced this account. Empty in a live run, where one model produces
+    #: all of them; set in a recorded run, which may merge two. A screen that quotes a
+    #: resident should be able to say who wrote them -- a dataset that mixes models and
+    #: reads as one is the kind of thing this product exists to object to.
+    model: str = ""
 
     @property
     def final(self) -> AgentTurn | None:

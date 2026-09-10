@@ -5,7 +5,7 @@ import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
-import { fetchVoices, NotAvailableOffline } from "@/lib/api";
+import { fetchVoices, NotAvailableOffline, NotDeliberated } from "@/lib/api";
 import type { AgentVoice, VoiceListing } from "@/types/voice";
 
 /**
@@ -68,6 +68,7 @@ export function Voices() {
   const [data, setData] = useState<VoiceListing | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
+  const [pending, setPending] = useState<NotDeliberated | null>(null);
   const [filter, setFilter] = useState<Filter>("affected");
   const [open, setOpen] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(0);
@@ -78,11 +79,13 @@ export function Voices() {
     setData(null);
     setFailed(null);
     setUnavailable(false);
+    setPending(null);
     fetchVoices(run?.run_id ?? "run_a91f", 300)
       .then((d) => alive && setData(d))
       .catch((caught) => {
         if (!alive) return;
-        if (caught instanceof NotAvailableOffline) setUnavailable(true);
+        if (caught instanceof NotDeliberated) setPending(caught);
+        else if (caught instanceof NotAvailableOffline) setUnavailable(true);
         else setFailed(String((caught as Error)?.message ?? caught));
       });
     return () => {
@@ -122,6 +125,7 @@ export function Voices() {
 
   if (error) return <Crt><TopBar /><Failed message={error} /></Crt>;
   if (!run) return <Crt><TopBar /><Loading what="residents" /></Crt>;
+  if (pending) return <VoicesPending info={pending} />;
   if (unavailable) return <VoicesUnavailable />;
   if (failed) return <Crt><TopBar /><Failed message={failed} /></Crt>;
   if (!data) return <Crt><TopBar /><Loading what="residents" /></Crt>;
@@ -275,6 +279,57 @@ export function Voices() {
           </p>
         )}
       </div>
+    </Crt>
+  );
+}
+
+/**
+ * The policy has changed and these residents have not been asked about it yet.
+ *
+ * Deliberately not a spinner. Deliberating this cohort takes about twenty minutes on the
+ * cheap model and hours on the better one, so an indeterminate progress indicator would
+ * be claiming something is under way that is not, and would still be spinning when the
+ * demo moved on. The page states the size of the job, roughly how long, and why the
+ * recorded residents are not reused.
+ */
+function VoicesPending({ info }: { info: NotDeliberated }) {
+  return (
+    <Crt>
+      <TopBar meta="NOT DELIBERATED" />
+      <main className="voices-unavailable">
+        <section>
+          <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+          <h1>These residents have not been asked about this policy</h1>
+          <p>{info.why}</p>
+
+          <div className="voices-unavailable__status" aria-label="Deliberation status">
+            <div><i className="success" aria-hidden="true">✓</i>
+              <span><strong>Transport run</strong>Computed</span></div>
+            <b aria-hidden="true">→</b>
+            <div><i aria-hidden="true">{info.cohort.toLocaleString()}</i>
+              <span><strong>Residents to ask</strong>Selected</span></div>
+            <b aria-hidden="true">→</b>
+            <div><i className="warning" aria-hidden="true">~{info.estimatedMinutes}m</i>
+              <span><strong>Deliberation</strong>Not run</span></div>
+          </div>
+
+          <p className="voices-unavailable__note">
+            Asking {info.cohort.toLocaleString()} residents takes roughly{" "}
+            {info.estimatedMinutes} minutes, so it is run ahead of time and replayed
+            rather than generated while you wait. The prepared study area has a recorded
+            deliberation; this policy closes different stops, so those answers would be
+            about a different question.
+          </p>
+          <details className="voices-unavailable__note">
+            <summary>How to record one for this policy</summary>
+            <code>{info.how}</code>
+          </details>
+          <div className="voices-unavailable__actions">
+            <Link className="btn" to="/impact">REVIEW COMPUTED IMPACT</Link>
+            <Link to="/policy">Return to policy</Link>
+          </div>
+        </section>
+      </main>
     </Crt>
   );
 }

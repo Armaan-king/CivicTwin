@@ -28,6 +28,9 @@ export interface CityMapProps {
   onSelect: (blockId: string | null) => void;
   ties?: { source: string; target: string }[];
   removedStopIds?: string[];
+  /** What a screen reader announces. Passed in, because the corridor and the town are
+   *  properties of the run and this component is deliberately given only geometry. */
+  mapLabel?: string;
 }
 
 interface MapView {
@@ -39,7 +42,7 @@ interface MapView {
 
 export function CityMap({
   geography, personas, outcomes, events, round, selected, onSelect, ties = [],
-  removedStopIds = [],
+  removedStopIds = [], mapLabel = "Interactive map of the study area",
 }: CityMapProps) {
   const [hover, setHover] = useState<string | null>(null);
   const [spanX, spanY] = geography.span;
@@ -223,7 +226,7 @@ export function CityMap({
           }
         }}
         role="application"
-        aria-label="Interactive map of the Service 265 corridor in Ang Mo Kio. Drag to move, scroll or use the controls to zoom, and select a block for resident details."
+        aria-label={`${mapLabel} Drag to move, scroll or use the controls to zoom, and select a block for resident details.`}
       >
       {geography.roads.map((r, i) => (
         <line

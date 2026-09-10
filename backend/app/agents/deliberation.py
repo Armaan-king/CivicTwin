@@ -37,6 +37,12 @@ from app.world import ResidentWorld
 #: raise it and save calls.
 BATCH_SIZE = env_int("DELIBERATION_BATCH_SIZE", 12)
 
+#: Output ceiling per call. 4096 is a hard limit on Claude 3 Haiku and asking for more is
+#: rejected outright rather than truncated, so 8000 -- fine on a local model -- fails every
+#: batch on Bedrock's older models. Twelve turns land near 2,500 tokens, so 4,000 fits with
+#: headroom. Raise it only alongside a model that actually allows it.
+MAX_OUTPUT_TOKENS = env_int("DELIBERATION_MAX_OUTPUT_TOKENS", 4000)
+
 #: Bump when a prompt OR the output schema changes, so cached deliberations produced under
 #: older rules are not replayed as if they had passed the current ones. v3: grounding is
 #: scoped to the round, a citation must reach a policy fact to support a harm claim, and
@@ -44,7 +50,11 @@ BATCH_SIZE = env_int("DELIBERATION_BATCH_SIZE", 12)
 #: what would make the policy workable for them (J4). v5: the 0..1 support scale is
 #: stated explicitly, after a local model read a field named `position` as a signed
 #: -1..+1 scale and every turn was rejected for it.
-PROMPT_VERSION = "v10"
+#: v11: the participation rule no longer treats a harmed resident as permanently
+#: unsettled, and a resident with nothing new to say is told to say so briefly rather
+#: than repeat themselves. Measured before the change: rounds 2-3 produced 35 turns and
+#: zero new sentences.
+PROMPT_VERSION = "v11"
 
 OPENING_SYSTEM = """You are simulating residents of a Singapore housing estate reacting to a
 transport policy. For each resident you are given numbered facts about their life and their
@@ -106,6 +116,10 @@ Absolute rules:
   also 0.0 to 1.0.
 - Most people are not affected. Do not manufacture drama: "nothing has changed for me" is a
   legitimate and common answer.
+- **If nothing has changed for you since last round** -- no new facts, nothing you heard
+  that moved you -- then say exactly that, in one short sentence, and keep your previous
+  position and severity. Do not restate your earlier answer in full. Repeating yourself
+  word for word is not a turn; it is the same turn charged twice.
 - `persona_id` on every turn is the id of the resident that turn is for, copied exactly
   from the RESIDENT heading above their facts, like "p_0098".
 - fact ids in `grounded_in` are written in full, exactly as they appear in the brackets:
@@ -195,7 +209,7 @@ def run_opening(prompt: str, llm: LLMClient, expected: int) -> OpeningBatch:
     """
     try:
         batch = llm.structured(
-            OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=8000,
+            OpeningBatch, OPENING_SYSTEM, prompt, max_tokens=MAX_OUTPUT_TOKENS,
             schema_override=require_citations(
                 exact_items(OpeningBatch, "voices", expected)))
     except LLMOutputInvalid as exc:
@@ -217,7 +231,7 @@ def run_round(prompt: str, llm: LLMClient, expected_ids: list[str]) -> Deliberat
     """
     try:
         batch = llm.structured(
-            DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=8000,
+            DeliberationBatch, ROUND_SYSTEM, prompt, max_tokens=MAX_OUTPUT_TOKENS,
             schema_override=require_fields(
                 require_citations(
                     exact_items(DeliberationBatch, "turns", len(expected_ids))),

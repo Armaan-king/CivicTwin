@@ -219,6 +219,9 @@ class BlindSpot(BaseModel):
 class Consultation(BaseModel):
     responses: list[FeedbackResponse]
     response_count: int
+    #: counted apart so no screen can present a mixed score as one number
+    synthetic_count: int = 0
+    real_count: int = 0
     #: always False in V1, and shown in the UI. Never claim representativeness.
     is_representative: bool
     pcs: PublicConfidence

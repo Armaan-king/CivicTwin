@@ -1,0 +1,14 @@
+{
+ "type": "walk_quality",
+ "location": "Ang Mo Kio Ave 3",
+ "affects": [
+  "walk_distance_m",
+  "inconvenience_tolerance",
+  "journey_time_min"
+ ],
+ "note": "Residents report that the express bus service is faster, but some find the new stop further away and more difficult to access. A model based solely on distance would miss the impact of carrying shopping or mobility issues on the perceived convenience of the walk.",
+ "confidence": "clear",
+ "source": "consultation free text, read by a model",
+ "model": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+ "n_comments": 41
+}

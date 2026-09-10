@@ -16,8 +16,9 @@ from __future__ import annotations
 
 import json
 import os
+import re
 
-from app.config import env_int
+from app.config import env_float, env_int
 import pathlib
 import threading
 import time
@@ -41,7 +42,7 @@ from app.agents.deliberation import (
 from app.cohort import select_cohort
 from app.population import Population
 from app.schemas.deliberation import AgentTurn, AgentVoice
-from app.services.llm import LLMClient
+from app.services.llm import LLMClient, LLMError, call_with_retries
 from app.social import build_social_graph, neighbours
 from app.world import ResidentWorld
 
@@ -56,7 +57,17 @@ REPLAY_ONLY = os.getenv("DELIBERATION_REPLAY_ONLY", "").strip().lower() in {"1",
 #: (`AGENTS.md` §8). The right ceiling depends on what is behind the client: a hosted
 #: API wants several, one local GPU wants one, and eight against Ollama merely builds a
 #: queue while making the failure modes concurrent.
-CONCURRENCY = env_int("DELIBERATION_CONCURRENCY", 8)
+CONCURRENCY = env_int("DELIBERATION_CONCURRENCY", 1)
+
+#: Seconds between batches. The backstory generator has had this from the start and the
+#: deliberation had none, which was survivable on Claude 3 Haiku and is not on Sonnet:
+#: the same account throttles Sonnet far harder, and a full run died after 21 minutes
+#: having completed 15 calls of about 170, with the retry logic working perfectly and
+#: simply exhausting its backoff.
+#:
+#: Pacing is cheaper than being refused. A throttled call costs the wait *and* the retry,
+#: so spending the wait up front and not being refused is strictly better.
+PACE_SECONDS = env_float("DELIBERATION_PACE_SECONDS", 20.0)
 
 ROUNDS = (1, 2, 3)
 #: how many neighbours a resident hears from in a round
@@ -79,6 +90,12 @@ class DeliberationRun:
     cached: int = 0
     rejected: int = 0
     failed_batches: int = 0
+    #: batches skipped because replay-only found no cache entry. Not failures.
+    skipped_batches: int = 0
+    #: residents a batch simply did not return. Counted per person, unlike the above.
+    missing_voices: int = 0
+    #: why batches failed, in the model's own words. Capped strings, kept for the log.
+    failures: list[str] = field(default_factory=list)
     seconds: float = 0.0
     #: residents who spoke, per round
     participation: dict[int, int] = field(default_factory=dict)
@@ -128,6 +145,87 @@ class DeliberationRun:
             "unexplained_moves": self.unexplained_moves,
             "strata": dict(self.cohort_strata),
         }
+
+
+#: Finished runs, written by `scripts/run_deliberation.py` and merged by
+#: `scripts/merge_deliberations.py`.
+RUNS = pathlib.Path(__file__).resolve().parent.parent.parent / "data" / "runs"
+
+
+def recorded_path(town: str) -> pathlib.Path:
+    return RUNS / f"deliberation-{town}-merged.json"
+
+
+def _closures_in(policy_text: str) -> frozenset[str]:
+    """The stop ids a policy names, as a set.
+
+    Identity is compared on the stops, not on the sentence. Two descriptions of the same
+    closure differ constantly in wording -- the engine writes "on Ang Mo Kio Ave 3 and let
+    service 265 run non-stop", a script writes "and let the feeder service run non-stop" --
+    and matching on prose would refuse a recording of exactly the policy being run.
+
+    What must not match is a *different* closure, and the stop ids settle that precisely.
+    A policy naming no stop ids returns an empty set, which matches only another policy
+    naming none, so an unparseable description declines rather than matching everything.
+    """
+    return frozenset(re.findall(r"\b\d{5}\b", policy_text or ""))
+
+
+def load_recorded(town: str, policy_text: str | None = None) -> "DeliberationRun | None":
+    """A finished deliberation, read back from disk. None if there is not one.
+
+    The demo path, and the reason it exists: the API used to deliberate live on every
+    request, which is correct for a real study and impossible for a presentation. The
+    account sustains roughly 2-3k Sonnet tokens a minute, so the full cohort takes hours;
+    and the content-hash cache cannot stand in, because it is keyed on the exact prompt
+    -- a policy line differing by three words misses every entry -- and on one model,
+    while a merged run deliberately holds two.
+
+    So a finished run is served as a finished run. This is a replay of real reasoning, not
+    a substitute for it: every turn here was produced by a model, from facts the resident
+    was given, and survived the same grounding guard. Nothing is generated at read time.
+    """
+    path = recorded_path(town)
+    if not path.exists():
+        return None
+    raw = json.loads(path.read_text(encoding="utf-8"))
+
+    # **The recording has to be of this policy.**
+    #
+    # Keyed on town alone, a run closing two different stops was served the residents who
+    # had deliberated the original pair -- so the Voices page quoted people saying "Blk 324
+    # is closing" beside an impact audit describing closures somewhere else entirely.
+    # Nothing errored and every number was real, which is what makes it the worst kind of
+    # wrong: it reads as a result.
+    #
+    # A recording for another policy is not a partial answer, it is a different question.
+    # Declining leaves the run to deliberate live, and under replay-only that reports its
+    # residents as unevaluated -- which is the honest state and visibly so.
+    if policy_text is not None:
+        recorded_policy = raw.get("policy") or ""
+        if recorded_policy and _closures_in(recorded_policy) != _closures_in(policy_text):
+            return None
+    # Name every model that spoke, not the best one. A merged run reporting only its
+    # better half is the same error as a rate reported without its denominator: the
+    # header said "claude-3-5-sonnet" while 711 of 818 voices were Haiku.
+    merged = raw.get("merged_from") or {}
+    names = [merged.get(k, {}).get("model") for k in ("overlay", "base")]
+    names = [n for n in names if n]
+    run = DeliberationRun(model=" + ".join(names) if names
+                          else raw.get("model", "recorded"))
+    for v in raw.get("voices", []):
+        voice = AgentVoice.model_validate(v)
+        run.voices[voice.persona_id] = voice
+    cov = raw.get("coverage", {})
+    run.population = cov.get("population", 0)
+    run.cohort = list(run.voices)
+    run.cohort_strata = cov.get("strata", {})
+    run.unexplained_moves = cov.get("unexplained_moves", 0)
+    run.rejected = raw.get("rejected", 0)
+    run.seconds = raw.get("seconds", 0.0)
+    run.cached = len(run.voices)
+    run.participation = {int(k): v for k, v in raw.get("participation", {}).items()}
+    return run
 
 
 def _cached_or_call(prompt: str, model: str, fn, run: DeliberationRun):
@@ -226,15 +324,38 @@ def deliberate(
     # ---------------------------------------------------------------- round 0
     batches = [people[i:i + BATCH_SIZE] for i in range(0, len(people), BATCH_SIZE)]
 
+    _last_call = [0.0]
+
+    def _pace():
+        """Sleep until PACE_SECONDS have passed since the last dispatch."""
+        wait = PACE_SECONDS - (time.monotonic() - _last_call[0])
+        if wait > 0:
+            time.sleep(wait)
+        _last_call[0] = time.monotonic()
+
     def opening(group):
+        _pace()
         ids = [p.persona_id for p in group]
         prompt = opening_prompt([(p, world[p.persona_id]) for p in group], policy_text)
         try:
-            raw = _cached_or_call(
-                prompt, run.model,
-                lambda pr: run_opening(pr, llm, len(ids)).model_dump(), run)
-        except (DeliberationFailed, CacheMiss):
+            raw = call_with_retries(
+                lambda: _cached_or_call(
+                    prompt, run.model,
+                    lambda pr: run_opening(pr, llm, len(ids)).model_dump(), run),
+                on_note=lambda m: run.failures.append(f"opening: {m}"))
+        except CacheMiss:
+            # replay-only, never run. Not a failure: the residents are unevaluated.
+            run.skipped_batches += 1
+            return []
+        except DeliberationFailed as exc:
+            # The detail and the raw output were both discarded here, which made every
+            # deliberation failure a blind investigation: a run reporting 26 failed
+            # batches said nothing about *why*, and diagnosing it needed a separate
+            # script to re-provoke an error the run had already caught. Both are kept
+            # now, capped, because the first line of the model's actual output is
+            # usually the whole diagnosis.
             run.failed_batches += 1
+            run.failures.append(f"opening: {exc.detail} | raw: {(exc.raw or '')[:200]}")
             return []
         from app.schemas.deliberation import OpeningBatch
         return OpeningBatch.model_validate(raw).voices
@@ -249,7 +370,11 @@ def deliberate(
             for p in group:
                 v = returned.get(p.persona_id)
                 if v is None:
-                    run.failed_batches += 1
+                    # A resident the batch did not return. Counted as a missing person,
+                    # not as a failed batch: incrementing `failed_batches` here as well
+                    # meant two failed batches of twelve reported as 26, a number 13x
+                    # worse than reality and impossible to reconcile with the call count.
+                    run.missing_voices += 1
                     continue
                 w = world[p.persona_id]
                 kept = []
@@ -295,13 +420,21 @@ def deliberate(
             )))
 
         def one_round(item, rnd=rnd):
+            _pace()
             group, _heard_map, prompt = item
             try:
-                return _cached_or_call(
-                    prompt, run.model,
-                    lambda pr: run_round(pr, llm, list(group)).model_dump(), run)
-            except (DeliberationFailed, CacheMiss):
+                return call_with_retries(
+                    lambda: _cached_or_call(
+                        prompt, run.model,
+                        lambda pr: run_round(pr, llm, list(group)).model_dump(), run),
+                    on_note=lambda m: run.failures.append(f"round {rnd}: {m}"))
+            except CacheMiss:
+                run.skipped_batches += 1
+                return None
+            except DeliberationFailed as exc:
                 run.failed_batches += 1
+                run.failures.append(
+                    f"round {rnd}: {exc.detail} | raw: {(exc.raw or '')[:200]}")
                 return None
 
         with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
@@ -379,8 +512,21 @@ def _participants(
             and abs(nv.turns[-1].position - nv.turns[-2].position) > 0.08
             for nid in neighbours(social, pid, limit=HEARD)
         )
-        # someone still working out what to do is not finished thinking
-        unsettled = last.confidence < 0.55 or last.severity != "none"
-        if new_facts or moved_near or unsettled:
+        # Someone still working out what to do is not finished thinking -- but this has to
+        # be a transient state, not a permanent one.
+        #
+        # It used to read `last.confidence < 0.55 or last.severity != "none"`, which makes
+        # every harmed resident unsettled forever: severity does not decay, so anyone the
+        # policy touched was re-asked in every remaining round with nothing new to react
+        # to. Measured on a 24-resident run, rounds 2 and 3 produced 35 turns of which
+        # **none** contained a sentence not already said, and 63% were verbatim repeats.
+        # That is 40% of the run's cost buying nothing, and it contradicts this module's
+        # own rule that asking a resident with nothing new to say "produces a paraphrase
+        # and a bill".
+        #
+        # Bounded instead: an unsure resident gets one further round to settle, and after
+        # that only genuinely new information brings them back.
+        still_deciding = last.confidence < 0.55 and len(v.turns) <= 2
+        if new_facts or moved_near or still_deciding:
             speakers.append(pid)
     return speakers

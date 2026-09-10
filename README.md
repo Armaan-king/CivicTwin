@@ -103,10 +103,22 @@ all three separately:
 
 ```json
 "coverage": {
-  "population": 2000, "cohort": 467, "evaluated": 451,
-  "unevaluated": 1549, "ungrounded": 14, "unexplained_moves": 69
+  "population": 2000, "cohort": 818, "evaluated": null,
+  "unevaluated": null, "ungrounded": null, "unexplained_moves": null
 }
 ```
+
+`population` and `cohort` are configuration and are exact. The rest are filled in by a
+run and are shown here as nulls rather than as plausible-looking figures: quoting an
+evaluation result nobody measured is the specific thing `AGENTS.md` §21 forbids, and a
+README is not exempt from it.
+
+The cohort is 818 rather than the whole town because asking two thousand residents is
+mostly waste: a stop closure reaches about forty of them directly. It is built from three
+strata — 43 whose own stop closes, 175 tied to one of them by household or care, and a
+600-strong stratified comparison group that exists so every rate has a denominator and
+every subgroup cell clears the n ≥ 30 floor. The comparison budget is the number that
+moves if you want more reportable subgroups; the population is not.
 
 Every rate the product shows travels with the denominator it was computed over. A subgroup
 too small to support a claim is reported as *insufficient evidence* — never as zero
@@ -332,6 +344,19 @@ the same OpenAI-shaped chat API — only the host and the key name differ:
 | `groq` | `openai/gpt-oss-120b` | `GROQ_API_KEY` |
 | `bedrock` | Claude | AWS credentials |
 
+> **Model access on Bedrock is not uniform.** Which Claude models an account may invoke
+> is set by its own permissions and, on an organisation-managed account, by service
+> control policies that can deny models the console still lists. Check before assuming:
+>
+> ```
+> aws bedrock list-foundation-models --by-provider anthropic --query "modelSummaries[].modelId"
+> ```
+>
+> Most current Claude models are reachable only through a regional inference profile
+> whose id carries a `us.` / `eu.` / `apac.` / `global.` prefix; the bare model id returns
+> *"on-demand throughput isn't supported"*. Older models also cap output at 4,096 tokens,
+> which is a hard rejection rather than a truncation.
+
 `LLM_PROVIDER_INTERPRETER` overrides the provider for policy interpretation alone.
 Interpretation is one call per run against a wide schema where being wrong makes every
 downstream number answer a different question; deliberation is hundreds of calls against a
@@ -398,6 +423,7 @@ The suite concentrates on the parts that must not drift, and above all on the gu
 
 ```
 backend/app/
+  backstory.py      one life per resident, generated once and grounded in a real place
   world.py          the numbered facts handed to each resident, and nothing else
   deliberate.py     the four-round loop: bounded, cached, snapshotted per round
   cohort.py         who reasons — affected, their ties, a stratified comparison
@@ -412,6 +438,7 @@ backend/app/
 frontend/src/
   pages/            one screen per step of the loop
   components/       the map, the hero scene, the system diagram
+  lib/naming.ts     every place and service name, derived from the run rather than typed
 
 docs/
   scenario-v1.md    the locked scenario decisions and why each was made

@@ -63,7 +63,7 @@ def select_cohort(
     pop: Population,
     world: dict[str, ResidentWorld],
     social: nx.Graph | None = None,
-    comparison: int = 240,
+    comparison: int = 600,
     rng=None,
 ) -> Cohort:
     """Pick who reasons. Deterministic given the population seed unless `rng` says otherwise.
@@ -72,6 +72,19 @@ def select_cohort(
     `MIN_CELL` first and spends whatever is left on a plain draw, so a small budget
     degrades into "some cells are reportable" rather than into a biased sample that looks
     complete.
+
+    **600, chosen by measuring what each budget buys** rather than by feel. Reportable
+    cells (n >= 30) against the four axes of I4, on a 2,000-resident Ang Mo Kio:
+
+        budget   cohort   age    mobility   home_subzone   is_caregiver
+           240      458   6/6         2/4           6/15            2/2
+           400      618   6/6         3/4          10/15            2/2
+           600      818   6/6         4/4          14/15            2/2
+           900     1118   6/6         4/4          14/15            2/2
+
+    600 is where mobility and road both stop being the reason a subgroup cannot be
+    reported. 900 costs a further $1.37 a run and buys not one additional cell, so it is
+    money spent on residents whose answers change no number the product prints.
     """
     from app.rng import derived_rng
 

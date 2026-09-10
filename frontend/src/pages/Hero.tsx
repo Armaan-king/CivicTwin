@@ -4,6 +4,7 @@ import { Boundary } from "@/components/Boundary";
 import { Crt } from "@/components/Crt";
 import { useRun } from "@/lib/useRun";
 import "@/styles/landing.css";
+import { serviceLabel, interchangeName, townName } from "@/lib/naming";
 
 const TransportHeroScene = lazy(() =>
   import("@/components/TransportHeroScene").then((module) => ({ default: module.TransportHeroScene })),
@@ -81,7 +82,7 @@ export function Hero() {
         </header>
 
         <main className="hero-main">
-          <section className="hero-visual" aria-label="Ang Mo Kio transport digital twin">
+          <section className="hero-visual" aria-label={`${townName(run)} transport digital twin`}>
             <div className="hero-visual__wash" />
             {run && (
               <Boundary label="The transport digital twin" fallback={<div className="hero-scene-fallback" />}>
@@ -140,7 +141,7 @@ function HeroInsights({ run }: { run: NonNullable<ReturnType<typeof useRun>["run
     {
       label: "Policy applied",
       value: run.policy.modifications.remove_stops.length + " stops close",
-      body: "Service 265 runs express towards Ang Mo Kio interchange.",
+      body: `${serviceLabel(run)} runs express towards ${interchangeName(run) || "the interchange"}.`,
     },
     {
       label: "Impact found",

@@ -44,7 +44,12 @@ def test_an_approved_correction_lowers_the_prediction_on_that_road_only():
 def test_approving_the_proposal_reduces_the_error_it_was_derived_from():
     """The loop, end to end. This is the claim the calibration screen makes."""
     before = SimulationRun.model_validate(build_run())
-    worst = min(before.consultation.calibration, key=lambda c: c.signed_error)
+    # Flagged rows only, which is what `_proposed_adjustment` selects from. Taking the
+    # worst row overall silently agreed with the code only while the largest error
+    # happened to sit on a large cohort; a four-response cohort with a bigger gap then
+    # made the test disagree with the rule (L2) that it is supposed to be protecting.
+    worst = min((c for c in before.consultation.calibration if c.flagged),
+                key=lambda c: c.signed_error)
     proposal = before.consultation.proposed_adjustment
 
     assert worst.flagged, "the demo scenario must start with a flagged cohort"
@@ -69,7 +74,8 @@ def test_the_proposal_is_derived_from_the_error_not_a_constant():
     to it only by coincidence.
     """
     run = SimulationRun.model_validate(build_run())
-    worst = min(run.consultation.calibration, key=lambda c: c.signed_error)
+    worst = min((c for c in run.consultation.calibration if c.flagged),
+                key=lambda c: c.signed_error)
     proposal = run.consultation.proposed_adjustment
     expected = round(1.0 + abs(worst.signed_error) / 100 * 4, 2)
     assert proposal.to == expected
