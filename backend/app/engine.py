@@ -267,17 +267,49 @@ def _discovered_constraint(town: str, cohort_value: str, con) -> dict:
     return discover_constraint(town, cohort_value, comments, llm=None)
 
 
-def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
-              text: str = "") -> dict:
-    geo, removed, resolution = study_area(policy, text)
-    pop = build_population(geo, POPULATION_SIZE)
-    graph = build_graph(geo, pop)
+#: Intervention results, by (town, closed stops). Each candidate is a full re-simulation
+#: of two thousand residents, and five of them cost about thirteen seconds -- which was
+#: the whole of the delay moving from Consult to Learn, because submitting feedback drops
+#: the run cache and the next page rebuilt everything.
+#:
+#: They depend on the network and the closures and on nothing else. Consultation replies
+#: cannot change them, so recomputing them when a reply arrives is work with no possible
+#: effect on the answer. Keyed on what they actually depend on.
+_INTERVENTION_CACHE: dict[tuple, list[dict]] = {}
 
-    policy = simulate(geo, pop, removed, EXPRESS_SAVING_MIN)
-    outcomes = list(policy.outcomes.values())
-    sub = subgroup_metrics(pop, policy.outcomes)
 
-    # ------------------------------------------------------------------ interventions
+#: The policy simulation, by (network, closures, population size).
+#:
+#: Same reasoning as the intervention cache and the same measurement behind it: two
+#: thousand residents routed twice each takes about 2.6 seconds, and it depends on the
+#: network and the closures alone. A consultation reply cannot change who lost their stop,
+#: so rebuilding the run to fold in a reply was recomputing the entire simulation to
+#: change one average.
+#:
+#: Bounded to a handful of entries because a session explores a handful of policies; it
+#: is a memo, not a store, and it is dropped wholesale rather than evicted cleverly.
+_SIMULATION_CACHE: dict[tuple, object] = {}
+_SIMULATION_CACHE_MAX = 8
+
+
+def _simulate_cached(geo, pop, removed):
+    key = (getattr(geo, "feeder_service", ""), tuple(sorted(removed)), len(pop.personas))
+    hit = _SIMULATION_CACHE.get(key)
+    if hit is not None:
+        return hit
+    if len(_SIMULATION_CACHE) >= _SIMULATION_CACHE_MAX:
+        _SIMULATION_CACHE.clear()
+    result = simulate(geo, pop, removed, EXPRESS_SAVING_MIN)
+    _SIMULATION_CACHE[key] = result
+    return result
+
+
+def _interventions_for(geo, pop, removed, policy) -> list[dict]:
+    key = (getattr(geo, "feeder_service", ""), tuple(sorted(removed)), len(pop.personas))
+    cached = _INTERVENTION_CACHE.get(key)
+    if cached is not None:
+        return cached
+
     ivs: list[dict] = []
     for c in candidates(removed, pop, geo):
         validate(c, fleet_increase_allowed=False)
@@ -301,6 +333,24 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
                 and policy.outcomes[p.persona_id].severity != "high")
             row["subgroup_disparity_pp"] = disparity_pp(subgroup_metrics(pop, r.outcomes))
         ivs.append(row)
+
+    _INTERVENTION_CACHE[key] = ivs
+    return ivs
+
+
+def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
+              text: str = "") -> dict:
+    geo, removed, resolution = study_area(policy, text)
+    pop = build_population(geo, POPULATION_SIZE)
+    graph = build_graph(geo, pop)
+
+    policy = _simulate_cached(geo, pop, removed)
+    outcomes = list(policy.outcomes.values())
+    sub = subgroup_metrics(pop, policy.outcomes)
+
+    # ------------------------------------------------------------------ interventions
+    ivs = _interventions_for(geo, pop, removed, policy)
+
 
     # ------------------------------------------------------------------ consultation
     # the blind spot lands on the road the policy touches, whichever town this is
