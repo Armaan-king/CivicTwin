@@ -1,0 +1,27 @@
+{
+  // `app` lives in backend/, and everything that imports it adds that directory to
+  // sys.path at runtime -- the API is started from backend/, and each script does a
+  // sys.path.insert before importing. Correct when it runs, and invisible to a static
+  // analyser, which does not execute those lines and so reports every `from app...` as
+  // unresolved. The squiggles were the editor being right about what it could see.
+  //
+  // Telling it where the package lives fixes the analysis without changing how anything
+  // runs. Nothing here alters behaviour; it is editor configuration only.
+  "python.analysis.extraPaths": ["backend", "scripts"],
+  "python.autoComplete.extraPaths": ["backend", "scripts"],
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.cwd": "${workspaceFolder}/backend",
+  "python.testing.pytestEnabled": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "search.exclude": {
+    // 20,000+ cache files, and searching them makes the editor crawl
+    "data/deliberation_cache": true,
+    "data/llm_cache": true,
+    "**/node_modules": true,
+    "**/__pycache__": true
+  },
+  "files.watcherExclude": {
+    "data/deliberation_cache/**": true,
+    "data/llm_cache/**": true
+  }
+}

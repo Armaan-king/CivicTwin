@@ -1,0 +1,8 @@
+{
+  "//": "Same resolution rule as .vscode/settings.json, for anyone whose editor reads pyright directly rather than the VS Code settings. `app` is a package inside backend/, not at the repo root.",
+  "extraPaths": ["backend", "scripts"],
+  "include": ["backend", "scripts"],
+  "exclude": ["**/__pycache__", "data", "frontend", ".venv"],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "warning"
+}
