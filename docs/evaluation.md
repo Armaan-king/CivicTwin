@@ -78,7 +78,7 @@ The final selected scenario should define a compact metric set.
 > **Ruling (V1 transport scenario).** The canonical metric set is the six metrics
 > fixed in [`scenario-v1.md`](./scenario-v1.md) §7 (decision I1). The list above is a
 > menu to select from, not a set to implement. Where this document, `simulation.md`,
-> and `goal.md` list overlapping metric families, `scenario-v1.md` wins for the
+> and `GOAL.md` list overlapping metric families, `scenario-v1.md` wins for the
 > transport scenario.
 
 ---
@@ -323,8 +323,8 @@ The score should not imply statistical representativeness unless representativen
 > **Ruling (V1).** PCS is computed and stored, but the UI must never render the
 > headline score without its component metrics, the response count, and the subgroup
 > spread on the same screen. The score is a way into the components, never a verdict.
-> This reconciles the required "Public Confidence" capability in `goal.md` §29 with
-> the warning against bare scores in `goal.md` §23 and §12 above.
+> This reconciles the required "Public Confidence" capability in `GOAL.md` §29 with
+> the warning against bare scores in `GOAL.md` §23 and §12 above.
 > See [`scenario-v1.md`](./scenario-v1.md) §9 (decision K4).
 
 ---
@@ -650,7 +650,7 @@ Anything beyond that is a bonus.
 
 > **Ruling (V1).** Item 8 was previously filed under §29 Stretch Evaluation. It is
 > promoted to required: it costs one configuration flag and one extra run, and it is
-> the only direct evidence for the core research question in §6 and `goal.md` §44.1
+> the only direct evidence for the core research question in §6 and `GOAL.md` §44.1
 > ("can graph-connected synthetic populations surface second-order effects that
 > independent personas miss?"). See [`scenario-v1.md`](./scenario-v1.md) §12
 > (decision N2).

@@ -189,7 +189,7 @@ def predicted_support(p: Persona, o: Outcome,
     subzone, the model finally costs the *walk* rather than the distance, and its prediction
     for that road drops toward what residents there actually reported.
 
-    Three declared coefficients and one optional correction, all visible here. `goal.md` §20
+    Three declared coefficients and one optional correction, all visible here. `GOAL.md` §20
     forbids hiding weights inside prompts; the same applies to a correction, which is why it
     is a number in a file a human approved rather than a nudge buried in a model call.
     """

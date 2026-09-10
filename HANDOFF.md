@@ -37,7 +37,7 @@ Do not duplicate content between these. Each has one job.
 
 | File | Owns |
 |---|---|
-| `goal.md` | Product intent, scope, success criteria, non-goals. **Ask before editing.** |
+| `GOAL.md` | Product intent, scope, success criteria, non-goals. **Ask before editing.** |
 | `AGENTS.md` | Rules for coding agents (Claude Code, Codex). Read section 10B before touching reference repos. |
 | `README.md` | Setup, install, run |
 | **`docs/scenario-v1.md`** | **The locked V1 spec. Canonical for every transport detail.** |
@@ -48,7 +48,7 @@ Do not duplicate content between these. Each has one job.
 Decisions carry stable IDs — **A1**, **F3**, **G2**, **N2**. Use them in commits and PRs
 ("implements F1.6") so a reviewer can find the reasoning without asking.
 
-**Precedence:** `goal.md` > `scenario-v1.md` > everything else.
+**Precedence:** `GOAL.md` > `scenario-v1.md` > everything else.
 
 ---
 
@@ -427,7 +427,7 @@ That is the product. Everything else is supporting material.
 
 # 6. Non-negotiables
 
-These are not style preferences. Each traces to a rule in `AGENTS.md` or `goal.md`, and each
+These are not style preferences. Each traces to a rule in `AGENTS.md` or `GOAL.md`, and each
 one is easy to violate by accident.
 
 1. **No LLM for arithmetic, shortest paths, thresholds, or aggregation.** Deterministic code
@@ -439,9 +439,9 @@ one is easy to violate by accident.
    policy. (**G2**)
 4. **Structured outputs drive logic; prose never does.** Pydantic-validate every model
    output. (`AGENTS.md` 7)
-5. **Weights are visible.** Never inside a prompt. (`goal.md` 20)
+5. **Weights are visible.** Never inside a prompt. (`GOAL.md` 20)
 6. **Human approval** before publishing a consultation, selecting a final intervention, or
-   applying a calibration update. (`goal.md` 27)
+   applying a calibration update. (`GOAL.md` 27)
 7. **Synthetic data is labelled synthetic**, everywhere it appears. Seeded feedback says so
    on its face. (**K3**)
 8. **Failures are visible.** No silently converting a failed call into plausible-looking

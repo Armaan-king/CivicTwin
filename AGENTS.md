@@ -2,9 +2,9 @@
 
 > This file contains instructions for coding agents such as Claude Code, Codex, and other autonomous development tools working in the CivicTwin repository.
 >
-> Product goals, scope, user journeys, product architecture, acceptance criteria, and non-goals are defined in `goal.md`.
+> Product goals, scope, user journeys, product architecture, acceptance criteria, and non-goals are defined in `GOAL.md`.
 >
-> **Read `goal.md` before making product or architectural decisions.**
+> **Read `GOAL.md` before making product or architectural decisions.**
 
 ---
 
@@ -12,15 +12,15 @@
 
 When working in this repository:
 
-1. Preserve the product intent in `goal.md`.
+1. Preserve the product intent in `GOAL.md`.
 2. Follow the locked scenario specification in `docs/scenario-v1.md` for anything touching the
    V1 transport scenario. It is canonical: where it and `docs/simulation.md`,
    `docs/architecture.md`, or `docs/evaluation.md` disagree on a transport detail,
-   `scenario-v1.md` wins. Where it conflicts with `goal.md`, `goal.md` wins.
+   `scenario-v1.md` wins. Where it conflicts with `GOAL.md`, `GOAL.md` wins.
 3. Follow the existing repository architecture unless there is a clear reason to improve it.
 4. Prefer a reliable end-to-end hackathon demo over broad feature coverage.
 5. Do not expand V1 beyond the Public Policy vertical and the locked scenario unless explicitly instructed.
-6. Do not silently change product assumptions that are identified as open questions in `goal.md`, or
+6. Do not silently change product assumptions that are identified as open questions in `GOAL.md`, or
    decisions marked LOCKED in `docs/scenario-v1.md`.
 
 If implementation details conflict with product goals, product goals win.
@@ -56,7 +56,7 @@ When several implementations are viable, prefer the option that is:
 5. consistent with the CivicTwin core loop.
 
 **Determinism is no longer a tie-breaker.** V2 simulates the population with reasoning
-agents (`goal.md` §15), so a preference for deterministic implementations would argue
+agents (`GOAL.md` §15), so a preference for deterministic implementations would argue
 against the architecture. What replaced it as the safeguard is *groundedness*: an agent
 may only reason from facts it was given, and a conclusion citing anything else is rejected
 rather than displayed.
@@ -102,7 +102,7 @@ The repository contains **runtime agents** that are part of CivicTwin itself, su
 - Intervention Planner,
 - Feedback Analyst.
 
-Those are product concepts defined in `goal.md`.
+Those are product concepts defined in `GOAL.md`.
 
 This file governs **coding agents** working on the repository.
 
@@ -377,7 +377,7 @@ The execution graph should be explainable from a single diagram.
 
 ## 14. Human-in-the-Loop
 
-Preserve human approval boundaries defined in `goal.md`.
+Preserve human approval boundaries defined in `GOAL.md`.
 
 Do not implement autonomous enactment of policy decisions.
 
@@ -574,7 +574,7 @@ If starting from a minimal repository, a reasonable direction is:
 
 ```text
 /
-├── goal.md
+├── GOAL.md
 ├── AGENTS.md
 ├── README.md
 ├── .env.example
@@ -596,14 +596,14 @@ Architecture-specific documentation may live under `docs/` once needed.
 
 Use:
 
-- `goal.md` for product goals, scope, product architecture, success criteria, and non-goals.
+- `GOAL.md` for product goals, scope, product architecture, success criteria, and non-goals.
 - `AGENTS.md` for instructions to coding agents.
 - `README.md` for installation, setup, running, and high-level repository overview.
 - `docs/architecture.md` for detailed implementation architecture if needed.
 - `docs/simulation.md` for simulation rules/modeling details if needed.
 - `docs/evaluation.md` for evaluation methodology/results if needed.
 
-Avoid turning `goal.md` into a coding handbook.
+Avoid turning `GOAL.md` into a coding handbook.
 
 Avoid turning `AGENTS.md` into a product-spec duplicate.
 
@@ -627,7 +627,7 @@ Do not introduce a new framework solely because it is fashionable.
 
 ## 27. Open Product Questions
 
-If work requires resolving a product question listed as open in `goal.md`, do not silently make a permanent decision unless the answer is obvious from existing code or explicit instructions.
+If work requires resolving a product question listed as open in `GOAL.md`, do not silently make a permanent decision unless the answer is obvious from existing code or explicit instructions.
 
 Prefer:
 

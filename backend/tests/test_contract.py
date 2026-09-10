@@ -29,7 +29,7 @@ def test_run_is_labelled_synthetic(run: SimulationRun):
 
 
 def test_run_is_reproducible_by_declaration(run: SimulationRun):
-    """goal.md 34. A run that cannot be identified cannot be reproduced or compared."""
+    """GOAL.md 34. A run that cannot be identified cannot be reproduced or compared."""
     assert run.seed
     assert run.population_version and run.policy_version and run.scenario_id
 

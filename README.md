@@ -444,7 +444,7 @@ docs/
   scenario-v1.md    the locked scenario decisions and why each was made
   architecture.md   implementation detail
   evaluation.md     how the run is judged
-goal.md             product goals, scope, and non-goals
+GOAL.md             product goals, scope, and non-goals
 AGENTS.md           instructions for coding agents working here
 ```
 

@@ -2,16 +2,16 @@
 
 > **Scenario:** Singapore public-bus stop rationalisation
 > **Status:** Locked for implementation
-> **Supersedes:** the illustrative "Route 14" material in `goal.md` and `docs/simulation.md`
+> **Supersedes:** the illustrative "Route 14" material in `GOAL.md` and `docs/simulation.md`
 >
 > This document is the canonical specification for the V1 transport scenario.
-> Product intent lives in [`../goal.md`](../goal.md); coding-agent behaviour in
+> Product intent lives in [`../GOAL.md`](../GOAL.md); coding-agent behaviour in
 > [`../AGENTS.md`](../AGENTS.md); system design in [`architecture.md`](./architecture.md);
 > modelling rules in [`simulation.md`](./simulation.md); validation in
 > [`evaluation.md`](./evaluation.md).
 >
 > **Precedence:** where this file and any of the above disagree on a transport-scenario
-> detail, this file wins. Where it conflicts with product intent in `goal.md`, `goal.md`
+> detail, this file wins. Where it conflicts with product intent in `GOAL.md`, `GOAL.md`
 > wins and this file is wrong.
 
 Decision identifiers (`A1`, `F3`, `N2`, …) are stable and referenced from the other docs.
@@ -22,7 +22,7 @@ Decision identifiers (`A1`, `F3`, `N2`, …) are stable and referenced from the 
 
 The population is no longer simulated by rules. Each resident is a reasoning agent that
 decides for itself what the policy does to it, in rounds, hearing its neighbours.
-`goal.md` §15 is the current statement of the model.
+`GOAL.md` §15 is the current statement of the model.
 
 Which decisions in this file still stand, and which do not:
 
@@ -126,10 +126,10 @@ at source.
 
 | # | Conflict | Ruling |
 |---|---|---|
-| 1 | Public Confidence Score required as a capability (`goal.md` §29) but warned against as a display (`goal.md` §23, `evaluation.md` §12) | Compute and store it; never render it without components, response count, and subgroup spread on the same screen. See **K4**. |
-| 2 | Three overlapping metric vocabularies (`goal.md` §20, `simulation.md` §32, `evaluation.md` §4), none marked canonical | §7 of this file (**I1**) is canonical for the transport scenario. The others are menus. |
-| 3 | Every internal document link broken; flat `.md/` layout vs. referenced root + `docs/` layout | Resolved by restructure: `goal.md`, `AGENTS.md`, `README.md` at root; detailed docs in `docs/`. All links now resolve. |
-| 4 | Graph ablation is both a core research question (`evaluation.md` §6, `goal.md` §44.1) and a droppable stretch goal (`evaluation.md` §29) | Promoted to required. See **N2**. |
+| 1 | Public Confidence Score required as a capability (`GOAL.md` §29) but warned against as a display (`GOAL.md` §23, `evaluation.md` §12) | Compute and store it; never render it without components, response count, and subgroup spread on the same screen. See **K4**. |
+| 2 | Three overlapping metric vocabularies (`GOAL.md` §20, `simulation.md` §32, `evaluation.md` §4), none marked canonical | §7 of this file (**I1**) is canonical for the transport scenario. The others are menus. |
+| 3 | Every internal document link broken; flat `.md/` layout vs. referenced root + `docs/` layout | Resolved by restructure: `GOAL.md`, `AGENTS.md`, `README.md` at root; detailed docs in `docs/`. All links now resolve. |
+| 4 | Graph ablation is both a core research question (`evaluation.md` §6, `GOAL.md` §44.1) and a droppable stretch goal (`evaluation.md` §29) | Promoted to required. See **N2**. |
 
 ## 1.3 Deferred out of V1
 
@@ -165,7 +165,7 @@ Residents are synthetic, sampled from published aggregates, and labelled synthet
 they appear in the UI. No real individual's data enters the system at any point.
 
 This split is what allows a grounded claim without fabricated provenance, per `AGENTS.md`
-§16 and `goal.md` §36.
+§16 and `GOAL.md` §36.
 
 ## A3 — City · LOCKED
 
@@ -217,7 +217,7 @@ round 2   dependants absorb the breach       → DEPENDENCY_ABSORBED
 round 3   dependants' own constraints breach → OBLIGATION_MISSED
 ```
 
-Three is not arbitrary: it is the exact depth of the canonical harm chain in `goal.md` §14
+Three is not arbitrary: it is the exact depth of the canonical harm chain in `GOAL.md` §14
 (stop removed → clinic access degrades → family member drives → family member misses work).
 One-pass propagation stops at the first arrow and forfeits the product's differentiator. A
 fourth round produces nothing observable and invites runaway cascades.
@@ -247,7 +247,7 @@ Dependency propagation only. No peer contagion, no opinion diffusion.
 `simulation.md` §13 explicitly permits omission. Influence weights would add parameters
 nobody can calibrate to a mechanism this scenario does not need — whether a neighbour
 switches services does not change whether a walk exceeds 800 metres. There is also a
-positioning reason: `goal.md` §43 differentiates CivicTwin from PropSim-style opinion
+positioning reason: `GOAL.md` §43 differentiates CivicTwin from PropSim-style opinion
 simulation, and leaning on contagion moves toward the thing being differentiated from.
 
 ---
@@ -339,7 +339,7 @@ unchanged and now matters more.
 `AGENTS.md` §8 forbids an LLM call per citizen per timestep; that prohibition is about the
 simulation loop. A one-off descriptive paragraph costs 2,000 cheap calls once, ships inside
 the fixture, and makes the population screen land as people rather than rows — which matters
-because `goal.md` §39 scores presentation.
+because `GOAL.md` §39 scores presentation.
 
 **Hard constraint:** the narrative is derived from the structured fields and is never the
 source of them. Text asserting anything the schema does not contain is a defect.
@@ -353,7 +353,7 @@ source of them. Text asserting anything the schema does not contain is a defect.
 Eight: `Person`, `Household`, `Stop`, `Service`, `Subzone`, `Workplace`, `School`,
 `Polyclinic`.
 
-Cut from `goal.md` §13's menu because no rule traverses them: `Neighborhood` (duplicates
+Cut from `GOAL.md` §13's menu because no rule traverses them: `Neighborhood` (duplicates
 `Subzone`), `Institution`, `CommunityCenter`, `PublicResource`, `TransportNode` (duplicates
 `Stop`). `Route` is renamed `Service` to match Singapore usage.
 
@@ -425,7 +425,7 @@ constraints     fleet_increase_allowed, operating_budget_delta_pct
 **Free text in, validated `PolicyChange` out**, with a structured form as an always-visible
 fallback — not a hidden one.
 
-This is one of the few places an LLM genuinely earns its place under `goal.md` §15.3, and it
+This is one of the few places an LLM genuinely earns its place under `GOAL.md` §15.3, and it
 is the demo's opening beat. But `AGENTS.md` §18 requires visible failure: if interpretation
 fails schema validation, the UI falls back to the structured form and shows the parse error.
 It does not retry silently and it does not guess.
@@ -545,7 +545,7 @@ claim of realism, and it is what `evaluation.md` §28 actually asks for.
 
 ## H1 — SimulationResult · BOUND
 
-Shape fixed by `architecture.md` §10. Reproducibility metadata from `goal.md` §34 attaches
+Shape fixed by `architecture.md` §10. Reproducibility metadata from `GOAL.md` §34 attaches
 to the same object.
 
 ## H2 — Event log · LOCKED
@@ -654,7 +654,7 @@ Markdown for reading.
 
 ## I1 — Canonical metric set · LOCKED
 
-**This section is canonical.** Where `goal.md` §20, `simulation.md` §32, and
+**This section is canonical.** Where `GOAL.md` §20, `simulation.md` §32, and
 `evaluation.md` §4 list overlapping metric families, they are menus; this is the
 implementation set.
 
@@ -680,7 +680,7 @@ the tail.
 **Components are primary. The combined utility is optional, off by default, and never shown
 without its weights beside it.**
 
-`goal.md` §19 requires explaining the trade-off rather than presenting a verdict, and §23
+`GOAL.md` §19 requires explaining the trade-off rather than presenting a verdict, and §23
 warns against a bare score. A single number is also the exact failure mode the product
 exists to critique — collapsing distribution into an average is how policies hide harm.
 Shipping it as the headline would undercut the thesis inside the demo.
@@ -741,7 +741,7 @@ again") is the obvious next step and is explicitly excluded from V1 — it is wh
 runtime and Bedrock spend become unpredictable. If fewer than two candidates validate, that
 is a legitimate result to display, not an error to retry away.
 
-Three simulated alternatives also fits the comparison table in `goal.md` §19 exactly.
+Three simulated alternatives also fits the comparison table in `GOAL.md` §19 exactly.
 
 ## J3 — Cost model · LOCKED
 
@@ -790,7 +790,7 @@ and what people actually need. That gap belongs on the screen.
 
 ## K1 — Structured items · LOCKED
 
-Five 5-point items plus one free-text field, mapping onto `goal.md` §22.
+Five 5-point items plus one free-text field, mapping onto `GOAL.md` §22.
 
 ```text
 support                    1–5      → the only calibration target (L1)
@@ -815,7 +815,7 @@ Optional self-report of `age_band`, `home_subzone`, `mobility_level`. Pseudonymo
 account, no PII, skippable.
 
 Without cohort, calibration collapses to one overall number — and the entire point of
-`goal.md` §24 is that the overall figure can look fine while a subgroup is badly wrong.
+`GOAL.md` §24 is that the overall figure can look fine while a subgroup is badly wrong.
 These three are exactly the fields the simulation can predict against, and no more.
 
 Optional means the analysis must handle missing cohort gracefully and report how many
@@ -837,7 +837,7 @@ final act of the demo and produces the `DiscoveredConstraint` in `simulation.md`
 
 ## K4 — Public Confidence Score rendering · LOCKED
 
-**Ruling on conflict 1.** PCS is computed and stored per `goal.md` §23. The UI **never**
+**Ruling on conflict 1.** PCS is computed and stored per `GOAL.md` §23. The UI **never**
 renders the headline score without, on the same screen:
 
 - its four component metrics,
@@ -846,7 +846,7 @@ renders the headline score without, on the same screen:
 - an explicit note that the sample is not representative.
 
 The score is a way into the components, never a verdict. This reconciles the required
-capability in `goal.md` §29 with the warnings in `goal.md` §23 and `evaluation.md` §12.
+capability in `GOAL.md` §29 with the warnings in `GOAL.md` §23 and `evaluation.md` §12.
 
 ## K5 — Name who the consultation will under-hear · LOCKED
 
@@ -902,7 +902,7 @@ overestimated support among 65+ by 19 points" would have no actionable cause. Wi
 declared coefficients, the error attributes to trust, impact sensitivity, or the severity
 penalty — and that attribution is the finding.
 
-`goal.md` §20 forbids hiding weights inside prompts; the same principle applies to the
+`GOAL.md` §20 forbids hiding weights inside prompts; the same principle applies to the
 prediction, not just the objective.
 
 ## L2 — Error metrics · LOCKED
@@ -923,7 +923,7 @@ so a flag from n=6 is not read as a finding.
 **No automatic parameter updates.** Calibration proposes a delta, records it, and waits for
 explicit human approval. History is retained either way.
 
-`goal.md` §27 lists treating calibration as authoritative among the actions requiring human
+`GOAL.md` §27 lists treating calibration as authoritative among the actions requiring human
 approval; `simulation.md` §28 warns against a model silently learning without recording what
 changed. Auto-applying breaches both.
 
@@ -970,7 +970,7 @@ with an API key, over conference wifi — is an unnecessary external dependency 
 failure mode.
 
 The provenance file records source URL, retrieval date, licence, and the trimming applied,
-satisfying `goal.md` §36 without committing a large raw feed.
+satisfying `GOAL.md` §36 without committing a large raw feed.
 
 ---
 
@@ -987,7 +987,7 @@ metric, named run id — in the results file.
 **Ruling on conflict 4.** Run identical configuration with `CARES_FOR` propagation disabled
 and count what disappears.
 
-`evaluation.md` previously filed this under stretch (§29) while §6 and `goal.md` §44.1 treat
+`evaluation.md` previously filed this under stretch (§29) while §6 and `GOAL.md` §44.1 treat
 "does the graph add value" as a core research question. It is promoted to required: one
 configuration flag, one extra run, and it is the **only direct evidence for the project's
 main originality claim**.
@@ -1031,10 +1031,10 @@ condition `AGENTS.md` §22 attaches to fixture use.
 
 ## O2 — Demo narrative · LOCKED
 
-Seven beats, following `goal.md` §30 and `evaluation.md` §25:
+Seven beats, following `GOAL.md` §30 and `evaluation.md` §25:
 
 The single claim the demo makes is **harm prevented before rollout**, which is the
-north-star metric in `goal.md` §50. Every beat below is evidence for it, and the closing
+north-star metric in `GOAL.md` §50. Every beat below is evidence for it, and the closing
 number is the one to remember.
 
 ```text
@@ -1115,7 +1115,7 @@ path, which `AGENTS.md` section 22 rules out. The route geometry is the map.
    Singaporean public opinion.
 4. **Consultation responses are not representative.** Sample size and composition are shown
    beside every aggregate (**K4**).
-5. **Synthetic residents are not real people.** Labelled as such throughout, per `goal.md`
+5. **Synthetic residents are not real people.** Labelled as such throughout, per `GOAL.md`
    §12 and `AGENTS.md` §16.
 6. **No historical validation was performed** (**N3**). No claim of predictive accuracy is
    made anywhere in the submission.

@@ -130,7 +130,7 @@ class DeliberationRun:
     def coverage(self) -> dict:
         """What this run can and cannot speak for.
 
-        `goal.md` and the brief agree on the rule that makes this necessary: a resident
+        `GOAL.md` and the brief agree on the rule that makes this necessary: a resident
         nobody asked is *unknown*, never *unaffected*. Reporting a harm rate over the
         cohort while implying the population is the exact error the product exists to
         criticise, so the denominator travels with the number.

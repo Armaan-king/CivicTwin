@@ -1,7 +1,7 @@
 # CivicTwin — Technical Architecture
 
 > This document defines the intended implementation architecture for CivicTwin V1.  
-> Product scope and goals live in [`../goal.md`](../goal.md).  
+> Product scope and goals live in [`../GOAL.md`](../GOAL.md).  
 > Coding-agent behavior lives in [`../AGENTS.md`](../AGENTS.md).
 
 ---
@@ -890,7 +890,7 @@ Three further divergences, each a direct requirement elsewhere in these document
 | PropSim | CivicTwin | Requirement |
 |---|---|---|
 | Behavioural model lives in a 7-rule system prompt | Explicit logistic (**G1**) and support function (**L1**) | `AGENTS.md` section 6 - no business rules hidden in prose prompts |
-| No seeding anywhere; runs not reproducible | Hierarchical per-persona seeds (**G2**) | `goal.md` section 34, `simulation.md` section 23 |
+| No seeding anywhere; runs not reproducible | Hierarchical per-persona seeds (**G2**) | `GOAL.md` section 34, `simulation.md` section 23 |
 | Undirected social graph | Directed, with asymmetric `CARES_FOR` (**D2**) | Second-order harm must propagate one way only |
 
 A model-authored behavioural rule set also makes calibration impossible: an error cannot be
