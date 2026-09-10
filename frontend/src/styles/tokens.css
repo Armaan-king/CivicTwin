@@ -75,6 +75,13 @@
 
   color-scheme: light;
 }
+/* One width for every step of the workflow.
+   Simulation was 1680, Impact and Options 1540, Learn 1450, Consult 1440 -- so the
+   content edges shifted every time you advanced a step, which on a wide monitor reads
+   as the layout twitching rather than as four considered decisions. 1540 is the middle
+   of what was already there and the width the two densest screens were built against. */
+:root { --page-w: min(1540px, 100%); }
+
 
 
 * { box-sizing: border-box; }
@@ -759,7 +766,7 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 
 /* ---- simulation workspace ---- */
 .simulation-page {
-  width: min(1680px, 100%);
+  width: var(--page-w);
   /* Fills the viewport when there is room and grows past it when there is not, rather
      than being pinned to an exact height and clipping whatever does not fit. */
   min-height: calc(100dvh - 84px);
@@ -1075,7 +1082,7 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 
 /* ---- impact audit ---- */
 .impact-page {
-  width: min(1540px, 100%);
+  width: var(--page-w);
   height: calc(100dvh - 84px);
   display: flex;
   flex-direction: column;
@@ -1380,7 +1387,7 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 
 /* ---- intervention options ---- */
 .options-page {
-  width: min(1540px, 100%);
+  width: var(--page-w);
   height: calc(100dvh - 84px);
   display: flex;
   flex-direction: column;
@@ -1621,7 +1628,7 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 
 /* ---- calibration ---- */
 .calibration-page {
-  width: min(1450px, 100%);
+  width: var(--page-w);
   height: calc(100dvh - 84px);
   display: flex;
   flex-direction: column;
@@ -2018,7 +2025,7 @@ a.gold:hover { opacity: .72; color: var(--gold); }
 
 /* ---- public consultation ---- */
 .consultation-page {
-  width: min(1440px, 100%);
+  width: var(--page-w);
   min-height: calc(100dvh - 84px);
   display: flex;
   flex-direction: column;
@@ -2530,4 +2537,17 @@ a.gold:hover { opacity: .72; color: var(--gold); }
   .app-topbar__brand span { display: none; }
   .app-topbar__utility { font-size: var(--fs-12); }
   .workflow-progress { justify-content: start; }
+}
+
+
+/* The stage counter, now beside the stage title rather than occupying the kicker line
+   that every other screen uses for the workflow position. Quiet on purpose: it counts
+   the animation, it does not name the step. */
+.simulation-stage-count {
+  margin: 6px 0 0;
+  color: var(--t3);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }

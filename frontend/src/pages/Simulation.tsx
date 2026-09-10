@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
@@ -7,6 +7,7 @@ import { CityMap, blockDetail } from "@/components/CityMap";
 import { Boundary } from "@/components/Boundary";
 import { useRun } from "@/lib/useRun";
 import { stageLabels, stageNotes, townName, corridorCaption, serviceLabel } from "@/lib/naming";
+import { stepKicker } from "@/lib/workflow";
 
 const DWELL_MS = 3300;
 
@@ -86,8 +87,15 @@ export function Simulation() {
       <main className="simulation-page">
         <header className="simulation-header">
           <div className="simulation-story">
-            <span className="page-kicker">Stage {round + 1} of 4</span>
+            {/* Two different things were competing for one line. Every other screen in
+                the workflow puts "Step N - Label" here, and this one replaced it with
+                the stage counter -- so the page that animates through four stages was
+                the one page where you could not tell where you were in the seven-step
+                flow. The workflow position stays in the kicker; the stage counter moves
+                beside the stage title, which is what it actually describes. */}
+            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
             <h1>{ROUND_LABEL[round]}</h1>
+            <p className="simulation-stage-count">Stage {round + 1} of {ROUND_LABEL.length}</p>
             <p>{ROUND_NOTE[round]}</p>
           </div>
 
