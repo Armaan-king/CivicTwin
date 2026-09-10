@@ -32,6 +32,13 @@ const ADAPTATION: Record<string, { label: string; tone: "alert" | "gold" | "quie
 
 type Filter = "affected" | "moved" | "all";
 
+/** Sentence case, matching the tab strips on every other screen. */
+const FILTER_LABELS: Record<Filter, string> = {
+  affected: "Affected",
+  moved: "Changed their mind",
+  all: "Everyone",
+};
+
 /**
  * How fast residents appear on screen.
  *
@@ -181,21 +188,23 @@ export function Voices() {
         </p>
 
         <div style={{ display: "flex", gap: "var(--s-3)", alignItems: "center", flexWrap: "wrap", marginTop: "var(--s-3)" }}>
-          {(["affected", "moved", "all"] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              aria-pressed={filter === f}
-              className={filter === f ? "t1" : "t3"}
-              style={{
-                background: "none", border: "none", borderBottom: `1px solid ${filter === f ? "var(--gold)" : "transparent"}`,
-                color: "inherit", fontFamily: "inherit", fontSize: "var(--fs-14)",
-                padding: "2px 0", cursor: "pointer", borderRadius: 4,
-              }}
-            >
-              {f === "affected" ? "affected" : f === "moved" ? "changed their mind most" : "everyone"}
-            </button>
-          ))}
+          {/* The shared `.segmented` control every other screen uses, rather than
+              inline styles and lowercase labels. This page had rolled its own: three
+              underlined buttons reading "affected", "changed their mind most" and
+              "everyone" in lower case, which read as placeholder text beside the
+              sentence-case tabs on Impact, Learn and Policy. */}
+          <div className="segmented" aria-label="Filter residents">
+            {(["affected", "moved", "all"] as Filter[]).map((f) => (
+              <button
+                type="button"
+                key={f}
+                onClick={() => setFilter(f)}
+                aria-pressed={filter === f}
+              >
+                {FILTER_LABELS[f]}
+              </button>
+            ))}
+          </div>
           <span style={{ flexGrow: 1 }} />
           <span className="t3" style={{ fontSize: "var(--fs-12)" }}>
             reasoned by {data.model} · {data.calls} calls, {data.cached_batches} cached, {data.seconds}s
