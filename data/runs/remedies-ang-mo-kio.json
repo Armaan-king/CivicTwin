@@ -1,0 +1,1584 @@
+{
+ "town": "ang-mo-kio",
+ "model": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+ "residents": 175,
+ "agreement_with_regex": 0.463,
+ "cost_usd": 0.2114,
+ "classifications": {
+  "p_0024": {
+   "remedy": "I would need a bus stop closer to my home to be able to continue accessing the services I need.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus stop closer to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0084": {
+   "remedy": "I would need a place to sit and rest while waiting for the bus, as the longer walk would be difficult for me.",
+   "model_action": null,
+   "model_reason": "Request for seating at bus stop",
+   "model_quote": "place to sit and rest while waiting for the bus",
+   "regex_action": null,
+   "regex_unmappable": "somewhere to sit or shelter while waiting",
+   "agree": true
+  },
+  "p_0096": {
+   "remedy": "I would need to find an alternative bus route or transportation option that can reliably get me to the Ang Mo Kio Community Hospital for my work shifts.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "alternative bus route",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0100": {
+   "remedy": "I would need a shuttle service or other transportation option that can take me directly to the hospital for my appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0103": {
+   "remedy": "I would need the feeder service to run frequently enough to ensure I can reach the hospital in time for my shifts.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0110": {
+   "remedy": "I hope the changes won't make it significantly harder for me to access the 135 bus, as I rely on it due to my walking difficulties.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "hope the changes won't make it significantly harder",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0120": {
+   "remedy": "I would need the feeder service to run frequently and be located close enough to my home to make the walk manageable.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and be located close enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0121": {
+   "remedy": "I would need the feeder service to run frequently and be located close enough to my home to make the walk manageable.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and be located close enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0131": {
+   "remedy": "I would need the feeder service to run frequently and stop close enough to the hospital for my appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and stop close enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0150": {
+   "remedy": "Ensure that the new bus routes still provide convenient service to the places I need to go, like the community hospital, to maintain my independence.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "new bus routes still provide convenient service",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0157": {
+   "remedy": "Ensure that the revised bus routes still provide convenient access to the Ang Mo Kio Community Hospital and other key destinations I rely on, without requiring me to walk too far.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "revised bus routes still provide convenient access",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0158": {
+   "remedy": "Ensure the revised bus routes still provide convenient access to the medical facilities and other key destinations relied upon by my elderly household member.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "revised bus routes still provide convenient access",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0169": {
+   "remedy": "Maintaining frequent service to Ang Mo Kio Community Hospital",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintaining frequent service",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0180": {
+   "remedy": "A shuttle bus service or paratransit option to transport me directly to the hospital",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle bus service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0182": {
+   "remedy": "Please keep the bus stops open so I can continue using bus 851 for my work commute and hospital visits.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "keep the bus stops open",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0185": {
+   "remedy": "Maintaining frequent bus service on my route",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintaining frequent bus service",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0192": {
+   "remedy": "Maintaining a direct bus route to Ang Mo Kio Community Hospital",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintaining a direct bus route",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0194": {
+   "remedy": "Maintaining frequent bus service on my route",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintaining frequent bus service",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0205": {
+   "remedy": "Ensure there is a reliable feeder service that connects my stop to the 159 bus route, so I can continue to reach the hospital for my appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "reliable feeder service that connects my stop",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0222": {
+   "remedy": "Ensure there is a reliable alternative bus service that connects my stop to the hospital, so my elderly family member and I can continue to access essential medical care.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "reliable alternative bus service",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0225": {
+   "remedy": "I need a shuttle service or transportation assistance to ensure I can reliably access the community hospital for my essential medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "I need a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0239": {
+   "remedy": "Maintain a reliable bus service that connects me to the places I need to go for my daily activities and social engagements.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Maintain a reliable bus service",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0256": {
+   "remedy": "Keep the bus stop I use open so I can continue taking the bus to school.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Keep the bus stop I use open",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0260": {
+   "remedy": "Keep the bus stop I use open so I can continue taking the bus to school.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Keep the bus stop I use open",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0278": {
+   "remedy": "Ensure the bus route to the hospital is still accessible, even if the stops are further away.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Ensure the bus route to the hospital is still accessible",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0282": {
+   "remedy": "Provide a shuttle service or other transportation assistance to help me access the hospital if the bus stop I rely on is closed.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0291": {
+   "remedy": "Ensure the bus routes and frequencies are maintained so I can continue to commute to work and travel for business without significant disruption.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Ensure the bus routes and frequencies are maintained",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0372": {
+   "remedy": "If the feeder service is not reliable or frequent enough, I would need a shuttle service or some other transportation assistance to ensure I can get my children to their activities on time.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "I would need a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0397": {
+   "remedy": "I need more assistance from my family member to help me get to the bus stop and to the hospital for my appointments.",
+   "model_action": null,
+   "model_reason": "Requesting personal assistance",
+   "model_quote": "I need more assistance from my family member",
+   "regex_action": null,
+   "regex_unmappable": "someone to go with them",
+   "agree": true
+  },
+  "p_0423": {
+   "remedy": "I need the bus stops near my home and the hospital to remain open so I can easily access my work and healthcare.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "I need the bus stops near my home and the hospital to remain open",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0471": {
+   "remedy": "I hope the buses still run frequently enough for me to make my appointments on time.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "I hope the buses still run frequently enough",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0476": {
+   "remedy": "I hope the new feeder service is convenient enough for me to continue accessing the healthcare I need.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "I hope the new feeder service is convenient enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0495": {
+   "remedy": "I need the bus stop to be closer to my home so I can easily commute to work.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "I need the bus stop to be closer to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0501": {
+   "remedy": "I need the bus stop to be closer to my home so I can easily commute to work on time.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "I need the bus stop to be closer to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0513": {
+   "remedy": "I need the bus to drop me closer to the hospital entrance, or for there to be a shuttle service that can take me the last part of the journey.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "or for there to be a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0523": {
+   "remedy": "I need a bus stop close to my home that goes directly to the Ang Mo Kio Community Hospital so I can continue accessing the medical care I require.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "I need a bus stop close to my home that goes directly to the Ang Mo Kio Community Hospital",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0524": {
+   "remedy": "We need assistance or a closer alternative stop to make this change manageable.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "or a closer alternative stop",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0525": {
+   "remedy": "I would need the feeder service to run frequently enough that I can still access the 268 bus when I need to get around without the car.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "I would need the feeder service to run frequently enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0551": {
+   "remedy": "Keep at least one of the stops open to maintain accessibility for people like me who depend on the bus for essential medical care.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Keep at least one of the stops open",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0561": {
+   "remedy": "Please keep the bus stops open so I can continue using bus 269 to reach my retraining and hospital appointments.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Please keep the bus stops open",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0594": {
+   "remedy": "I hope the feeder service will be frequent and reliable enough to make the extra walking distance manageable for my school commute and family trips.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service will be frequent and reliable enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0603": {
+   "remedy": "I hope the feeder service will be frequent and reliable enough to make the extra walking distance manageable for my commute and family outings.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service will be frequent and reliable enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0613": {
+   "remedy": "I would appreciate if the feeder service could drop me closer to my home, or if there was a shuttle service that could take me the last stretch, as the extra walking distance is a real challenge for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service that could take me the last stretch",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0616": {
+   "remedy": "I hope the feeder service will be frequent and reliable enough to make the extra walking distance manageable for my work commute.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service will be frequent and reliable enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0626": {
+   "remedy": "I hope the feeder service will be frequent and reliable enough to make the extra walking distance manageable for my work commute.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service will be frequent and reliable enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0665": {
+   "remedy": "I would need a more frequent and direct feeder service to the hospital, as well as somewhere to sit while I wait for the bus.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "more frequent and direct feeder service to the hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0670": {
+   "remedy": "I would need a more frequent and reliable feeder service that goes directly to the hospital and key amenities, as well as improved accessibility and seating at the remaining bus stops.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "more frequent and reliable feeder service that goes directly to the hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0683": {
+   "remedy": "A more frequent feeder service with seating at the stops would help make the longer walk more manageable for my elderly household member to access their medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "more frequent feeder service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0707": {
+   "remedy": "More direct connections or express services to key job search locations would help mitigate the impact of any route changes.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "More direct connections or express services",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0708": {
+   "remedy": "Providing a shuttle service or a closer bus stop would help make this policy change more manageable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Providing a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0715": {
+   "remedy": "Provide a shuttle service or more frequent feeder buses to the remaining stops to ensure seniors like myself can still access the hospital easily.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0720": {
+   "remedy": "I would need the feeder service to run frequently and stop closer to my home, as the extra walking distance would be challenging for me.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and stop closer to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0736": {
+   "remedy": "Ensuring the new feeder service has a stop close to the Ang Mo Kio Community Hospital, or providing a shuttle service, would be crucial for maintaining my access to essential medical care.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "new feeder service has a stop close to the Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0747": {
+   "remedy": "Ensuring the new feeder service provides reliable and frequent connections to the main bus routes I need to access the hospital and community center would help make this change more manageable.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "new feeder service provides reliable and frequent connections",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0756": {
+   "remedy": "I would need the feeder service to run frequently and stop much closer to my home, as the extra walking distance would be very difficult for me as an elderly resident.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and stop much closer to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0757": {
+   "remedy": "I would need the feeder service to run more frequently and stop much closer to my home, so I can reliably get to work on time.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run more frequently and stop much closer to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0758": {
+   "remedy": "I would need the feeder service to run frequently and stop close to my home and school, to ensure I can continue accessing my education easily.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and stop close to my home and school",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0759": {
+   "remedy": "I would need the feeder service to run more frequently and stop much closer to my home, so I can reliably get to work on time.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run more frequently and stop much closer to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0772": {
+   "remedy": "I would need the feeder service to run frequently and stop closer to my home, as the extra walking distance would be challenging for me as an elderly resident.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and stop closer to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0776": {
+   "remedy": "I would need the feeder service to run frequently and stop closer to my home and the hospital, to ensure I can continue accessing my essential medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to run frequently and stop closer to my home and the hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0777": {
+   "remedy": "Ensure the feeder service maintains reliable and timely connections to the remaining stops, so commuters like myself can continue to use the bus network effectively for our daily needs.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service maintains reliable and timely connections to the remaining stops",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0779": {
+   "remedy": "If the bus service could provide some shelter or seating at the stops, it would make the longer walk more bearable, especially for students like myself.",
+   "model_action": null,
+   "model_reason": "Request for shelter and seating",
+   "model_quote": "provide some shelter or seating at the stops",
+   "regex_action": null,
+   "regex_unmappable": "somewhere to sit or shelter while waiting",
+   "agree": true
+  },
+  "p_0786": {
+   "remedy": "I would need more frequent bus service or a shuttle to the nearest stop to make this workable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle to the nearest stop",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0787": {
+   "remedy": "I would need a shuttle service or more frequent buses to the nearest stop to make this workable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0788": {
+   "remedy": "I would need a shuttle service or more frequent buses to the nearest stop to make this workable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0789": {
+   "remedy": "I would need a shuttle service or more frequent buses to the nearest stop to make this workable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0812": {
+   "remedy": "Ensure the new feeder service provides a direct route to Ang Mo Kio Community Hospital with high frequency.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "new feeder service provides a direct route to Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0830": {
+   "remedy": "Maintain bus service frequency and accessibility to the Blk 322 stop, so I can continue relying on buses 162 and 169 to commute to work and access the hospital for my medical needs.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Maintain bus service frequency and accessibility to the Blk 322 stop",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0846": {
+   "remedy": "Provide a direct shuttle service from a convenient nearby location to Ang Mo Kio Community Hospital.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "direct shuttle service from a convenient nearby location to Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0847": {
+   "remedy": "Provide a shuttle service or on-demand transport option to connect the physiotherapy clinic to the nearest open bus stop.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service or on-demand transport option",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0848": {
+   "remedy": "Ensure the new feeder service provides a direct connection to Ang Mo Kio Community Hospital with high frequency.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "new feeder service provides a direct connection to Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0850": {
+   "remedy": "Provide a bench or seating area near the new bus stop so I can rest before and after my journey to the hospital.",
+   "model_action": null,
+   "model_reason": "Request for seating at bus stop",
+   "model_quote": "Provide a bench or seating area near the new bus stop",
+   "regex_action": null,
+   "regex_unmappable": "somewhere to sit or shelter while waiting",
+   "agree": true
+  },
+  "p_0859": {
+   "remedy": "Ensure the 668 bus service continues to run and provide direct access to schools for students in the area.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "668 bus service continues to run and provide direct access to schools",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0861": {
+   "remedy": "Provide a shuttle service or improve feeder bus frequency to the Bright Hill Stn Exit 1 stop to accommodate commuters like myself who rely on the bus for work travel.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0862": {
+   "remedy": "Ensure the 52 bus service continues to provide direct access to schools, with sufficient frequency to accommodate student commuters.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "52 bus service continues to provide direct access to schools",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0871": {
+   "remedy": "Provide a shuttle service or improve feeder bus frequency to the Blk 354 stop to ensure accessibility for commuters and residents with mobility challenges.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0900": {
+   "remedy": "Provide a shuttle service or more frequent feeder buses to the Ang Mo Kio Community Hospital to help me access my essential medical care.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0915": {
+   "remedy": "Provide a direct shuttle service from my home to the Ang Mo Kio Community Hospital to ensure I can continue accessing my essential medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "direct shuttle service from my home to the Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0923": {
+   "remedy": "Provide more frequent feeder bus service from the new stop to key destinations like the Ang Mo Kio Community Hospital to help minimize the impact of the longer walking distance.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "more frequent feeder bus service from the new stop to key destinations",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0932": {
+   "remedy": "I would need the bus routes to continue serving the Ang Mo Kio Community Hospital stop to ensure I can access my essential medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus routes to continue serving the Ang Mo Kio Community Hospital stop",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0935": {
+   "remedy": "I would need the 265 bus to continue running from the St. Nicholas Girls' stop, or for there to be a reliable alternative that gets me to the hospital on time for my shifts.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "continue running from the St. Nicholas Girls' stop",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0943": {
+   "remedy": "Please keep the bus stops open so I can continue accessing the 132 bus for my hospital visits.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "keep the bus stops open",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0963": {
+   "remedy": "I hope the buses will still run frequently so I can continue using them for my school trips and family outings without too much disruption.",
+   "model_action": null,
+   "model_reason": "requesting frequent service",
+   "model_quote": "buses will still run frequently",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0968": {
+   "remedy": "I hope the bus routes will still provide a convenient way for me to reach the hospital, as the extra walking distance is difficult for me.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus routes will still provide a convenient way",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_0985": {
+   "remedy": "Provide a door-to-door shuttle service or on-demand transport option to ensure I can continue accessing the Ang Mo Kio Community Hospital for my essential medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "door-to-door shuttle service or on-demand transport option",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0988": {
+   "remedy": "A shuttle service or more frequent buses at the new stop would help compensate for the longer walk.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "A shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_0989": {
+   "remedy": "Ensuring that bus services 130 and 136 are rerouted to stop at Blk 322 would make this change more manageable for me.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus services 130 and 136 are rerouted to stop at Blk 322",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1005": {
+   "remedy": "If the feeder service could make a stop closer to my home, or if there was a shuttle bus to the new stop, that would help make this change more manageable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle bus to the new stop",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1006": {
+   "remedy": "Provide a shuttle service or more frequent feeder buses to the nearest remaining bus stop to help minimize the impact of the increased walking distance on my daily commute.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1007": {
+   "remedy": "Provide a shuttle service or more frequent feeder buses to the nearest remaining bus stop to help minimize the impact of the increased walking distance on my daily commute to school and social activities.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1008": {
+   "remedy": "Provide a shuttle service or more frequent feeder buses to the nearest remaining bus stop to help minimize the impact of the increased walking distance on my daily commute to school and extracurricular activities.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1019": {
+   "remedy": "Provide additional bus stops or shuttle services closer to my home to reduce the walking distance to my school and tuition destinations.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle services closer to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1023": {
+   "remedy": "We need a shuttle service or other transportation assistance to get us to the hospital for our medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1024": {
+   "remedy": "We need a shuttle service or other transportation assistance to get me to the hospital for my medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1046": {
+   "remedy": "If there were a shuttle service or other transport option to help me and my housemate get to the new bus stop, that would make this change more manageable for us to access our essential medical care.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1047": {
+   "remedy": "I would need a shuttle service or other assisted transport option to help me get to the new bus stop, as the increased walking distance is too difficult for me to manage on my own.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1048": {
+   "remedy": "I would need the buses to continue running frequently enough for me to make my medical appointments and social trips without too much extra walking.",
+   "model_action": null,
+   "model_reason": "requesting frequent service",
+   "model_quote": "buses to continue running frequently",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1055": {
+   "remedy": "I would need the bus stops to remain close to my home in order to access the hospital for my crucial medical care.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "bus stops to remain close to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1080": {
+   "remedy": "A shuttle service between the closed stop and the new one would help ease the transition.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "A shuttle service between the closed stop and the new one",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1091": {
+   "remedy": "I would need more frequent bus service or an earlier bus to ensure I can get to work on time.",
+   "model_action": null,
+   "model_reason": "requesting more frequent or earlier service",
+   "model_quote": "more frequent bus service or an earlier bus",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1120": {
+   "remedy": "Ensure the new feeder service continues to provide direct connections to my workplace and Ang Mo Kio Community Hospital, so I can maintain my regular routine and access to essential services.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "new feeder service continues to provide direct connections",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1121": {
+   "remedy": "Provide a shuttle service or more frequent feeder buses to the nearest stop, to ensure I can easily access the hospital for my essential medical care.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service or more frequent feeder buses",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1143": {
+   "remedy": "More frequent bus service or additional routes from my local stop would help me maintain access to job opportunities and daily needs.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "More frequent bus service or additional routes",
+   "regex_action": null,
+   "regex_unmappable": "someone to go with them",
+   "agree": false
+  },
+  "p_1148": {
+   "remedy": "I would need a shuttle service or other transportation assistance to get me to the hospital for my medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service or other transportation assistance",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1163": {
+   "remedy": "I need the bus stop near my home to remain open so I can continue accessing the hospital for my critical dialysis treatments.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus stop near my home to remain open",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1181": {
+   "remedy": "Installing covered walkways to the new stop would make the longer walk more manageable, especially during bad weather.",
+   "model_action": null,
+   "model_reason": "Request for infrastructure improvement (covered walkways)",
+   "model_quote": "Installing covered walkways",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1196": {
+   "remedy": "I would need a shuttle service or other transportation assistance to get me to the hospital for my medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle service or other transportation assistance",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1211": {
+   "remedy": "I would need a more convenient bus stop or route to ensure I can get to work on time.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "more convenient bus stop or route",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1219": {
+   "remedy": "Provide a seating area near the bus stop for those waiting",
+   "model_action": null,
+   "model_reason": "Request for seating at bus stop",
+   "model_quote": "Provide a seating area near the bus stop",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1228": {
+   "remedy": "I would need a more convenient bus stop or route to ensure I can reliably get to the hospital for my medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "more convenient bus stop or route",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1245": {
+   "remedy": "I'll need to find alternative transportation options to assist my family member with their medical appointments.",
+   "model_action": "targeted_support",
+   "model_reason": null,
+   "model_quote": "alternative transportation options to assist my family member",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1264": {
+   "remedy": "I would need the bus service from Aft Chartwell Rd stop to continue running so I can maintain my reliable commute to work.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus service from Aft Chartwell Rd stop to continue running",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1265": {
+   "remedy": "Provide a shuttle service or additional seating at the new bus stop location to assist those with mobility challenges.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1273": {
+   "remedy": "I would need the Blk 649 bus stop to remain open so I can continue taking the bus to school, as walking the extra distance is not feasible for me.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the Blk 649 bus stop to remain open",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1286": {
+   "remedy": "I would need the Blk 586 bus stop to remain accessible so I can continue to efficiently reach the community centers where I work.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the Blk 586 bus stop to remain accessible",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1289": {
+   "remedy": "I would need more frequent feeder bus services to help me access the stops further away from my home.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "more frequent feeder bus services",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1290": {
+   "remedy": "I would need the bus stop I currently use to remain accessible, or another stop close by, so I can continue my early commute and weekend travel for my social work duties without disruption.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus stop I currently use to remain accessible",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1291": {
+   "remedy": "I would need the bus stop I currently use to remain accessible, or another stop close by, so I can continue my commute to school and access my weekend activities without disruption.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus stop I currently use to remain accessible",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1292": {
+   "remedy": "Maintaining the same bus frequency and direct routes to key destinations would help mitigate the impact of the increased walking distance.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintaining the same bus frequency and direct routes",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1302": {
+   "remedy": "Maintain or add bus routes that provide reliable and convenient service to major employment hubs like the one I work at.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintain or add bus routes",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1305": {
+   "remedy": "I may need to arrange for a ride or explore other transportation options to supplement the bus service.",
+   "model_action": null,
+   "model_reason": "Arranging personal rides",
+   "model_quote": "arrange for a ride or explore other transportation options",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1319": {
+   "remedy": "I may need to rely more on driving myself or getting rides from family members if the bus service becomes less convenient for my commute and hospital visits.",
+   "model_action": null,
+   "model_reason": "Relying on personal transport",
+   "model_quote": "rely more on driving myself or getting rides from family members",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1328": {
+   "remedy": "I may need to explore alternative bus routes or transportation options to ensure I can still reliably reach the hospital for my essential medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "explore alternative bus routes",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1363": {
+   "remedy": "Ensure the bus service remains accessible for those of us with mobility challenges.",
+   "model_action": null,
+   "model_reason": "Accessibility for mobility challenges",
+   "model_quote": "remains accessible for those of us with mobility challenges",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1367": {
+   "remedy": "Ensure there are still convenient bus options for those of us who rely on the bus to access essential medical services.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "convenient bus options",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1374": {
+   "remedy": "I would need the feeder service to still stop near the Ang Mo Kio Community Hospital so I can access it easily for my important medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to still stop near the Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1383": {
+   "remedy": "I would need the feeder service to still stop near the Ang Mo Kio Community Hospital so I can access it easily for my regular medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to still stop near the Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1391": {
+   "remedy": "I would need the feeder service to maintain a convenient connection to the bus routes I use to get to the bus depot for my shifts.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service to maintain a convenient connection",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1396": {
+   "remedy": "Maintain a frequent feeder service that can reliably connect me to the bus routes I need for work and medical appointments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Maintain a frequent feeder service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1412": {
+   "remedy": "I would need the feeder service to maintain a stop that is very close to my home, within about 280 meters, so I can continue accessing it easily given my mobility limitations.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "maintain a stop that is very close to my home",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1414": {
+   "remedy": "Provide a shuttle service or more frequent buses to the nearest stop to help elderly residents like me who struggle with longer walks.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1423": {
+   "remedy": "Ensure that there are alternative bus routes or shuttle services that can take me directly to Ang Mo Kio Community Hospital for my medical appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "shuttle services that can take me directly to Ang Mo Kio Community Hospital",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1424": {
+   "remedy": "Having a bench or sheltered waiting area near the new bus stop would make the longer walk more manageable for me.",
+   "model_action": null,
+   "model_reason": "Request for seating and shelter",
+   "model_quote": "Having a bench or sheltered waiting area",
+   "regex_action": null,
+   "regex_unmappable": "somewhere to sit or shelter while waiting",
+   "agree": true
+  },
+  "p_1431": {
+   "remedy": "Ensure that there are frequent and convenient bus services to Ang Mo Kio Community Hospital from nearby stops, even if the closest one to my home is closed.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "frequent and convenient bus services to Ang Mo Kio Community Hospital from nearby stops",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1441": {
+   "remedy": "Ensure that the remaining bus stops have good shelter and seating to make the longer walk more manageable, especially for those commuting during peak hours.",
+   "model_action": null,
+   "model_reason": "Request for shelter and seating",
+   "model_quote": "good shelter and seating",
+   "regex_action": null,
+   "regex_unmappable": "somewhere to sit or shelter while waiting",
+   "agree": true
+  },
+  "p_1457": {
+   "remedy": "Ensure the feeder service runs frequently enough so I can still access my workplace and the community hospital on time.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "feeder service runs frequently enough",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1467": {
+   "remedy": "Ensure the feeder service provides a convenient connection to Ang Mo Kio Community Hospital, or maintain the existing bus stops to avoid disrupting my elderly household member's medical visits.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "maintain the existing bus stops",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1473": {
+   "remedy": "Provide a shuttle service or maintain the existing bus stops to ensure I can access essential services within my limited walking range.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1483": {
+   "remedy": "I need the bus route to Ang Mo Kio Community Hospital to remain accessible and not require significantly more time or distance for me to travel.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus route to Ang Mo Kio Community Hospital to remain accessible",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1485": {
+   "remedy": "I need the bus routes serving Ang Mo Kio Community Hospital to remain reliable and convenient for me to access.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus routes serving Ang Mo Kio Community Hospital to remain reliable and convenient",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1491": {
+   "remedy": "I need the 130 bus route to Ang Mo Kio Community Hospital to remain available and accessible for my medical appointments.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the 130 bus route to Ang Mo Kio Community Hospital to remain available and accessible",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1492": {
+   "remedy": "I need the bus route to Ang Mo Kio Community Hospital to remain easily accessible, without requiring me to walk significantly further.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus route to Ang Mo Kio Community Hospital to remain easily accessible",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1557": {
+   "remedy": "Providing a door-to-door shuttle service or arranging for a volunteer driver to help me get to the hospital would make this policy more workable for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Providing a door-to-door shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1558": {
+   "remedy": "I would need a shuttle service or some other transportation assistance to help my elderly household member get to the hospital.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "need a shuttle service or some other transportation assistance",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1568": {
+   "remedy": "Providing a shuttle service or on-demand transportation to connect me to the nearest open bus stop would help make this policy workable for my needs.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Providing a shuttle service or on-demand transportation",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1569": {
+   "remedy": "Ensuring the feeder service connects reliably to the 45 bus route, and potentially adding more 45 bus stops along the way, would help address the longer walk I'm concerned about.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Ensuring the feeder service connects reliably to the 45 bus route",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1572": {
+   "remedy": "I would need assistance, such as a shuttle service or mobility aid, to help me get to the remaining bus stops for my hospital trips.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "need assistance, such as a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1579": {
+   "remedy": "I would need a more frequent feeder service or shuttle to help me get to the remaining bus stops.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "need a more frequent feeder service or shuttle",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1587": {
+   "remedy": "Ensure the new stop has adequate shelter and seating for longer wait times.",
+   "model_action": null,
+   "model_reason": "Request for shelter and seating at bus stop",
+   "model_quote": "Ensure the new stop has adequate shelter and seating",
+   "regex_action": null,
+   "regex_unmappable": "somewhere to sit or shelter while waiting",
+   "agree": true
+  },
+  "p_1588": {
+   "remedy": "Ensuring the feeder service provides a reliable and efficient connection to the 132 and 138 bus routes I depend on would help address my concerns about the impact on my commute.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Ensuring the feeder service provides a reliable and efficient connection to the 132 and 138 bus routes",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1589": {
+   "remedy": "Ensure that buses 136 and 133 also stop at the new location, Opp Al-Muttaqin Mque.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Ensure that buses 136 and 133 also stop at the new location",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1610": {
+   "remedy": "I would need the bus routes to Ang Mo Kio Community Hospital to continue running from stops close to my home, so I can easily access the essential medical care I require.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus routes to Ang Mo Kio Community Hospital to continue running from stops close to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1617": {
+   "remedy": "I would need the bus routes to Ang Mo Kio Community Hospital to continue running from stops close to my home, so I can easily access the essential medical care and community engagement I rely on.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "need the bus routes to Ang Mo Kio Community Hospital to continue running from stops close to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1627": {
+   "remedy": "I would need more frequent bus service or a shuttle to the hospital and market to maintain my independence.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "need more frequent bus service or a shuttle to the hospital and market",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1641": {
+   "remedy": "I would need a more accessible transportation option, such as a shuttle service or on-demand ride, to ensure I can reliably get to my medical appointments at the community hospital.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "need a more accessible transportation option, such as a shuttle service or on-demand ride",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1665": {
+   "remedy": "Could there be a new stop added closer to our area to reduce the extra walking distance?",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "Could there be a new stop added closer to our area",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1666": {
+   "remedy": "I would need a more accessible bus service with stops closer to my home to continue making the short trips that help me maintain my independence.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "need a more accessible bus service with stops closer to my home",
+   "regex_action": null,
+   "regex_unmappable": "someone to go with them",
+   "agree": false
+  },
+  "p_1712": {
+   "remedy": "Maintain the same level of bus service frequency and reliability, even with the stop closures.",
+   "model_action": null,
+   "model_reason": "Request for maintaining service frequency and reliability",
+   "model_quote": "Maintain the same level of bus service frequency and reliability",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1724": {
+   "remedy": "Ensure the feeder bus service maintains the same level of reliability and frequency as the current bus routes.",
+   "model_action": null,
+   "model_reason": "Request for maintaining service frequency and reliability",
+   "model_quote": "Ensure the feeder bus service maintains the same level of reliability and frequency",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1731": {
+   "remedy": "Provide a shuttle service or paratransit option for residents with mobility issues to connect to the remaining bus stops.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Provide a shuttle service or paratransit option",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1736": {
+   "remedy": "Ensure that the feeder bus service maintains convenient connections to the key routes I rely on, such as 162, to minimize the impact of the stop closures.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "maintains convenient connections to the key routes I rely on, such as 162",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1740": {
+   "remedy": "Ensure the bus 24 service maintains its reliability and frequency, even with the stop closures, to support the needs of older residents like myself.",
+   "model_action": null,
+   "model_reason": "Requesting maintenance of service quality",
+   "model_quote": "maintains its reliability and frequency",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1756": {
+   "remedy": "A shuttle service from the old stop to the new one would help on days when walking is difficult.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "A shuttle service from the old stop to the new one",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1780": {
+   "remedy": "Maintain at least one bus stop within 600 m of my home to allow me to continue accessing the hospital by bus.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "Maintain at least one bus stop within 600 m of my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1795": {
+   "remedy": "I would appreciate if there were benches or shelters along the longer walking route to the bus stop, to allow me to rest during my journey.",
+   "model_action": null,
+   "model_reason": "Requesting infrastructure for rest",
+   "model_quote": "benches or shelters along the longer walking route",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1810": {
+   "remedy": "Providing a shuttle service or other transportation assistance to help me get to the hospital for my appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Providing a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1841": {
+   "remedy": "I would need the 265 bus stop near my home to remain open so I can continue accessing the local community.",
+   "model_action": "retain_stop_peak",
+   "model_reason": null,
+   "model_quote": "265 bus stop near my home to remain open",
+   "regex_action": "retain_stop_peak",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1842": {
+   "remedy": "I need a bus stop closer to my home so I can continue accessing the hospital for my vital treatments.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "need a bus stop closer to my home",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": false
+  },
+  "p_1852": {
+   "remedy": "Providing a shuttle service or other transportation assistance to help me get to the hospital for my appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Providing a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1859": {
+   "remedy": "Providing a shuttle service or other transportation assistance to help me get to the hospital for my appointments.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "Providing a shuttle service",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1874": {
+   "remedy": "I would need a shuttle or other form of assisted transportation that can take me directly from the Marymount CC area to the hospital, as the longer walk would be too difficult for me.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "I would need a shuttle",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1934": {
+   "remedy": "I need reliable transportation options that can get me to the hospital for my essential medical care.",
+   "model_action": null,
+   "model_reason": "Requesting general reliable transportation",
+   "model_quote": "reliable transportation options",
+   "regex_action": null,
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1949": {
+   "remedy": "More frequent feeder bus services or a shuttle to the nearest major stop would help make up for the longer walk to my bus.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "a shuttle to the nearest major stop",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  },
+  "p_1970": {
+   "remedy": "I would need the bus 162 route to continue serving a stop close to the community hospital to allow me to maintain my volunteer commitment there.",
+   "model_action": "reroute_feeder",
+   "model_reason": null,
+   "model_quote": "bus 162 route to continue serving a stop close to the community hospital",
+   "regex_action": null,
+   "regex_unmappable": "someone to go with them",
+   "agree": false
+  },
+  "p_1971": {
+   "remedy": "More frequent feeder bus services or a shuttle to the nearest major stop would help make up for the longer walk to the bus.",
+   "model_action": "add_shuttle_feeder",
+   "model_reason": null,
+   "model_quote": "a shuttle to the nearest major stop",
+   "regex_action": "add_shuttle_feeder",
+   "regex_unmappable": null,
+   "agree": true
+  }
+ }
+}

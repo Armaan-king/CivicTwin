@@ -19,7 +19,10 @@ responses, and no adjustment is ever applied without a human.
 """
 from __future__ import annotations
 
+import json
+import pathlib
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 
 from app.population import Persona, Population
 from app.rng import derived_rng
@@ -55,6 +58,9 @@ class Response:
     comment: str | None
     cohort: dict[str, str | None]
     is_seeded: bool = True
+    #: "model" for a simulated resident, "form" for a person who used the page,
+    #: "demo-seed" for invented data staged to populate a screen.
+    source: str = "model"
 
 
 @dataclass
@@ -85,6 +91,73 @@ class ConsultationResult:
     blind_spots: list[BlindSpot] = field(default_factory=list)
     pcs_components: dict[str, int] = field(default_factory=dict)
     pcs: int = 0
+
+
+# --------------------------------------------------------------- real submissions
+#: Feedback actually submitted by a person, appended one JSON object per line.
+#:
+#: The endpoint used to validate a submission, mint a response id, return
+#: `"status": "recorded"` and write nothing. A resident gave their view, the page
+#: confirmed it, and it was gone -- which is the one failure mode `AGENTS.md` §28 names
+#: outright: never describe a mocked path as live. The comment beside it said "W7
+#: persists this", a promise that had not been kept.
+FEEDBACK = pathlib.Path(__file__).resolve().parents[2] / "data" / "feedback"
+
+
+def record_feedback(consultation_id: str, payload: dict) -> str:
+    """Append one real submission. Returns its id."""
+    import uuid
+
+    FEEDBACK.mkdir(parents=True, exist_ok=True)
+    rid = f"h_{uuid.uuid4().hex[:8]}"
+    row = dict(payload, response_id=rid, consultation_id=consultation_id,
+               submitted_at=datetime.now(timezone.utc).isoformat(),
+               # "form" is a person who used the page. "demo-seed" is invented data put
+               # here to populate the screen. They must never be indistinguishable: a
+               # file of fabricated submissions counted as real replies is precisely the
+               # claim this product exists to object to.
+               source=payload.get("source", "form"))
+    path = FEEDBACK / f"{consultation_id}.jsonl"
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(row) + "\n")
+    return rid
+
+
+def load_feedback(consultation_id: str) -> list[Response]:
+    """Real submissions, as Responses. `is_seeded=False` is the whole point.
+
+    A real reply carries no persona: nobody submitting a form is one of the synthetic
+    residents. It therefore has no *predicted* support -- prediction is a function of a
+    persona's traits and computed outcome -- so these are counted in the public
+    confidence score and in any cohort they self-report, and excluded from the
+    prediction-versus-report comparison, which would otherwise average a prediction that
+    does not exist.
+    """
+    path = FEEDBACK / f"{consultation_id}.jsonl"
+    if not path.exists():
+        return []
+    out: list[Response] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            raw = json.loads(line)
+        except json.JSONDecodeError:
+            continue                      # a torn write is skipped, never guessed at
+        out.append(Response(
+            response_id=raw.get("response_id", "h_?"),
+            persona_id="",                # deliberately empty: not a synthetic resident
+            support=int(raw.get("support", 3)),
+            perceived_fairness=int(raw.get("perceived_fairness") or 3),
+            clarity_of_explanation=int(raw.get("clarity_of_explanation") or 3),
+            confidence_in_delivery=int(raw.get("confidence_in_delivery") or 3),
+            expected_personal_impact=int(raw.get("expected_personal_impact") or 0),
+            comment=raw.get("comment"),
+            cohort=raw.get("cohort") or {},
+            is_seeded=False,
+            source=raw.get("source", "form"),
+        ))
+    return out
 
 
 def _impact_score(o: Outcome) -> int:
@@ -221,12 +294,25 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
                     "home_subzone": p.home_subzone, "is_caregiver": str(p.is_caregiver)},
         ))
 
+    # Real submissions sit alongside the synthetic ones and are never merged into them.
+    # They count toward the public confidence score, because that score describes the
+    # people who replied and a person who replied is exactly that. They are excluded from
+    # the prediction-versus-report rows, because a real respondent has no persona and
+    # therefore no prediction -- averaging one in would compare a reported number against
+    # a prediction that was never made.
+    real = load_feedback("c1")
+    responses.extend(real)
+
     calibration = _calibrate(responses, by_id, outcomes, corrections)
     blind = _blind_spots(pop, outcomes)
 
     def avg(field_: str) -> int:
         vals = [getattr(r, field_) for r in responses]
         return round(20 * sum(vals) / len(vals)) if vals else 0
+
+    def avg_of(field_: str, rows: list[Response]) -> float | None:
+        vals = [getattr(r, field_) for r in rows]
+        return round(sum(vals) / len(vals), 2) if vals else None
 
     components = {
         "support": avg("support"),
@@ -241,6 +327,23 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
     )
 
 
+def _cohort_matches(persona_cohort: dict, reported: dict) -> bool:
+    """Does a synthetic respondent look like this real one?
+
+    Every axis the real respondent reported has to agree. An unreported axis is not a
+    constraint -- a person who left age blank is compared against everyone, which widens
+    the comparison rather than inventing an answer for them.
+    """
+    if not reported:
+        return False
+    for axis, value in reported.items():
+        if value in (None, "", "unknown"):
+            continue
+        if str(persona_cohort.get(axis)) != str(value):
+            return False
+    return True
+
+
 def _calibrate(responses, by_id, outcomes, corrections=None) -> list[CalibrationRow]:
     """Predicted against observed, both averaged over **the same respondents**.
 
@@ -250,10 +353,43 @@ def _calibrate(responses, by_id, outcomes, corrections=None) -> list[Calibration
     """
     rows: list[CalibrationRow] = []
 
+    def predict_for(r: Response) -> float | None:
+        """What the model would have predicted for this respondent.
+
+        A seeded respondent is a persona, so the prediction is theirs directly. A real
+        respondent is not: nobody filling in a form is one of the two thousand synthetic
+        residents, and they have no computed outcome to predict from.
+
+        They are not therefore unusable. They report a cohort, and the model does have a
+        prediction for people in that cohort -- so the comparison becomes "what would we
+        have predicted for someone like you, and what did you actually say". That is a
+        weaker claim than the per-persona version and it is the honest one available, and
+        it is the difference between real feedback driving the learning loop and sitting
+        beside it doing nothing.
+
+        Returns None when their cohort matches nobody, in which case they count toward
+        the confidence score and not toward calibration.
+        """
+        if r.is_seeded:
+            return predicted_support(by_id[r.persona_id], outcomes[r.persona_id],
+                                     corrections)
+        matches = [
+            predicted_support(by_id[s.persona_id], outcomes[s.persona_id], corrections)
+            for s in responses
+            if s.is_seeded and _cohort_matches(s.cohort, r.cohort)
+        ]
+        return sum(matches) / len(matches) if matches else None
+
     def row(axis: str, value: str, members: list[Response]) -> CalibrationRow:
-        pred = sum(predicted_support(by_id[r.persona_id], outcomes[r.persona_id], corrections)
-                   for r in members) / len(members)
-        obs = sum(r.support for r in members) / len(members)
+        priced = [(r, predict_for(r)) for r in members]
+        usable = [(r, pr) for r, pr in priced if pr is not None]
+        if not usable:
+            return CalibrationRow(cohort_axis=axis, cohort_value=value,
+                                  predicted_support=0.0, observed_support=0.0,
+                                  signed_error=0.0, n=0, flagged=False)
+        pred = sum(pr for _, pr in usable) / len(usable)
+        obs = sum(r.support for r, _ in usable) / len(usable)
+        members = [r for r, _ in usable]
         # on the 1-5 scale, one point is 25 percentage points of the usable range
         err = (obs - pred) * 25.0
         return CalibrationRow(
@@ -263,13 +399,35 @@ def _calibrate(responses, by_id, outcomes, corrections=None) -> list[Calibration
             flagged=abs(err) > FLAG_ERROR_PP and len(members) >= FLAG_MIN_N,
         )
 
-    rows.append(row("overall", "all respondents", responses))
+    # The overall row gets the same guard as the per-axis ones. It is appended first and
+    # was therefore exempt from the emptiness check applied below -- which is only ever
+    # visible when nobody is comparable at all, and is exactly the state a run reaches
+    # when the only responses are real ones with no cohort to match against.
+    overall = row("overall", "all respondents", responses)
+    if overall.n:
+        rows.append(overall)
     for axis in ("home_subzone", "age_band", "mobility_level", "is_caregiver"):
         buckets: dict[str, list[Response]] = {}
         for r in responses:
-            buckets.setdefault(r.cohort[axis] or "unknown", []).append(r)
+            # `.get`, not `[...]`. Every synthetic response carries all four axes because
+            # they are read off a persona; a real submission carries only what the person
+            # chose to tell us, and the form does not ask at all -- so this indexed into
+            # an empty dict and took the whole run down with a KeyError the moment
+            # somebody actually used the page.
+            #
+            # A respondent who did not report an axis is not "unknown" in that axis by
+            # accident: they declined to say, and grouping them under a single "unknown"
+            # bucket is the honest reading rather than dropping them.
+            value = r.cohort.get(axis) if r.cohort else None
+            buckets.setdefault(value or "not stated", []).append(r)
         for value, members in sorted(buckets.items()):
-            rows.append(row(axis, value, members))
+            r = row(axis, value, members)
+            # A row with no usable respondents is not a finding, it is an empty bucket.
+            # Respondents who reported no cohort at all land here: they still count in the
+            # public confidence score, which describes who replied, but there is nobody to
+            # compare a prediction against, so the row would render as 0.00 vs 0.00.
+            if r.n:
+                rows.append(r)
     return rows
 
 
@@ -299,3 +457,100 @@ def _blind_spots(pop: Population, outcomes: dict[str, Outcome]) -> list[BlindSpo
                 score=round(len(harmed) - expected, 1),
             ))
     return sorted(spots, key=lambda s: -s.score)[:5]
+
+
+# ------------------------------------------------------- the discovered constraint
+"""What the flagged cohort is actually saying, read off their own words.
+
+This was fixed prose in `engine.py`: *"The covered walkway ends partway and there is a
+slope."* The **effect** is real and modelled -- `observed_support` applies a terrain
+penalty scaled by how far someone walks -- but that sentence is a story about its cause,
+and it was printed for whichever road the policy happened to touch. Run Bedok and it
+claimed a covered walkway nobody had modelled.
+
+Two honest cautions about what this does and does not prove:
+
+  - On the seeded population the cause is **planted**. The terrain penalty is ours, and
+    one of the canned comments names a slope outright, so a model reading those comments
+    is partly reading back a sentence we wrote. The *mechanism* is real; the discovery on
+    demo data is a fixture exercising it.
+  - Alongside those sit real submissions, which are not canned. Summarising the whole
+    cohort's text is genuine work on genuine input, and it is the only version of this
+    that survives contact with a town nobody scripted.
+
+So it is generated from the comments, cached per town, and labelled as a hypothesis
+drawn from free text rather than as a finding.
+"""
+
+CONSTRAINTS = pathlib.Path(__file__).resolve().parents[2] / "data" / "runs"
+
+
+def constraint_path(town: str) -> pathlib.Path:
+    return CONSTRAINTS / f"constraint-{town}.json"
+
+
+CONSTRAINT_SYSTEM = """You read consultation free-text from one group of residents and say
+what they appear to be telling the planner that the planner's model did not know.
+
+You are given only their comments. Do not invent a cause that nothing in the text
+supports, and do not restate the numbers: the gap is already measured, the question is
+what explains it.
+
+- `note`: two sentences. What these residents describe, and what a model costing only
+  distance would have missed about it.
+- `affects`: which model quantities this would change, from: walk_distance_m,
+  inconvenience_tolerance, journey_time_min, transfer_tolerance.
+- `type`: a short slug for the kind of thing it is, such as walk_quality, service_gap,
+  information, affordability.
+- `confidence`: "clear" when several residents describe the same thing, "tentative" when
+  it rests on one or two comments, "insufficient" when the text does not support any
+  conclusion -- in which case say so in `note` rather than guessing.
+
+Respond with a single JSON object matching the DiscoveredConstraint schema."""
+
+
+def discover_constraint(town: str, cohort_value: str, comments: list[str], llm=None) -> dict:
+    """Load the cached reading for this town, or generate one from the comments.
+
+    Cached because it is a property of a finished run, not of a request, and because a
+    demo must not depend on a model being reachable. A cache miss with no model returns
+    the honest empty answer rather than a plausible sentence.
+    """
+    from pydantic import BaseModel, Field
+
+    path = constraint_path(town)
+    if path.exists():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            path.unlink(missing_ok=True)
+
+    if llm is None or not comments:
+        return {"type": "unknown", "location": cohort_value, "affects": [],
+                "confidence": "insufficient", "source": "not generated",
+                "note": "No reading has been generated for this cohort. The gap is "
+                        "measured; its cause is not claimed."}
+
+    class DiscoveredConstraint(BaseModel):
+        note: str = Field(max_length=400)
+        affects: list[str] = Field(default_factory=list)
+        type: str = "walk_quality"
+        confidence: str = "tentative"
+
+    listing = "\n".join(f"- {c}" for c in comments[:40])
+    result = llm.structured(
+        DiscoveredConstraint, CONSTRAINT_SYSTEM,
+        f"Residents in {cohort_value} wrote:\n\n{listing}", max_tokens=800)
+    payload = {
+        "type": result.type,
+        "location": cohort_value,
+        "affects": result.affects,
+        "note": result.note,
+        "confidence": result.confidence,
+        "source": "consultation free text, read by a model",
+        "model": getattr(llm, "provider_name", "unknown"),
+        "n_comments": len(comments),
+    }
+    CONSTRAINTS.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=1), encoding="utf-8")
+    return payload

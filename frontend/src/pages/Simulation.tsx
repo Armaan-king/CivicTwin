@@ -6,25 +6,16 @@ import { Loading, Failed } from "@/components/ui";
 import { CityMap, blockDetail } from "@/components/CityMap";
 import { Boundary } from "@/components/Boundary";
 import { useRun } from "@/lib/useRun";
-
-const ROUND_LABEL = [
-  "Service 265 before the change",
-  "Two stops close on Ang Mo Kio Ave 3",
-  "Residents adjust their journeys",
-  "The full transport impact",
-];
-
-const ROUND_NOTE = [
-  "Both proposed stops are open. Explore today’s route before the policy takes effect.",
-  "Closures at Blk 700B and Blk 324 add walking time for nearby residents.",
-  "Families change who travels and how they reach essential services.",
-  "See who loses access, walks farther or relies on family support.",
-];
+import { stageLabels, stageNotes, townName, corridorCaption, serviceLabel } from "@/lib/naming";
 
 const DWELL_MS = 3300;
 
 export function Simulation() {
   const { run, outcomes, error } = useRun();
+  // Derived from this run's own policy: a Bedok closure must not be captioned
+  // "Ang Mo Kio", which is what these strings did when they were literals.
+  const ROUND_LABEL = useMemo(() => stageLabels(run), [run]);
+  const ROUND_NOTE = useMemo(() => stageNotes(run), [run]);
   const navigate = useNavigate();
   const [round, setRound] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -145,8 +136,8 @@ export function Simulation() {
 
         <section className="simulation-map-panel" aria-label="Simulation map and results">
           <div className="simulation-map-location">
-            <strong>Ang Mo Kio</strong>
-            <span>Singapore · Service 265 corridor</span>
+            <strong>{townName(run)}</strong>
+            <span>{corridorCaption(run)}</span>
           </div>
           <Boundary label="The estate map">
             <CityMap
@@ -159,6 +150,7 @@ export function Simulation() {
               onSelect={setSelected}
               ties={ties}
               removedStopIds={run.policy.modifications.remove_stops}
+              mapLabel={`Interactive map of the ${serviceLabel(run)} corridor in ${townName(run)}.`}
             />
           </Boundary>
 

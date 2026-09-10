@@ -13,7 +13,7 @@ type ValidIntervention = Intervention & { metrics: NonNullable<Intervention["met
 const ACTION_COPY: Record<Intervention["kind"], string> = {
   retain_stop_peak: "Keep both stops open during the busiest travel periods.",
   add_shuttle_feeder: "Add a short feeder service for the affected corridor.",
-  reroute_feeder: "Move Service 265 closer to residents who lose a stop.",
+  reroute_feeder: "Move the feeder service closer to residents who lose a stop.",
   targeted_support: "Provide assisted travel for clinic-dependent residents.",
   phase_rollout: "Close one stop first and review the effect before continuing.",
 };

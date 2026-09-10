@@ -196,7 +196,11 @@ def test_replay_only_skips_a_cache_miss_instead_of_calling_the_model(small, monk
     run = D.deliberate(pop, world, "replay only policy", LLMClient(NeverCalled()),
                        social=social, limit=8)
     assert run.calls == 0
-    assert run.failed_batches > 0, "the miss must be counted, not hidden"
+    # Counted, and counted as what it is. A replay-only miss means the batch was never
+    # run; it is not the model failing, and merging the two made a demo that skipped
+    # half the town indistinguishable from one whose model was broken.
+    assert run.skipped_batches > 0, "the miss must be counted, not hidden"
+    assert run.failed_batches == 0, "a cache miss is not a model failure"
     cov = run.coverage()
     assert cov["evaluated"] == 0
     assert cov["unevaluated"] == cov["population"]

@@ -177,11 +177,34 @@ export async function streamRounds(
  * NotAvailableOffline the other write paths do rather than inventing a transcript. The
  * page shows that honestly: voices are a live-backend feature.
  */
+/**
+ * This policy has not been deliberated, and the demo will not generate one on the spot.
+ *
+ * A distinct type rather than an error string because the page renders it differently:
+ * nothing has gone wrong, the residents simply have not been asked about *this* policy,
+ * and the honest thing to show is what it would take rather than a spinner.
+ */
+export class NotDeliberated extends ApiError {
+  constructor(
+    readonly cohort: number,
+    readonly estimatedMinutes: number,
+    readonly why: string,
+    readonly how: string,
+  ) {
+    super("This policy has not been deliberated yet.", 202, false);
+    this.name = "NotDeliberated";
+  }
+}
+
 export async function fetchVoices(runId: string, limit = 300): Promise<VoiceListing> {
   if (TRANSPORT === "fixture") {
     throw new NotAvailableOffline("Resident deliberation");
   }
   const res = await fetch(`${API_BASE}/api/runs/${runId}/voices?limit=${limit}`);
+  if (res.status === 202) {
+    const d = (await res.json()).detail ?? {};
+    throw new NotDeliberated(d.cohort ?? 0, d.estimated_minutes ?? 0, d.why ?? "", d.how ?? "");
+  }
   if (res.status === 503) {
     // no model configured. Say so rather than showing an empty page.
     throw new Error((await res.json()).detail ?? "No model configured for deliberation.");

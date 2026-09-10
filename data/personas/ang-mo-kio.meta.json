@@ -1,0 +1,11 @@
+{
+ "town": "ang-mo-kio",
+ "generated": 823,
+ "population": 2000,
+ "covers": "cohort",
+ "is_demo_store": true,
+ "models": [
+  "anthropic.claude-3-5-sonnet-20240620-v1:0"
+ ],
+ "note": "Residents without a backstory are not degraded, only thinner: they reason from their bare record. A store that covers the cohort is sufficient for a run whose cohort it covers, and is not a claim about the rest of the town."
+}

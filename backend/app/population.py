@@ -53,6 +53,19 @@ COMPOSITION: dict[str, list[tuple[str, str]]] = {
 
 AGE_ORDER = ["<18", "18-34", "35-54", "55-64", "65-74", "75+"]
 
+#: The age bands each household role can actually occupy, as (min, max) indices into
+#: AGE_ORDER. Without this the age jitter in `_shift_age` moved a member's band and left
+#: their role untouched, which produced 55 residents who were under 18 and labelled
+#: `parent`, `adult` or `elder` -- twelve of them the only person in their household. A
+#: fifteen-year-old living alone is not a rare edge case in the data, it is an error, and
+#: a backstory generated from one is nonsense that then gets cached forever.
+ROLE_BANDS: dict[str, tuple[int, int]] = {
+    "child": (0, 1),      # a child may be an adult child still living at home
+    "adult": (1, 5),
+    "parent": (1, 5),
+    "elder": (3, 5),      # 55-64 at the youngest
+}
+
 
 @dataclass
 class Persona:
@@ -100,6 +113,27 @@ def _unit(rng, key: str) -> float:
     return round(min(1.0, max(0.0, rng.gauss(mean, sd))), 3)
 
 
+def _walk_tolerance(rng, mobility: str) -> int:
+    """How far this person will walk to a stop, varied per person.
+
+    `MAX_WALK_M` is a lookup on mobility level and nothing else, so the whole population
+    held four distinct values and every unimpaired resident was identically "comfortable
+    up to about 1200 m". Severity is a comparison against this number (`severity_for`),
+    so four values quantise harm into four buckets and make two neighbours with different
+    lives report identical outcomes.
+
+    +/-15% around the band. Not 20%: at 20% "mild" reaches 960 m and "none" starts at
+    960 m, the two bands touch, and a mapping whose classes overlap has stopped being a
+    mapping. At 15% they stay clear of each other -- 680-920 against 1020-1380 -- which
+    keeps C3's ordering true while letting people inside one band differ.
+
+    Rounded to 10 m: the precision is invented either way, and a fact that says 963 m
+    claims a confidence nobody has.
+    """
+    base = MAX_WALK_M[mobility]
+    return int(round(base * rng.uniform(0.85, 1.15) / 10.0) * 10)
+
+
 def _mobility(rng, age_band: str) -> str:
     mild, moderate, severe = MOBILITY_BY_AGE[age_band]
     r = rng.random()
@@ -112,12 +146,17 @@ def _mobility(rng, age_band: str) -> str:
     return "none"
 
 
-def _shift_age(rng, band: str) -> str:
-    """Households are not uniform. Nudge a member to a neighbouring band sometimes."""
+def _shift_age(rng, band: str, role: str) -> str:
+    """Households are not uniform. Nudge a member to a neighbouring band sometimes.
+
+    Bounded by the role. The nudge exists so an estate is not made of identikit
+    households; it is not licence to make a parent younger than their own children.
+    """
     i = AGE_ORDER.index(band)
     if rng.random() < 0.30:
-        i = max(0, min(len(AGE_ORDER) - 1, i + rng.choice([-1, 1])))
-    return AGE_ORDER[i]
+        i = i + rng.choice([-1, 1])
+    lo, hi = ROLE_BANDS.get(role, (0, len(AGE_ORDER) - 1))
+    return AGE_ORDER[max(lo, min(hi, i))]
 
 
 def build_population(geo: Geography, size: int = POPULATION_SIZE) -> Population:
@@ -149,7 +188,7 @@ def build_population(geo: Geography, size: int = POPULATION_SIZE) -> Population:
                 break
             pid = f"p_{len(personas):04d}"
             rng = derived_rng(pid)
-            band = _shift_age(rng, base_band)
+            band = _shift_age(rng, base_band, role)
             mobility = _mobility(rng, band)
 
             if band == "<18":
@@ -169,7 +208,7 @@ def build_population(geo: Geography, size: int = POPULATION_SIZE) -> Population:
                     income_band=income,
                     employment_status=employment,
                     mobility_level=mobility,
-                    max_walk_m=MAX_WALK_M[mobility],
+                    max_walk_m=_walk_tolerance(rng, mobility),
                     transfer_tolerance=TRANSFER_TOLERANCE[mobility],
                     work_start_time=rng.choice(WORK_START) if employment == "employed" else None,
                     has_car_access=car and rng.random() < 0.75,
@@ -224,6 +263,17 @@ def assign_care_edges(pop: Population) -> list[CareEdge]:
     the rate came out so low -- employed carers are still preferred, so the cost of
     absorbing a journey stays visible where it exists.
 
+    **Measured, not asserted.** With the rules as they stand this produces 147 care edges
+    in 2,000 residents: 11.3% of residents aged 55+ are carers, against the survey's ~14%
+    of adults aged 48-79 -- 55+ being the closest band boundary we have to its age range.
+    On a 65+ denominator it is 8.5%, which is the same population measured differently and
+    is quoted here so nobody has to guess which one a number refers to. 60% of carers are
+    adult children against the survey's 77%.
+
+    It is deliberately not tuned onto 14.0%. The rules are a model of who accompanies whom;
+    a rate fitted to land on the headline would be a number wearing a finding's clothes,
+    which is the exact failure this product exists to criticise.
+
     The population remains synthetic and is labelled as such. The survey calibrates a rate;
     it does not supply people.
     """
@@ -236,12 +286,26 @@ def assign_care_edges(pop: Population) -> list[CareEdge]:
         dependents = [
             m for m in members
             if m.needs_clinic
-            and (m.mobility_level in ("moderate", "severe") or m.age_band == "75+")
+            and (m.mobility_level in ("moderate", "severe")
+                 or m.age_band == "75+"
+                 # An older adult with mild difficulty who cannot skip a clinic trip is
+                 # accompanied in practice, and excluding them was most of why the rate
+                 # came out at 3.2% of older adults against the survey's ~14%. Mild is
+                 # admitted from 65 only: a 30-year-old with a mild limitation makes
+                 # their own way, and admitting them would inflate the graph with
+                 # dependencies nobody in the survey reported.
+                 or (m.mobility_level == "mild" and m.age_band in ("65-74", "75+")))
         ]
         dependent_ids = {m.persona_id for m in dependents}
         eligible = [
             m for m in members
-            if m.mobility_level == "none" and m.age_band != "<18"
+            # Mild difficulty does not stop someone accompanying a spouse to a clinic, and
+            # requiring perfect mobility was the rest of the shortfall against the survey:
+            # for a 65-74 year old, "none" is 54% of the band and "none or mild" is 82%.
+            # It also makes the absorbed cost more honest rather than less -- a carer with
+            # a mild limitation taking on a journey is paying more for it, not less.
+            # Moderate and severe stay out: at that point they are the one being helped.
+            if m.mobility_level in ("none", "mild") and m.age_band != "<18"
             # never both. Letting frail elders be dependents made two members of an elder
             # household eligible as each other's carer, which produced reciprocal
             # CARES_FOR edges and ran the cascade in both directions (D2 forbids it).

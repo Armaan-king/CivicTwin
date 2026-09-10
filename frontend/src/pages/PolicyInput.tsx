@@ -6,6 +6,7 @@ import { TopBar } from "@/components/TopBar";
 import { Loading, Failed } from "@/components/ui";
 import { api, NotAvailableOffline } from "@/lib/api";
 import { useRun } from "@/lib/useRun";
+import { serviceLabel, serviceId, affectedRoad, townName } from "@/lib/naming";
 
 type ReviewTab = "change" | "assumptions" | "locations";
 
@@ -83,8 +84,10 @@ export function PolicyInput() {
               />
               <div className="policy-editor__footer">
                 <div className="policy-context" id="policy-draft-help">
-                  <span>Service 265</span>
-                  <span>Ang Mo Kio Ave 3</span>
+                  {/* the loaded run's own service and road, not the one this page was
+                      written against */}
+                  <span>{serviceLabel(run)}</span>
+                  <span>{affectedRoad(run) || townName(run)}</span>
                   {changed && <span className="warning">Edited</span>}
                 </div>
                 {changed && (
@@ -135,7 +138,11 @@ export function PolicyInput() {
                   <div className="policy-review__content">
                     {tab === "change" && (
                       <dl className="policy-summary-list">
-                        <div><dt>Service</dt><dd>265</dd></div>
+                        {/* The run's own service, not the one this page was written
+                            against. A bare "265" survived an earlier sweep because that
+                            searched for the string "Service 265" and this is the number
+                            on its own, in a <dd> beside a <dt> that supplies the word. */}
+                        <div><dt>Service</dt><dd>{serviceId(run) || "—"}</dd></div>
                         <div><dt>Change</dt><dd>Close {run.policy.modifications.remove_stops.length} stops and run express</dd></div>
                         <div><dt>Goal</dt><dd>{run.policy.objective}</dd></div>
                         <div><dt>Fleet</dt><dd>{run.policy.constraints.fleet_increase_allowed ? "Increase allowed" : "No additional vehicles"}</dd></div>

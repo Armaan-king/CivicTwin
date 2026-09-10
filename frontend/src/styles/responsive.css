@@ -1,0 +1,136 @@
+/*
+ * Small-screen layout. Additive on purpose.
+ *
+ * Every rule here lives inside a media query and overrides only layout properties --
+ * grid-template-columns, flex-direction, width. No component is restructured, no
+ * markup changes, and above the breakpoints nothing in this file applies at all.
+ *
+ * The problem it solves: the desktop layout is built from grids with fixed pixel tracks
+ * (`350px minmax(0, 1fr)`, `150px minmax(160px, 1fr) 70px 110px`). A fixed track cannot
+ * shrink, so on a narrow viewport the row stays as wide as its columns demand and the
+ * page scrolls sideways -- the content is all present and none of it is reachable.
+ *
+ * Two breakpoints, chosen from the widest fixed tracks rather than from a device:
+ *
+ *   <= 900px   two-pane workspaces stack; sidebars become full-width blocks
+ *   <= 620px   dense data rows stop being tables and become stacked label/value pairs
+ *
+ * The dense rows are the interesting case. `.impact-cohorts > div` is four fixed columns
+ * -- label, bar, percentage, count -- and squeezing them produces an unreadable smear.
+ * Below 620px the bar spans its own line and the numbers sit under the label, which is
+ * the same information in the shape a narrow screen can actually render.
+ */
+
+/* ------------------------------------------------------------------ <= 900px */
+@media (max-width: 900px) {
+  /* two-pane workspaces: sidebar over content, both full width */
+  .impact-workspace,
+  .options-workspace,
+  .policy-workspace__grid,
+  .impact-summary-grid,
+  .impact-cause-grid,
+  .calibration-overview,
+  .option-outcome,
+  .simulation-header,
+  .impact-header,
+  .options-header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* a sidebar sized for a column has no reason to keep that width once stacked */
+  .impact-workspace > *,
+  .options-workspace > *,
+  .calibration-overview > * {
+    min-width: 0;
+    max-width: none;
+  }
+
+  /* header actions wrap under the title instead of forcing the row wider */
+  .simulation-header,
+  .impact-header,
+  .options-header {
+    row-gap: 14px;
+  }
+  .simulation-controls,
+  .impact-header .btn,
+  .options-header .btn {
+    justify-self: stretch;
+  }
+
+  /* the map needs a height it can actually have on a short viewport */
+  .simulation-map-panel {
+    height: auto;
+    min-height: 62vh;
+  }
+
+  /* long prose columns were capped for readability on a wide screen */
+  .policy-workspace__header,
+  .impact-trace ol {
+    max-width: none;
+  }
+}
+
+/* ------------------------------------------------------------------ <= 620px */
+@media (max-width: 620px) {
+  /* Dense data rows: four fixed columns become a stacked block. The bar gets its own
+     line because a progress bar squeezed into a phone-width column communicates
+     nothing, and the figure beside it is the part that carries the meaning. */
+  .impact-cohorts > div,
+  .calibration-row,
+  .response-gap {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 6px;
+    align-items: baseline;
+  }
+  .impact-cohorts > div > :nth-child(2),
+  .calibration-row > :nth-child(2),
+  .response-gap > :nth-child(2) {
+    grid-column: 1 / -1;
+    order: 3;                 /* bar below the label and figure */
+  }
+
+  /* small fixed-width leading columns (icons, indices) can shrink to their content */
+  .policy-summary-list div,
+  .simulation-counter,
+  .impact-finding-card,
+  .impact-trace li,
+  .calibration-confidence-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  /* tab strips scroll rather than wrap into an unreadable stack */
+  .impact-tabs,
+  .calibration-tabs,
+  .policy-review__tabs {
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .impact-tabs::-webkit-scrollbar,
+  .calibration-tabs::-webkit-scrollbar,
+  .policy-review__tabs::-webkit-scrollbar { display: none; }
+
+  /* buttons sized for a desktop row go full width */
+  .btn,
+  .btn-ghost {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .consultation-submit {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .consultation-submit .btn { min-width: 0; }
+}
+
+/* ---------------------------------------------------------- never scroll sideways */
+/*
+ * The backstop. Anything that still overflows -- a wide table, a long unbroken stop
+ * name -- scrolls inside its own container rather than pushing the page out. A body
+ * that scrolls horizontally is the failure this file exists to prevent, and it should
+ * not depend on having anticipated every element.
+ */
+html, body { overflow-x: hidden; }

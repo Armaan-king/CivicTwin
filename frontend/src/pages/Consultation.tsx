@@ -8,13 +8,14 @@ import { useRun } from "@/lib/useRun";
 import { api, NotAvailableOffline } from "@/lib/api";
 import { TRANSPORT } from "@/lib/config";
 import type { Intervention } from "@/types/simulation";
+import { serviceLabel } from "@/lib/naming";
 
 type ValidIntervention = Intervention & { metrics: NonNullable<Intervention["metrics"]> };
 
 const ACTION_COPY: Record<Intervention["kind"], string> = {
   retain_stop_peak: "Keep both stops open during peak travel periods.",
   add_shuttle_feeder: "Add a short feeder service along the affected corridor.",
-  reroute_feeder: "Move Service 265 closer to residents who lose a stop.",
+  reroute_feeder: "Move the feeder service closer to residents who lose a stop.",
   targeted_support: "Provide assisted travel for clinic-dependent residents.",
   phase_rollout: "Close one stop first and review the effect before continuing.",
 };
@@ -87,7 +88,7 @@ export function Consultation() {
         <header className="consultation-header">
           <div>
             <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
-            <h1>Have your say on Service 265</h1>
+            <h1>Have your say on {serviceLabel(run)}</h1>
           </div>
           {TRANSPORT === "fixture" && (
             <span className="consultation-preview">Preview · responses are not saved</span>
@@ -105,7 +106,7 @@ export function Consultation() {
             <div className="consultation-change">
               <span>Service change</span>
               <strong>Two Ave 3 stops close</strong>
-              <p>Service 265 runs express through this section.</p>
+              <p>{serviceLabel(run)} runs express through this section.</p>
             </div>
 
             <div className="consultation-results" aria-label="Expected results">

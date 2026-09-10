@@ -80,8 +80,15 @@ def build_resident_world(
     before: TransitNetwork,
     after: TransitNetwork,
     closed: set[str],
+    backstory=None,
 ) -> ResidentWorld:
-    """The numbered facts this resident is given, and nothing else."""
+    """The numbered facts this resident is given, and nothing else.
+
+    `backstory` is optional and its absence is a supported state, not a degraded one: a
+    resident without one simply has fewer facts to reason from, which is honest. A demo
+    town ships a store covering the cohort, so residents outside it fall back to their
+    bare record rather than to invented detail.
+    """
     w = ResidentWorld(persona_id=p.persona_id)
     n = [0]
 
@@ -107,6 +114,17 @@ def build_resident_world(
         d_hosp = distance_m(p.xy, geo.polyclinic)
         fact(f"{dest_name} is about {round(d_hosp)} m from home in a straight line, "
              f"too far to walk.")
+
+    # The life, before the bus. These are facts like any other -- numbered, citable, and
+    # checked by the grounding guard -- which is what lets a resident say "I collect my
+    # grandson on Wednesdays" and have that count as reasoning rather than invention.
+    # Without them the model was handed six coarse bands and told to invent nothing, and
+    # two thousand residents came back sounding like one.
+    if backstory is not None:
+        fact(f"Your name is {backstory.name}. You are a {backstory.occupation} and you "
+             f"have lived on {p.home_subzone} for {backstory.years_in_estate} years.")
+        fact(f"An ordinary week for you: {backstory.routine}")
+        fact(f"What you need the bus for: {backstory.depends_on}")
 
     fact(f"You are {p.age_band}, {p.employment_status}."
          + (f" You start work at {p.work_start_time}." if p.work_start_time else ""))
@@ -161,11 +179,26 @@ def build_resident_world(
 
 
 def build_world(
-    pop: Population, geo: Geography, closed: set[str]
+    pop: Population, geo: Geography, closed: set[str], town: str | None = None
 ) -> dict[str, ResidentWorld]:
+    """Every resident's facts, with their backstory folded in where one exists.
+
+    The store is read once here rather than per resident. A missing store is normal --
+    the deliberation still works, on thinner facts -- so this never raises.
+    """
+    import os
+
+    from app.backstory import load as load_backstories
+
     before = TransitNetwork(geo)
     after = TransitNetwork(geo, removed=closed)
+    town = town or os.environ.get("TOWN", "ang-mo-kio")
+    try:
+        lives = load_backstories(town)
+    except Exception:                       # noqa: BLE001 - a bad store is not fatal
+        lives = {}
     return {
-        p.persona_id: build_resident_world(p, pop, geo, before, after, closed)
+        p.persona_id: build_resident_world(
+            p, pop, geo, before, after, closed, lives.get(p.persona_id))
         for p in pop.personas
     }

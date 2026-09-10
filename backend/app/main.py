@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 from app.agents.policy_interpreter import PolicyInterpretationFailed, interpret
 from app.schemas.policy import StartRunRequest, StartRunResponse
 from app.schemas.run import Intervention, SimulationRun
-from app.engine import build_run, study_area_for
+from app.engine import DEFAULT_TOWN, build_run, study_area_for
 from app.resolve import StudyAreaNotFound
 from app.services.llm import LLMError, TELEMETRY, build_client
 
@@ -81,6 +81,41 @@ def health() -> dict[str, Any]:
         "llm_provider": _llm.completion.name,
         "llm_calls": len(TELEMETRY.calls),
     }
+
+
+def _deliberation_estimate_minutes(cohort: int) -> int:
+    """Roughly how long deliberating this cohort would take, from measured throughput.
+
+    Not a guess: 818 residents took 20 minutes on Claude 3 Haiku at this account's
+    quota, and the same run on Sonnet was projected at over nine hours from its measured
+    0.25 calls a minute. The cheaper figure is quoted because it is the one a person
+    would actually wait for, and it is rounded hard -- a precise number here would imply
+    a confidence the throttling does not support.
+    """
+    batches = max(1, cohort // BATCH_HINT) * ROUNDS_HINT
+    return max(1, round(batches * SECONDS_PER_BATCH_HINT / 60))
+
+
+#: measured on the Haiku run: 818 residents, ~161 calls, 20 minutes
+BATCH_HINT = 12
+ROUNDS_HINT = 2.4          # rounds 0 and 1 in full, later rounds far smaller
+SECONDS_PER_BATCH_HINT = 7.4
+
+
+class NotDeliberated(RuntimeError):
+    """This policy has no recorded deliberation and the demo may not generate one.
+
+    Not an error in the sense of something going wrong: it is an accurate description of
+    a run whose residents have not been asked yet. The distinction matters because the
+    alternative -- serving another policy's residents, or an empty list that reads as
+    "nobody was affected" -- are both worse than saying so.
+    """
+
+    def __init__(self, policy: str, town: str, cohort: int):
+        super().__init__("no recorded deliberation for this policy")
+        self.policy = policy
+        self.town = town
+        self.cohort = cohort
 
 
 #: Runs built from a submitted policy, by id. The demo run is separate and unnamed:
@@ -158,9 +193,22 @@ class FeedbackIn(BaseModel):
 
 
 @app.post("/api/consultations/{consultation_id}/feedback")
-def submit_feedback(consultation_id: str, body: FeedbackIn) -> dict[str, str]:
-    # W7 persists this. Accepted and validated now so the citizen page is wired end to end.
-    return {"response_id": f"r_{uuid.uuid4().hex[:8]}", "status": "recorded"}
+def submit_feedback(consultation_id: str, body: FeedbackIn) -> dict[str, Any]:
+    """Store one real submission, and mean it.
+
+    This used to validate the body, mint an id, return `"status": "recorded"` and write
+    nothing at all -- so a resident gave their view, the page confirmed it, and it was
+    gone on the next restart. Saying "recorded" for something discarded is the exact
+    failure `AGENTS.md` §28 forbids, and the loop this product demonstrates has its
+    weakest link at precisely the "ask real people" step.
+    """
+    from app.consultation import record_feedback
+
+    rid = record_feedback(consultation_id, body.model_dump())
+    # the next run folds it in; the cached one predates it
+    global _run_cache
+    _run_cache = None
+    return {"response_id": rid, "status": "recorded", "persisted": True}
 
 
 class CalibrationDecision(BaseModel):
@@ -272,7 +320,7 @@ def get_deliberation(run_id: str) -> "DeliberationRun":
     page twice must not cost twice. Raises rather than substituting when no model is
     configured, which the route turns into a 503 saying exactly what to set.
     """
-    from app.deliberate import deliberate
+    from app.deliberate import REPLAY_ONLY, deliberate, load_recorded
     from app.engine import study_area_for
     from app.population import build_population
     from app.services.llm import build_deliberation_client
@@ -281,6 +329,44 @@ def get_deliberation(run_id: str) -> "DeliberationRun":
 
     run = get_run(run_id)
     if run_id not in _deliberation_cache:
+        # A finished run on disk wins over deliberating again.
+        #
+        # This is what makes a demo possible at all. Deliberating live is right for a
+        # real study and takes hours on this account's quota, and the content-hash cache
+        # cannot bridge the gap: it is keyed on the exact prompt, so the policy line
+        # differing by three words misses every entry, and on a single model, while the
+        # recorded run deliberately merges two. A replay is a real run shown again --
+        # every turn was produced by a model and passed the grounding guard -- which is
+        # exactly what `AGENTS.md` §22 sanctions and quite different from generating
+        # substitute text when no model is available.
+        town = (run.policy.study_area.town if run.policy.study_area
+                and run.policy.study_area.town else DEFAULT_TOWN)
+        recorded = load_recorded(town, run.policy.text)
+        if recorded is not None:
+            _deliberation_cache[run_id] = recorded
+            return recorded
+
+        # No recording for *this* policy, and replay-only forbids calling the model.
+        #
+        # Raise before building the world rather than after. Deliberating would take about
+        # twenty minutes on the cheap model and hours on the better one, so a spinner here
+        # would be a lie about what is happening; and running it anyway under replay-only
+        # spends forty seconds constructing two thousand residents' facts only to skip
+        # every batch and return nobody. The route turns this into a described state the
+        # page can render honestly.
+        if REPLAY_ONLY:
+            from app.cohort import select_cohort
+            from app.social import build_social_graph
+            geo, closed, _ = study_area_for(run)
+            pop = build_population(geo)
+            raise NotDeliberated(
+                policy=run.policy.text or "",
+                town=town,
+                cohort=len(select_cohort(
+                    pop, build_world(pop, geo, closed, town=town),
+                    build_social_graph(pop)).ids),
+            )
+
         # the study area this run was actually built for, not the default one
         geo, closed, _ = study_area_for(run)
         pop = build_population(geo)
@@ -309,6 +395,22 @@ def list_voices(run_id: str, limit: int = 200, offset: int = 0) -> dict:
 
     try:
         d = get_deliberation(run_id)
+    except NotDeliberated as exc:
+        # 202: the request is understood and the work has not been done. Carries what it
+        # would take, so the page can say "818 residents, about 20 minutes" instead of
+        # spinning on a promise nobody is keeping.
+        raise HTTPException(202, detail={
+            "status": "not_deliberated",
+            "town": exc.town,
+            "policy": exc.policy,
+            "cohort": exc.cohort,
+            "estimated_minutes": _deliberation_estimate_minutes(exc.cohort),
+            "how": (f"python scripts/run_deliberation.py --town {exc.town}, then "
+                    f"scripts/merge_deliberations.py, with DELIBERATION_REPLAY_ONLY=0"),
+            "why": ("This policy closes different stops from the recorded run, so those "
+                    "residents reasoned about a different question. Their answers are "
+                    "not reused."),
+        }) from exc
     except NoModelConfigured as exc:
         raise HTTPException(503, str(exc)) from exc
     except LLMError as exc:

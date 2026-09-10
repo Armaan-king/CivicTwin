@@ -47,3 +47,11 @@ data/llm_cache/
 # regeneration is no use in a diff, and the generator has no meaning without it.
 scripts/make_demo_script.py
 CivicTwin-demo-script.docx
+
+# SSO access token. A credential: never commit.
+.aws-sso-cache.json
+
+# Run logs: scratch output from a local run, not part of the project.
+data/runs/_*.log
+data/personas/_*.json
+data/personas/_*.log

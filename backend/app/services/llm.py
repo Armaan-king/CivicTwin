@@ -298,24 +298,184 @@ class BedrockCompletion:
         if self._client is None:
             try:
                 import boto3
+                from botocore.config import Config
             except ImportError as exc:  # pragma: no cover - depends on the environment
                 raise LLMError("boto3 is not installed; pip install -r requirements.txt") from exc
-            self._client = boto3.client("bedrock-runtime", region_name=self.region)
+            # Adaptive retries, because Bedrock throttles and the default four attempts
+            # are not enough. A 200-call backstory run died on ThrottlingException with
+            # the stock client; adaptive mode adds client-side rate limiting that backs
+            # off when the service pushes back, rather than hammering it and failing.
+            # The batch loop above is already sequential, so this is the only concurrency
+            # control the run needs.
+            # An explicit Session rather than the module default: the default is cached
+            # process-wide and hands back credentials resolved at first use, which is
+            # exactly what made credential renewal a no-op.
+            self._client = boto3.Session().client(
+                "bedrock-runtime", region_name=self.region,
+                config=Config(retries={"max_attempts": 10, "mode": "adaptive"},
+                              read_timeout=300, connect_timeout=15))
         return self._client
 
     def complete(self, system: str, prompt: str, max_tokens: int,
-                 schema: dict | None = None) -> str:
+                 schema: dict | None = None) -> CompletionResult:
+        """Converse, and hand back the token counts it reports.
+
+        This returned a bare string until it mattered. `structured()` only records usage
+        for a `CompletionResult`, so every Bedrock call was logged at zero tokens and the
+        telemetry said a run had cost nothing -- fine while the provider was a local model
+        that really was free, actively misleading on a metered account with a fixed
+        budget. Converse reports `usage` on every response; there was never a reason not
+        to read it.
+        """
+        # Forced tool use rather than "please return JSON".
+        #
+        # The caller appends the JSON Schema to the system prompt, and a small model reads
+        # a schema followed by "return JSON matching this" as an instruction to return
+        # *the schema*. Measured on Claude 3 Haiku: 17% valid batches, and every failure
+        # was a verbatim echo of the schema rather than an instance of it. Assistant
+        # prefill with "{" was tried and changed nothing, for the obvious reason that a
+        # schema also begins with "{" -- continuing the brace is perfectly compatible with
+        # echoing it.
+        #
+        # `toolConfig` with `toolChoice` pinned to one tool removes the ambiguity at the
+        # protocol level instead of asking nicely: the model must emit a tool call whose
+        # input validates against the schema, so there is no document for it to copy and
+        # no free text to wrap it in. This is what the Converse API provides the mechanism
+        # for, and reaching for it earlier would have saved a model swap.
+        kwargs = {
+            "modelId": self.model_id,
+            "system": [{"text": system}] if system else [],
+            "messages": [{"role": "user", "content": [{"text": prompt}]}],
+            "inferenceConfig": {"maxTokens": max_tokens,
+                                "temperature": self.temperature},
+        }
+        if schema:
+            kwargs["toolConfig"] = {
+                "tools": [{"toolSpec": {
+                    "name": "emit",
+                    "description": "Return the requested result in the required shape.",
+                    "inputSchema": {"json": schema},
+                }}],
+                "toolChoice": {"tool": {"name": "emit"}},
+            }
         try:
-            res = self._bedrock().converse(
-                modelId=self.model_id,
-                system=[{"text": system}] if system else [],
-                messages=[{"role": "user", "content": [{"text": prompt}]}],
-                inferenceConfig={"maxTokens": max_tokens,
-                                 "temperature": self.temperature},
-            )
+            res = self._bedrock().converse(**kwargs)
         except Exception as exc:  # noqa: BLE001 - surfaced, never swallowed
+            if "ExpiredToken" in str(exc) or "security token" in str(exc):
+                # A boto3 client captures credentials when it is constructed, so new
+                # environment variables mean nothing until the client is rebuilt.
+                self._client = None
             raise LLMError(f"Bedrock call failed: {exc}") from exc
-        return res["output"]["message"]["content"][0]["text"]
+        usage = res.get("usage", {})
+        blocks = res["output"]["message"]["content"]
+        # a forced tool call arrives as structured input, already parsed by the service
+        tool = next((b["toolUse"]["input"] for b in blocks if "toolUse" in b), None)
+        if tool is not None:
+            text = json.dumps(tool)
+        else:
+            text = "".join(b.get("text", "") for b in blocks)
+        return CompletionResult(
+            text,
+            int(usage.get("inputTokens", 0)),
+            int(usage.get("outputTokens", 0)),
+        )
+
+
+def call_with_retries(fn, *, retries: int = 6, renewals: int = 20, on_note=None):
+    """Run `fn`, absorbing the three transport failures a long run actually meets.
+
+    Extracted because the deliberation had none of it. `deliberate.py` caught a bad
+    *answer* and let a failed *call* through, so one throttle -- which on this account
+    arrives every few minutes -- would propagate out of the thread pool and end the run.
+    That is the same defect that cost 768 residents of queued backstory work, rediscovered
+    in a second module because the recovery logic lived in only one of them.
+
+      - throttled or timed out: back off and retry. Transient by definition.
+      - credentials expired: renew from the SSO session. Not transient, and not fatal
+        either; waiting cannot fix it and a human is not required to.
+      - anything else: raise. A failure nobody understands should stop the run.
+
+    A renewal does not consume a retry attempt: it is a repair, not an attempt.
+    """
+    import time as _time
+
+    delay, attempt, renewed, progressed = 20.0, 0, 0, False
+    while True:
+        try:
+            result = fn()
+            progressed = True
+            return result
+        except LLMError as exc:
+            expired = "ExpiredToken" in str(exc) or "security token" in str(exc)
+            if expired:
+                if renewed >= 2 and not progressed:
+                    raise LLMError(
+                        f"{exc} -- credentials were renewed {renewed} times and the next "
+                        f"call still reported them expired. The renewal is not reaching "
+                        f"the client; this is a bug, not an expired session."
+                    ) from exc
+                if renewed < renewals and refresh_aws_credentials():
+                    renewed += 1
+                    if on_note:
+                        on_note(f"credentials renewed [{renewed}/{renewals}]")
+                    continue
+                raise
+            attempt += 1
+            if attempt >= retries:
+                raise
+            if on_note:
+                on_note(f"call failed ({str(exc)[:80]}); retry in {delay:.0f}s "
+                        f"[{attempt}/{retries}]")
+            _time.sleep(delay)
+            delay = min(delay * 2, 240.0)
+
+
+def refresh_aws_credentials() -> bool:
+    """Mint fresh role credentials from the cached SSO session, in process.
+
+    The two clocks that make this necessary: role credentials last about an hour, an SSO
+    session about eight, and a full generation run is longer than the first and shorter
+    than the second. Without this a run simply dies partway through and waits for a human
+    to paste a new key, which happened three times before it was worth automating.
+
+    Returns False when there is no usable session -- expired, or never signed in -- so the
+    caller can fail with a message rather than retrying something that cannot work.
+    """
+    import importlib.util
+    import pathlib as _p
+
+    script = _p.Path(__file__).resolve().parents[3] / "scripts" / "aws_sso_login.py"
+    if not script.exists():
+        return False
+    spec = importlib.util.spec_from_file_location("aws_sso_login", script)
+    if spec is None or spec.loader is None:
+        return False
+    mod = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(mod)
+        if not mod.refresh(quiet=True):
+            return False
+    except Exception:                      # noqa: BLE001 - a failed refresh is just False
+        return False
+
+    # reload what the refresh wrote, so this process sees the new keys
+    env = _p.Path(__file__).resolve().parents[3] / ".env"
+    for line in env.read_text(encoding="utf-8").splitlines():
+        if line.startswith(("AWS_ACCESS_KEY_ID=", "AWS_SECRET_ACCESS_KEY=",
+                            "AWS_SESSION_TOKEN=")):
+            key, _, value = line.partition("=")
+            os.environ[key] = value.strip()
+
+    # Updating the environment is not enough, and this cost a run to learn. `boto3.client`
+    # goes through a module-level default Session whose credential resolver reads the
+    # environment **once** and caches the result. Rebuilding the client reuses that
+    # session, so a freshly minted key is written, loaded, and then ignored in favour of
+    # the dead one -- which presents as a renewal that succeeds and changes nothing,
+    # twenty times in a row. Dropping the default session forces the next client to
+    # resolve credentials again.
+    import boto3
+    boto3.DEFAULT_SESSION = None
+    return True
 
 
 def _strip_fence(text: str) -> str:
