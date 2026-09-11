@@ -203,9 +203,11 @@ def analyse_feedback(state: RunState) -> RunState:
     """DETERMINISTIC. Who replied, what they said, and who will not reply."""
     t0 = time.monotonic()
     from app.consultation import build_consultation
+    from app.deliberate import recorded_words
     from app.engine import _road_of
     road = _road_of(state.geo, sorted(state.closures)[0]) if state.closures else ""
-    state.consultation = build_consultation(state.pop, state.simulation.outcomes, road)
+    state.consultation = build_consultation(state.pop, state.simulation.outcomes, road,
+                                            words=recorded_words(state.closures))
     real = sum(1 for r in state.consultation.responses if not r.is_seeded)
     state.record("Feedback Analyst", "deterministic", t0,
                  f"{len(state.consultation.responses)} responses, {real} from people")

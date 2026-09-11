@@ -188,3 +188,39 @@ def test_an_unexplained_change_is_counted_but_never_deletes_a_harm_claim():
               if any(t.severity == "high" for t in v.turns)]
     assert harmed, "a harm claim was deleted for being inarticulate"
     assert run.coverage()["unexplained_moves"] == run.unexplained_moves
+
+
+def test_every_consultation_comment_is_a_resident_s_own_words():
+    """No pool, no fallback, no borrowed sentence.
+
+    The comments used to come from seven strings in `consultation.py`; across 136
+    synthetic responses one of them appeared 73 times. Every other figure on that screen
+    is computed from the run, so the words beside them were the one piece of furniture
+    left -- and a screen that presents furniture as public feedback is the exact claim
+    this product exists to object to.
+
+    A comment must now be the resident's own final reasoning from the recorded
+    deliberation, and a resident who never deliberated must carry none. The tempting fix
+    when that thins the screen out is to borrow a neighbour's sentence, which is the same
+    fabrication in a better costume, so it is pinned here.
+    """
+    from app.deliberate import recorded_words
+    from app.engine import build_run, study_area_for_town, DEFAULT_TOWN
+
+    _, removed = study_area_for_town(DEFAULT_TOWN)
+    said = recorded_words(removed)
+    assert said, "no recording matched the demo closure; the rest of this proves nothing"
+
+    run = build_run()
+    commented = [r for r in run["consultation"]["responses"]
+                 if r.get("is_seeded") and r.get("comment")]
+    assert commented, "every synthetic comment vanished"
+
+    for r in commented:
+        assert r["comment"] == said.get(r["persona_id"]), (
+            f"{r['persona_id']} carries a comment that is not their own recorded words"
+        )
+
+    # and the giveaway that a pool has crept back: the same sentence twice
+    texts = [r["comment"] for r in commented]
+    assert len(set(texts)) == len(texts), "a comment is repeated across residents"

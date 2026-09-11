@@ -29,6 +29,7 @@ from typing import TYPE_CHECKING
 
 from app import calibration_state
 from app.consultation import build_consultation, walk_cost_key
+from app.deliberate import recorded_words
 from app.geography import build_geography, display_dict
 from app.graph import build_graph
 from app.interventions import POLICY_COST_INDEX, candidates, run_candidate, validate
@@ -356,7 +357,8 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
     # the blind spot lands on the road the policy touches, whichever town this is
     terrain_road = _road_of(geo, sorted(removed)[0])
     corrections = calibration_state.applied()
-    con = build_consultation(pop, policy.outcomes, terrain_road, corrections)
+    con = build_consultation(pop, policy.outcomes, terrain_road, corrections,
+                             recorded_words(removed))
     flagged = next((r for r in con.calibration if r.flagged), None)
 
     return {

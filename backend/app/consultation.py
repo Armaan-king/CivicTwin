@@ -19,6 +19,8 @@ responses, and no adjustment is ever applied without a human.
 """
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 import json
 import pathlib
 from dataclasses import dataclass, field
@@ -236,30 +238,17 @@ def response_probability(p: Persona, o: Outcome) -> float:
     return max(0.02, min(0.60, q))
 
 
-COMMENTS = {
-    "high": [
-        "The walk to the next stop has a long uncovered stretch and a slope. In the rain "
-        "with a walking stick it is not 400 metres, it is impossible.",
-        "I take my mother to the polyclinic every Tuesday. Now I have to drive her and I "
-        "am late for my shift.",
-        "There was no consultation before the notice went up at the stop.",
-    ],
-    "moderate": [
-        "It is a longer walk but manageable. The extra few minutes on the express make up "
-        "for it on the way home.",
-        "Fine for me, but I do not know how the older residents in my block will cope.",
-    ],
-    "none": [
-        "The express is faster. I have not noticed any difference otherwise.",
-        "Good use of money if it means the buses run more often.",
-    ],
-}
 
 
 def build_consultation(pop: Population, outcomes: dict[str, Outcome],
                        terrain_road: str = DEFAULT_TERRAIN_ROAD,
-                       corrections: dict[str, float] | None = None) -> ConsultationResult:
+                       corrections: dict[str, float] | None = None,
+                       words: Mapping[str, str] | None = None) -> ConsultationResult:
     """`corrections` are the adjustments a human has approved.
+
+    `words` maps a persona to what they said in the recorded deliberation, and is the only
+    source of a comment. A resident who did not deliberate leaves the field empty; there
+    is no pool to fall back on, because a pool is what this replaced.
 
     They move the *prediction* only. What residents reported is fixed -- `observed_support`
     is seeded per persona and does not change -- so applying a correction narrows the gap
@@ -278,7 +267,6 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
         baseline_pred = predicted_support(p, o)
         pred = predicted_support(p, o, corrections)
         obs = observed_support(p, o, baseline_pred, terrain_road)
-        pool = COMMENTS[o.severity if o.severity in COMMENTS else "none"]
         responses.append(Response(
             response_id=f"r_{len(responses):04d}",
             persona_id=p.persona_id,
@@ -289,7 +277,9 @@ def build_consultation(pop: Population, outcomes: dict[str, Outcome],
             confidence_in_delivery=max(1, min(5, round(1.9 + 2.2 * p.baseline_trust
                                                        + 0.5 * rng.random()))),
             expected_personal_impact=_impact_score(o),
-            comment=pool[rng.randrange(len(pool))] if rng.random() < 0.35 else None,
+            # the gate is unchanged: it models who bothers to write, which is a separate
+            # question from what they would say. Only the source of the text moved.
+            comment=(words or {}).get(p.persona_id) if rng.random() < 0.35 else None,
             cohort={"age_band": p.age_band, "mobility_level": p.mobility_level,
                     "home_subzone": p.home_subzone, "is_caregiver": str(p.is_caregiver)},
         ))

@@ -14,6 +14,7 @@ it cost. `AGENTS.md` §8 requires all three.
 """
 from __future__ import annotations
 
+import functools
 import json
 import os
 import re
@@ -226,6 +227,43 @@ def load_recorded(town: str, policy_text: str | None = None) -> "DeliberationRun
     run.cached = len(run.voices)
     run.participation = {int(k): v for k, v in raw.get("participation", {}).items()}
     return run
+
+
+@functools.lru_cache(maxsize=8)
+def _words_for(closures: frozenset[str]) -> dict[str, str]:
+    for path in sorted(RUNS.glob("deliberation-*-merged.json")):
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        if _closures_in(raw.get("policy") or "") != closures:
+            continue
+        out = {}
+        for v in raw.get("voices", []):
+            turns = v.get("turns") or []
+            if turns and turns[-1].get("reasoning"):
+                out[v["persona_id"]] = turns[-1]["reasoning"]
+        return out
+    return {}
+
+
+def recorded_words(closures: set[str]) -> dict[str, str]:
+    """What each resident said about *this* closure, in their own words.
+
+    The consultation used to draw its comments from seven sentences in a dict, one of
+    which appeared seventy-three times across a hundred and thirty-six responses. Every
+    other number on that screen is computed from the run; the words beside them were
+    furniture.
+
+    They do not need to be. Eight hundred residents already reasoned about this policy in
+    the recorded deliberation, in the first person, grounded in facts they were given --
+    so a resident who both deliberated and responded to the consultation has a real
+    comment, and one who did not deliberate has none. Borrowing a neighbour's sentence to
+    fill the gap would be the same fabrication in a better costume.
+
+    Matched on the closed stop ids, exactly as `load_recorded` matches, because a
+    recording of a different policy is a different question rather than a partial answer.
+    Returns an empty mapping when nothing matches, and the consultation then carries no
+    comments at all -- visibly empty rather than quietly invented.
+    """
+    return _words_for(frozenset(closures))
 
 
 def _cached_or_call(prompt: str, model: str, fn, run: DeliberationRun):
