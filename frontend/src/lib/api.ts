@@ -109,11 +109,55 @@ export const api = {
     return post(`/api/consultations/${consultationId}/feedback`, body, "Submitting feedback");
   },
 
+  /** GET /api/orchestrator - the graph as data. No fixture: it describes the server. */
+  getOrchestrator(): Promise<OrchGraph> {
+    return get("/api/orchestrator");
+  },
+
+  /** POST /api/orchestrator/run - execute every stage and report what each one did. */
+  runOrchestrator(policyText = ""): Promise<OrchResult> {
+    return post("/api/orchestrator/run", { policy_text: policyText }, "Running the graph");
+  },
+
   /** POST /api/runs/{id}/calibration/apply - human approval, never automatic (L3). */
   applyCalibration(runId: string, approved: boolean): Promise<{ status: string }> {
     return post(`/api/runs/${runId}/calibration/apply`, { approved }, "Recording your decision");
   },
 };
+
+/* ---------------------------------------------------------- orchestrator */
+
+/**
+ * The execution graph, and what it did when it ran.
+ *
+ * Both shapes come from the same `PIPELINE` list in `backend/app/orchestrator.py`, so a
+ * stage cannot appear in the diagram without running or run without appearing. `ms` and
+ * `ok` are absent until the graph is actually executed -- a stage nobody ran has no
+ * timing, and showing a zero would read as instant rather than as untried.
+ */
+export interface OrchStage {
+  name: string;
+  kind: "model" | "deterministic";
+  doc?: string;
+  ms?: number;
+  ok?: boolean;
+  detail?: string;
+  error?: string | null;
+}
+
+export interface OrchGraph {
+  nodes: OrchStage[];
+  edges: { from: string; to: string }[];
+  model_backed: number;
+  deterministic: number;
+  note: string;
+}
+
+export interface OrchResult {
+  nodes: OrchStage[];
+  total_ms: number;
+  model_calls: number;
+}
 
 /* ---------------------------------------------------------- round stream */
 

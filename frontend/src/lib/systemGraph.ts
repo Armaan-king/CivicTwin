@@ -1,11 +1,12 @@
+import type { OrchGraph, OrchStage } from "./api";
 import type { SimulationRun } from "@/types/simulation";
 
 /**
  * The system, as it actually is.
  *
- * `docs/architecture.md` §3 draws the intended architecture: LangGraph orchestrating six
- * agents over a Bedrock model. Most of that is not built. A map that shows the intended
- * version is a diagram of a plan, and a reader cannot tell which boxes they can rely on.
+ * `docs/architecture.md` §3 draws the intended architecture. Not all of it is built, and a
+ * map that shows the intended version is a diagram of a plan: a reader cannot tell which
+ * boxes they can rely on.
  *
  * So every node carries a `state`, and the map says plainly which is which. The counts
  * come from the loaded run, so the numbers on the canvas are this run's numbers rather
@@ -27,6 +28,8 @@ export interface SysNode {
   detail: string;
   /** live figures from the current run */
   facts?: { label: string; value: string }[];
+  /** override the state hairline. The pipeline view colours by model-backed, not by built. */
+  ink?: string;
   x: number;
   y: number;
   w: number;
@@ -90,7 +93,7 @@ export function buildNodes(run: SimulationRun | null): SysNode[] {
       x: COL.surface, y: 290, w: NW, h: NH },
     { id: "map", label: "System Map", kind: "this view", group: "surface",
       state: "live", path: "frontend/src/pages/SystemMap.tsx",
-      detail: "What is built, what is a stub, and what is only drawn in the architecture document. Node counts come from the loaded run rather than a caption.",
+      detail: "Two views. ARCHITECTURE is what is built, what is a stub, and what is only drawn in the architecture document; PIPELINE is the execution graph, fetched from the server so it cannot describe a stage that does not run. Every count comes from the loaded run rather than from a caption.",
       x: COL.surface, y: 390, w: NW, h: NH },
 
     // ---------------------------------------------------------------- api
@@ -106,11 +109,11 @@ export function buildNodes(run: SimulationRun | null): SysNode[] {
     { id: "contract", label: "Run contract", kind: "Pydantic", group: "api",
       state: "live", path: "backend/app/schemas/run.py",
       detail: "The single object every screen reads. Mirrored field for field in TypeScript; if the two disagree the tests fail before a browser ever sees it.",
-      facts: [{ label: "tests", value: "177 passing" }],
       x: COL.api, y: 290, w: NW, h: NH },
     { id: "feedback", label: "Feedback intake", kind: "POST", group: "api",
-      state: "stub", path: "backend/app/main.py",
-      detail: "Validates a response and returns an id. Persists nothing yet: there is no store behind it. W7.",
+      state: "live", path: "backend/app/main.py",
+      detail: "Validates a response, appends it to a JSONL file and returns an id. Every row carries whether it came from the form or was seeded for the demo, because a file of invented submissions counted as real replies is the exact claim this product exists to object to.",
+      facts: [{ label: "store", value: "data/feedback/*.jsonl" }],
       x: COL.api, y: 390, w: NW, h: NH },
 
     // ---------------------------------------------------------------- language
@@ -178,8 +181,9 @@ export function buildNodes(run: SimulationRun | null): SysNode[] {
       facts: [{ label: "mean degree", value: "6.3" }],
       x: COL.engine, y: 500, w: NW, h: NH },
     { id: "orch", label: "LangGraph", kind: "orchestrator", group: "engine",
-      state: "planned", path: "docs/architecture.md §5",
-      detail: "Drawn in the architecture document and not built. The pipeline is a function call today, which is enough for one scenario and would not be for branching runs.",
+      state: "live", path: "backend/app/orchestrator.py",
+      detail: "Ten stages, two of which call a model. The node list is generated from the list that executes, so the diagram cannot drift from the run. Open the PIPELINE view to see the order and what each stage produced.",
+      facts: [{ label: "stages", value: "10" }, { label: "model-backed", value: "2" }],
       x: COL.engine + NW + 36, y: 500, w: NW, h: NH },
 
     // ---------------------------------------------------------------- store
@@ -194,7 +198,7 @@ export function buildNodes(run: SimulationRun | null): SysNode[] {
       x: COL.store, y: 830, w: NW, h: NH },
     { id: "store", label: "Persistence", kind: "S3 + DynamoDB", group: "store",
       state: "planned", path: "docs/architecture.md §11",
-      detail: "Nothing is stored between processes. Runs are recomputed in about two seconds, which is cheaper than a database until runs need to be shared.",
+      detail: "No database. What does survive a restart is on disk under data/: the recorded deliberation, the remedy classifications, and real consultation submissions. Runs themselves are recomputed, which is cheaper than a database until they need to be shared.",
       x: COL.store, y: 930, w: NW, h: NH },
   ];
 }
@@ -231,3 +235,67 @@ export const STATE_COPY: Record<NodeState, { label: string; note: string }> = {
   stub: { label: "STUB", note: "correct shape, does nothing yet" },
   planned: { label: "NOT BUILT", note: "drawn in the docs only" },
 };
+
+/* ------------------------------------------------------------------ pipeline view */
+
+/**
+ * The same system, viewed as execution order rather than as dependency.
+ *
+ * The architecture map answers "what is built and what feeds what". It cannot answer
+ * "what runs, in what order, and where does a model get a say" -- those are different
+ * questions and a single diagram that tries to answer both answers neither.
+ *
+ * Nothing here is authored. The stages, their order and their kind all arrive from
+ * `GET /api/orchestrator`, which generates them from the list that executes. Only the
+ * geometry is local, because the server has no opinion about where a box goes.
+ */
+const PIPE = { x0: 60, gapX: 288, row1: 110, row2: 290, perRow: 5 };
+
+export function pipelineGroups(g: OrchGraph): SysGroup[] {
+  return [{
+    id: "pipeline",
+    label: "EXECUTION GRAPH",
+    note: `backend/app/orchestrator.py · ${g.nodes.length} stages, ` +
+          `${g.model_backed} model-backed`,
+    x: PIPE.x0 - 30, y: PIPE.row1 - 60,
+    w: PIPE.gapX * (PIPE.perRow - 1) + NW + 60,
+    h: PIPE.row2 + NH + 30 - (PIPE.row1 - 60),
+  }];
+}
+
+export function pipelineEdges(g: OrchGraph): SysEdge[] {
+  return g.edges.map((e) => ({ from: e.from, to: e.to, kind: "data" as const }));
+}
+
+/**
+ * @param ran per-stage results from `POST /api/orchestrator/run`, keyed by name. Absent
+ *   until the graph has actually been executed: a stage nobody ran gets no timing rather
+ *   than a zero, because a zero reads as instant and not as untried.
+ */
+export function pipelineNodes(g: OrchGraph, ran?: Map<string, OrchStage>): SysNode[] {
+  return g.nodes.map((nd, i) => {
+    const r = ran?.get(nd.name);
+    const model = nd.kind === "model";
+    const failed = r != null && r.ok === false;
+    // the docstring already opens with MODEL./DETERMINISTIC.; the badge says that
+    const doc = (nd.doc ?? "").replace(/^(MODEL|DETERMINISTIC)\.\s*/, "");
+    return {
+      id: nd.name,
+      label: nd.name,
+      kind: model ? "calls a model" : "deterministic",
+      group: "pipeline",
+      state: failed ? "partial" : "live",
+      ink: failed ? "var(--warning)" : model ? "var(--gold)" : "var(--rule-strong)",
+      path: "backend/app/orchestrator.py",
+      detail: failed ? `${doc} This stage failed: ${r?.error}` : doc,
+      facts: r
+        ? [{ label: "ms", value: r.ms?.toLocaleString() ?? "—" },
+           ...(r.detail ? [{ label: "produced", value: r.detail }] : [])]
+        : undefined,
+      x: PIPE.x0 + (i % PIPE.perRow) * PIPE.gapX,
+      y: PIPE.row1 + Math.floor(i / PIPE.perRow) * (PIPE.row2 - PIPE.row1),
+      w: NW,
+      h: NH,
+    };
+  });
+}

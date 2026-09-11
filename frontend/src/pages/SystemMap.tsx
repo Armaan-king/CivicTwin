@@ -2,17 +2,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
 import { useRun } from "@/lib/useRun";
+import { api, type OrchGraph, type OrchResult } from "@/lib/api";
 import {
   EDGES,
   GROUPS,
   STATE_COPY,
   buildNodes,
+  pipelineEdges,
+  pipelineGroups,
+  pipelineNodes,
   type NodeState,
   type SysNode,
 } from "@/lib/systemGraph";
 
 /**
  * The system, as a canvas rather than a diagram.
+ *
+ * Two views over one canvas. ARCHITECTURE is what is built and what feeds what;
+ * PIPELINE is what runs, in what order, and where a model gets a say. They are separate
+ * because they are different questions, and a diagram answering both answers neither.
+ * The pipeline comes from the server rather than from this file, so it cannot describe a
+ * stage that does not run.
  *
  * A block diagram tells you the parts. What a reader actually wants to know is which parts
  * are real, what feeds what, and where the model is allowed to touch anything. So the map
@@ -24,7 +34,6 @@ import {
  * dependency to arrive there.
  */
 
-const WORLD = { w: 1660, h: 1020 };
 const CORE_HEIGHT = 650;
 const MIN_SCALE = 0.35;
 const MAX_SCALE = 2.2;
@@ -58,9 +67,56 @@ function connector(a: SysNode, b: SysNode): string {
   return `M ${x1} ${y1} H ${x1 + 20} V ${below} H ${x2 - 20} V ${y2} H ${x2}`;
 }
 
+type View = "architecture" | "pipeline";
+
 export function SystemMap() {
   const { run } = useRun();
-  const nodes = useMemo(() => buildNodes(run ?? null), [run]);
+  const [view_, setView_] = useState<View>("architecture");
+  const [graph, setGraph] = useState<OrchGraph | null>(null);
+  const [graphError, setGraphError] = useState<string | null>(null);
+  const [result, setResult] = useState<OrchResult | null>(null);
+  const [running, setRunning] = useState(false);
+
+  // fetched once, on the first switch to the pipeline view: the architecture map does
+  // not need it, and in fixture mode there is no server to ask
+  useEffect(() => {
+    if (view_ !== "pipeline" || graph || graphError) return;
+    api.getOrchestrator().then(setGraph).catch((e: Error) => setGraphError(e.message));
+  }, [view_, graph, graphError]);
+
+  const runGraph = async () => {
+    setRunning(true);
+    try {
+      setResult(await api.runOrchestrator());
+    } catch (e) {
+      setGraphError((e as Error).message);
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  // `wants` is the tab, `pipeline` is whether it can be drawn. Keeping them apart matters:
+  // while the graph is loading, or when there is no server to ask, the canvas must be
+  // empty rather than quietly still showing the architecture map under a message about
+  // a different view.
+  const wants = view_ === "pipeline";
+  const pipeline = wants && graph != null;
+  const ran = useMemo(
+    () => (result ? new Map(result.nodes.map((n) => [n.name, n])) : null),
+    [result]
+  );
+  const nodes = useMemo(
+    () => (wants ? (graph ? pipelineNodes(graph, ran ?? undefined) : []) : buildNodes(run ?? null)),
+    [wants, graph, ran, run]
+  );
+  const edges = useMemo(
+    () => (wants ? (graph ? pipelineEdges(graph) : []) : EDGES),
+    [wants, graph]
+  );
+  const groups = useMemo(
+    () => (wants ? (graph ? pipelineGroups(graph) : []) : GROUPS),
+    [wants, graph]
+  );
   const byId = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -69,25 +125,24 @@ export function SystemMap() {
   const frame = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null);
 
-  const fitCore = useCallback(() => {
-    const el = frame.current;
-    if (!el) return;
-    const { width, height } = el.getBoundingClientRect();
-    const k = Math.min(width / (WORLD.w + 80), height / (CORE_HEIGHT + 80), MAX_SCALE);
-    setView({
-      k,
-      x: (width - WORLD.w * k) / 2,
-      y: (height - CORE_HEIGHT * k) / 2 - 34 * k,
-    });
-  }, []);
+  // the drawn extent, taken from the groups rather than from a constant -- the two views
+  // are different sizes and a hardcoded world would frame one of them wrongly
+  const world = useMemo(() => ({
+    w: Math.max(0, ...groups.map((g) => g.x + g.w)) + 40,
+    h: Math.max(0, ...groups.map((g) => g.y + g.h)) + 40,
+  }), [groups]);
 
-  const fitAll = useCallback(() => {
+  const fit = useCallback((h: number) => {
     const el = frame.current;
     if (!el) return;
     const { width, height } = el.getBoundingClientRect();
-    const k = Math.min(width / (WORLD.w + 80), height / (WORLD.h + 80), MAX_SCALE);
-    setView({ k, x: (width - WORLD.w * k) / 2, y: (height - WORLD.h * k) / 2 });
-  }, []);
+    const k = Math.min(width / (world.w + 80), height / (h + 80), MAX_SCALE);
+    setView({ k, x: (width - world.w * k) / 2, y: (height - h * k) / 2 - (h < world.h ? 34 * k : 0) });
+  }, [world]);
+
+  // in the pipeline view everything is core, so both buttons frame the same thing
+  const fitCore = useCallback(() => fit(pipeline ? world.h : CORE_HEIGHT), [fit, pipeline, world.h]);
+  const fitAll = useCallback(() => fit(world.h), [fit, world.h]);
 
   useEffect(() => {
     fitCore();
@@ -148,16 +203,16 @@ export function SystemMap() {
   const lit = useMemo(() => {
     if (!focus) return null;
     const ids = new Set<string>([focus]);
-    for (const e of EDGES) {
+    for (const e of edges) {
       if (e.from === focus) ids.add(e.to);
       if (e.to === focus) ids.add(e.from);
     }
     return ids;
-  }, [focus]);
+  }, [focus, edges]);
 
   const detail = selected ? byId.get(selected) : null;
-  const feeds = selected ? EDGES.filter((e) => e.from === selected) : [];
-  const fedBy = selected ? EDGES.filter((e) => e.to === selected) : [];
+  const feeds = selected ? edges.filter((e) => e.from === selected) : [];
+  const fedBy = selected ? edges.filter((e) => e.to === selected) : [];
 
   const counts = useMemo(() => {
     const c: Record<string, number> = {};
@@ -172,14 +227,58 @@ export function SystemMap() {
       <div className="system-header">
         <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s-3)", flexWrap: "wrap" }}>
           <h1 className="t1" style={{ fontSize: "var(--fs-28)", fontWeight: 500, margin: 0, letterSpacing: "-0.01em" }}>
-            System architecture
+            {wants ? "Execution graph" : "System architecture"}
           </h1>
           <span className="t3" style={{ fontSize: "var(--fs-14)" }}>
-            {counts.live ?? 0} built · {counts.stub ?? 0} stub · {counts.planned ?? 0} not built
+            {wants
+              ? graph
+                ? `${graph.nodes.length} stages · ${graph.model_backed} call a model · ` +
+                  `${graph.deterministic} deterministic`
+                : ""
+              : `${counts.live ?? 0} built · ${counts.stub ?? 0} stub · ${counts.planned ?? 0} not built`}
           </span>
+          <div style={{ display: "flex", gap: 6, marginLeft: "auto" }}>
+            {(["architecture", "pipeline"] as View[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => { setView_(v); setSelected(null); }}
+                aria-pressed={view_ === v}
+                className={view_ === v ? "t1" : "t3"}
+                style={{
+                  border: "1px solid " + (view_ === v ? "var(--gold)" : "var(--rule-strong)"),
+                  background: "var(--ground)", cursor: "pointer", fontFamily: "inherit",
+                  fontSize: "var(--fs-12)", letterSpacing: ".1em", padding: "7px 14px",
+                  borderRadius: 4, color: view_ === v ? "var(--t1)" : "var(--t3)",
+                }}
+              >
+                {v.toUpperCase()}
+              </button>
+            ))}
+            {pipeline && (
+              <button
+                onClick={runGraph}
+                disabled={running}
+                className="t2"
+                style={{
+                  border: "1px solid var(--rule-strong)", background: "var(--ground)",
+                  cursor: running ? "wait" : "pointer", fontFamily: "inherit",
+                  fontSize: "var(--fs-12)", letterSpacing: ".1em", padding: "7px 14px",
+                  borderRadius: 4, color: "var(--t2)", opacity: running ? 0.6 : 1,
+                }}
+              >
+                {running ? "RUNNING…" : result ? "RUN AGAIN" : "RUN IT"}
+              </button>
+            )}
+          </div>
         </div>
         <p className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.65, margin: "var(--s-2) 0 0", maxWidth: "78ch" }}>
-          Select a component to see what it does. Drag to pan and scroll to zoom.
+          {wants
+            ? result
+              ? `Every stage, as it actually ran — ${result.total_ms.toLocaleString()} ms in ` +
+                `total. A stage reporting 0 ms was served from the content-hash cache, which ` +
+                `is why the second run of a policy costs nothing. Select one to see what it produced.`
+              : "The order a run executes in. Run it to replace the diagram with measured timings."
+            : "Select a component to see what it does. Drag to pan and scroll to zoom."}
         </p>
       </div>
 
@@ -218,7 +317,7 @@ export function SystemMap() {
             <rect width="100%" height="100%" fill="url(#sysgrid)" opacity={0.55} />
 
             <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-              {GROUPS.map((g) => (
+              {groups.map((g) => (
                 <g key={g.id}>
                   <rect x={g.x} y={g.y} width={g.w} height={g.h}
                         fill="var(--ground)" fillOpacity={0.55}
@@ -234,7 +333,7 @@ export function SystemMap() {
                 </g>
               ))}
 
-              {EDGES.map((e, i) => {
+              {edges.map((e, i) => {
                 const a = byId.get(e.from);
                 const b = byId.get(e.to);
                 if (!a || !b) return null;
@@ -259,7 +358,7 @@ export function SystemMap() {
                 const isSel = nd.id === selected;
                 const on = lit ? lit.has(nd.id) : false;
                 const dim = lit != null && !on;
-                const ink = stateInk(nd.state);
+                const ink = nd.ink ?? stateInk(nd.state);
                 return (
                   <g
                     key={nd.id}
@@ -312,6 +411,14 @@ export function SystemMap() {
             </g>
           </svg>
 
+          {wants && !graph && (
+            <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", padding: "var(--s-4)" }}>
+              <p className="t3" style={{ fontSize: "var(--fs-14)", maxWidth: "52ch", textAlign: "center", lineHeight: 1.7 }}>
+                {graphError ?? "Reading the graph from the server…"}
+              </p>
+            </div>
+          )}
+
           <div style={{ position: "absolute", left: 12, bottom: 12, display: "flex", gap: 6 }}>
             {[["−", () => zoomBy(1 / 1.25)], ["+", () => zoomBy(1.25)], ["CORE", fitCore], ["ALL", fitAll]].map(
               ([label, fn]) => (
@@ -332,10 +439,15 @@ export function SystemMap() {
           </div>
 
           <div style={{ position: "absolute", right: 12, bottom: 12, display: "flex", gap: "var(--s-2)" }}>
-            {(["live", "stub", "planned"] as NodeState[]).map((s) => (
-              <span key={s} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 2, height: 12, background: stateInk(s), display: "inline-block" }} />
-                <span className="t3" style={{ fontSize: "var(--fs-12)" }}>{STATE_COPY[s].label}</span>
+            {(pipeline
+              ? [["var(--gold)", "CALLS A MODEL"], ["var(--rule-strong)", "DETERMINISTIC"]]
+              : (["live", "stub", "planned"] as NodeState[]).map(
+                  (s) => [stateInk(s), STATE_COPY[s].label] as const
+                )
+            ).map(([ink, label]) => (
+              <span key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ width: 2, height: 12, background: ink, display: "inline-block" }} />
+                <span className="t3" style={{ fontSize: "var(--fs-12)" }}>{label}</span>
               </span>
             ))}
           </div>
@@ -359,12 +471,14 @@ export function SystemMap() {
               {detail.kind.toUpperCase()}
             </p>
 
-            <p style={{ fontSize: "var(--fs-12)", letterSpacing: "0.1em", margin: "var(--s-3) 0 0", color: stateInk(detail.state) }}>
-              {STATE_COPY[detail.state].label}
-              <span className="t3" style={{ letterSpacing: 0, marginLeft: 8 }}>
-                {STATE_COPY[detail.state].note}
-              </span>
-            </p>
+            {(!pipeline || detail.state !== "live") && (
+              <p style={{ fontSize: "var(--fs-12)", letterSpacing: "0.1em", margin: "var(--s-3) 0 0", color: stateInk(detail.state) }}>
+                {STATE_COPY[detail.state].label}
+                <span className="t3" style={{ letterSpacing: 0, marginLeft: 8 }}>
+                  {STATE_COPY[detail.state].note}
+                </span>
+              </p>
+            )}
 
             <p className="t2" style={{ fontSize: "var(--fs-14)", lineHeight: 1.7, margin: "var(--s-3) 0 0" }}>
               {detail.detail}
