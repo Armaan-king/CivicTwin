@@ -73,6 +73,44 @@ def load_run() -> SimulationRun:
     return _run_cache
 
 
+class OrchestratorRun(BaseModel):
+    """Optional body. `StartRunRequest` enforces a ten-character minimum, which is right
+    for a proposal a planner typed and wrong here: running the graph with no policy at
+    all is the ordinary case, and it exercises the prepared scenario."""
+
+    policy_text: str = ""
+
+
+@app.get("/api/orchestrator")
+def orchestrator_graph() -> dict[str, Any]:
+    """The execution graph as data: nodes, edges, and which of them reason.
+
+    `AGENTS.md` §13 asks that the graph be explainable from a single diagram. This is the
+    diagram's source, and it is generated from the list that executes, so a node cannot
+    appear here without running or run without appearing.
+    """
+    from app.orchestrator import describe
+    return describe()
+
+
+@app.post("/api/orchestrator/run")
+def orchestrator_run(req: OrchestratorRun | None = None) -> dict[str, Any]:
+    """Execute the pipeline and report what each stage did.
+
+    The answer to "what is the AI actually doing?" -- per node, with timings, and with
+    the model-backed stages marked. `build_run()` produces the same result in one call
+    and says nothing about how.
+    """
+    from app.orchestrator import run_pipeline
+    state = run_pipeline(policy_text=(req.policy_text if req else ""))
+    return {
+        "nodes": [{"name": r.name, "kind": r.kind, "ms": r.ms, "ok": r.ok,
+                   "detail": r.detail, "error": r.error} for r in state.reports],
+        "total_ms": sum(r.ms for r in state.reports),
+        "model_calls": sum(1 for r in state.reports if r.kind == "model" and r.ok),
+    }
+
+
 @app.get("/health")
 def health() -> dict[str, Any]:
     return {

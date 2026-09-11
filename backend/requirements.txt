@@ -7,6 +7,12 @@ pydantic>=2.9
 # the neighbour lookup the deliberation reads each round. Five modules import it and it
 # was never declared -- an install following the README got an ImportError on startup.
 networkx>=3.0
+
+# Orchestration. `AGENTS.md` 13 sets the terms for using it -- single-purpose nodes,
+# typed shared state, visible routing, bounded loops -- and app/orchestrator.py follows
+# them. Nine of the ten nodes wrap functions the engine already calls; what the graph
+# adds is that every stage reports what it did and whether a model was involved.
+langgraph>=1.0
 python-dotenv>=1.0
 httpx>=0.27
 
