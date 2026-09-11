@@ -44,3 +44,39 @@ def test_a_run_reports_every_stage():
     body = client.post("/api/orchestrator/run", json={"policy_text": ""}).json()
     assert [n["name"] for n in body["nodes"]] == [name for name, _, _ in PIPELINE]
     assert body["total_ms"] == sum(n["ms"] for n in body["nodes"])
+
+
+def test_a_demo_run_reports_zero_model_calls():
+    """Model-backed nodes are not model calls, and the report must not conflate them.
+
+    Both stages that can reason are served without asking: the Policy Interpreter gets no
+    proposal on the prepared scenario, and the Deliberation loads a recording. So the
+    honest report is two model-backed nodes and zero calls.
+
+    This asserted the opposite until a run with deliberately broken credentials printed
+    `model_calls: 1` while the telemetry showed none -- the count was of nodes, under a
+    name that claimed a model had been consulted.
+    """
+    body = client.post("/api/orchestrator/run", json={"policy_text": ""}).json()
+    assert body["model_backed_nodes"] == 2
+    assert body["model_calls"] == 0, "the demo path must not call a model"
+    assert body["tokens"] == 0
+
+
+def test_running_the_graph_does_not_change_what_the_demo_shows():
+    """The graph shares the engine's memoised functions with every screen.
+
+    If it seeded them with arguments differing from `build_run()`'s by one field, the
+    demo would read the graph's version instead, show a different number than it did in
+    rehearsal, and fail nothing -- which is what makes it worth a test rather than a
+    one-off check.
+    """
+    import hashlib
+
+    paths = ["/api/runs/latest", "/api/runs/latest/interventions",
+             "/api/runs/latest/alternatives", "/api/runs/latest/deliberated"]
+    digest = lambda: {p: hashlib.sha256(client.get(p).content).hexdigest() for p in paths}
+
+    before = digest()
+    client.post("/api/orchestrator/run", json={"policy_text": ""})
+    assert digest() == before

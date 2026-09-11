@@ -274,9 +274,14 @@ export function SystemMap() {
         <p className="t2" style={{ fontSize: "var(--fs-16)", lineHeight: 1.65, margin: "var(--s-2) 0 0", maxWidth: "78ch" }}>
           {wants
             ? result
-              ? `Every stage, as it actually ran — ${result.total_ms.toLocaleString()} ms in ` +
-                `total. A stage reporting 0 ms was served from the content-hash cache, which ` +
-                `is why the second run of a policy costs nothing. Select one to see what it produced.`
+              ? `Every stage, as it actually ran — ${result.total_ms.toLocaleString()} ms, ` +
+                `${result.model_calls} model ${result.model_calls === 1 ? "call" : "calls"}. ` +
+                (result.model_calls === 0
+                  ? "Two stages are model-backed and neither had to ask: the residents were " +
+                    "reasoned once and recorded, and a stage reporting 0 ms came from the " +
+                    "content-hash cache. "
+                  : "A stage reporting 0 ms was served from the content-hash cache. ") +
+                "Select one to see what it produced."
               : "The order a run executes in. Run it to replace the diagram with measured timings."
             : "Select a component to see what it does. Drag to pan and scroll to zoom."}
         </p>

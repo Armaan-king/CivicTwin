@@ -102,12 +102,23 @@ def orchestrator_run(req: OrchestratorRun | None = None) -> dict[str, Any]:
     and says nothing about how.
     """
     from app.orchestrator import run_pipeline
+
+    # Counted from the telemetry, not inferred from how many model-backed nodes ran. The
+    # two are not the same number and the difference is the interesting one: the
+    # Deliberation node is model-backed and serves a recording, so a demo run reports two
+    # model-backed stages and zero calls. Reporting the node count under the name
+    # `model_calls` claimed a model had been consulted when none had, which is the exact
+    # overstatement this project exists to object to.
+    before = len(TELEMETRY.calls)
     state = run_pipeline(policy_text=(req.policy_text if req else ""))
+    calls = TELEMETRY.calls[before:]
     return {
         "nodes": [{"name": r.name, "kind": r.kind, "ms": r.ms, "ok": r.ok,
                    "detail": r.detail, "error": r.error} for r in state.reports],
         "total_ms": sum(r.ms for r in state.reports),
-        "model_calls": sum(1 for r in state.reports if r.kind == "model" and r.ok),
+        "model_backed_nodes": sum(1 for r in state.reports if r.kind == "model" and r.ok),
+        "model_calls": len(calls),
+        "tokens": sum(c.input_tokens + c.output_tokens for c in calls),
     }
 
 

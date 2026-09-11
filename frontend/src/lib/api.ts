@@ -156,7 +156,11 @@ export interface OrchGraph {
 export interface OrchResult {
   nodes: OrchStage[];
   total_ms: number;
+  /** model-backed stages that completed. Not the same as calls: see below. */
+  model_backed_nodes: number;
+  /** actual Bedrock calls, from the telemetry. A demo run serves a recording: zero. */
   model_calls: number;
+  tokens: number;
 }
 
 /* ---------------------------------------------------------- round stream */
