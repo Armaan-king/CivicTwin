@@ -185,7 +185,7 @@ RESIDENT_COST_INDEX = {
 }
 
 
-def resident_candidates(report: RemedyReport, removed: set[str]):
+def resident_candidates(report: RemedyReport, removed: set[str], geo=None):
     """Turn clustered resident requests into candidates for the ordinary validator.
 
     J4 is explicit that these get "the same validator and the same re-simulation as a
@@ -201,19 +201,32 @@ def resident_candidates(report: RemedyReport, removed: set[str]):
     """
     from app.interventions import Candidate
 
+    from app.interventions import _nearest_surviving
+
+    # The stops a resident asking for "a bus nearer my home" is actually asking about.
+    # Looked up, not guessed: the resident named a need, and which stops satisfy it is a
+    # question about the network.
+    nearby = _nearest_surviving(geo, removed, per_closure=2) if geo is not None else []
+
     out = []
     for i, cluster in enumerate(report.mapped, start=1):
         params: dict = {}
         if cluster.action_type == "retain_stop_peak":
-            params = {"stop_ids": sorted(removed), "hours": ["07:00-09:30", "17:00-19:30"]}
+            params = {"stops": sorted(removed), "hours": "07:00-09:30, 17:00-19:30"}
         elif cluster.action_type == "add_shuttle_feeder":
-            params = {"headway_min": 15, "vehicles": 1}
+            # `serves` and the key names below are what `run_candidate` actually reads.
+            # They used to be `stop_ids`, `via_stop`, and nothing at all for `serves`, so
+            # a resident request that ever passed validation would have died on a KeyError
+            # the moment somebody asked to evaluate it. It never did, because these are
+            # listed and not evaluated -- a latent crash waiting on a feature.
+            params = {"serves": nearby, "headway_min": 15, "vehicles": 1}
         elif cluster.action_type == "reroute_feeder":
-            params = {"via_stop": sorted(removed)[0] if removed else None}
+            params = {"add": nearby, "drop": []}
         elif cluster.action_type == "targeted_support":
-            params = {"cohort": "residents reporting harm", "subsidy_type": "fare"}
+            params = {"eligible": "residents reporting harm", "subsidy_type": "fare"}
         elif cluster.action_type == "phase_rollout":
-            params = {"delay_weeks": 12, "stages": 2}
+            params = {"close_now": sorted(removed)[:1], "defer": sorted(removed)[1:],
+                      "delay_weeks": 12}
 
         out.append(Candidate(
             intervention_id=f"resident_{i:02d}",

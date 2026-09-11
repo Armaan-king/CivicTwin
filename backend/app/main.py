@@ -648,13 +648,13 @@ def list_alternatives(run_id: str) -> dict:
         raise HTTPException(502, str(exc)) from exc
 
     run = get_run(run_id)
-    _, closed, _ = study_area_for(run)
+    geo, closed, _ = study_area_for(run)
     report = cluster_remedies(collect_remedies(d))
     fleet_ok = bool(run.policy.constraints.fleet_increase_allowed)
 
     rows = []
-    for c in resident_candidates(report, set(closed)):
-        validate(c, fleet_increase_allowed=fleet_ok)
+    for c in resident_candidates(report, set(closed), geo):
+        validate(c, fleet_increase_allowed=fleet_ok, geo=geo, removed=set(closed))
         rows.append({
             "intervention_id": c.intervention_id,
             "kind": c.kind,
