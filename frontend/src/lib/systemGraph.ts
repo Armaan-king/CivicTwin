@@ -132,8 +132,9 @@ export function buildNodes(run: SimulationRun | null): SysNode[] {
       facts: [{ label: "default", value: "mock" }],
       x: COL.agents, y: 290, w: NW, h: NH },
     { id: "planner", label: "Intervention Planner", kind: "agent", group: "agents",
-      state: "planned", path: "docs/architecture.md §8",
-      detail: "Would select and parameterise from the five typed actions. Today the candidates are enumerated in code; the action space is already closed, so this is a swap and not a rewrite. W6.",
+      state: "live", path: "backend/app/plan.py",
+      detail: "Selects and parameterises from the five typed actions. It decides which action, which stops and how often; every distance it would otherwise guess is computed and handed to it. The kind is pinned by the tool schema, every parameter is validated, and whatever survives is re-simulated by the same engine — so a bad proposal becomes a bad number rather than a claim.",
+      facts: [{ label: "action space", value: "5, closed" }, { label: "per closure", value: "1 call, cached" }],
       x: COL.agents, y: 390, w: NW, h: NH },
 
     // ---------------------------------------------------------------- engine
@@ -182,8 +183,8 @@ export function buildNodes(run: SimulationRun | null): SysNode[] {
       x: COL.engine, y: 500, w: NW, h: NH },
     { id: "orch", label: "LangGraph", kind: "orchestrator", group: "engine",
       state: "live", path: "backend/app/orchestrator.py",
-      detail: "Ten stages, two of which call a model. The node list is generated from the list that executes, so the diagram cannot drift from the run. Open the PIPELINE view to see the order and what each stage produced.",
-      facts: [{ label: "stages", value: "10" }, { label: "model-backed", value: "2" }],
+      detail: "Ten stages, three of them model-backed. The node list is generated from the list that executes, so the diagram cannot drift from the run. Open the PIPELINE view to see the order and what each stage produced.",
+      facts: [{ label: "stages", value: "10" }, { label: "model-backed", value: "3" }],
       x: COL.engine + NW + 36, y: 500, w: NW, h: NH },
 
     // ---------------------------------------------------------------- store

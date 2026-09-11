@@ -216,6 +216,8 @@ export interface Intervention {
   valid: boolean;
   validation_errors: string[];
   estimated_cost_index: number;
+  /** a model id, or "enumerated in code" */
+  planned_by: string;
   /** null when the validator rejected it: never simulated, so never scored */
   metrics: Metrics | null;
   carers_harmed?: number;

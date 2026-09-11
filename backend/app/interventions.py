@@ -145,9 +145,85 @@ def _nearest_surviving(geo: Geography, removed: set[str], per_closure: int) -> l
     return out
 
 
-def validate(c: Candidate, fleet_increase_allowed: bool) -> Candidate:
-    """J2. A candidate is checked before it is run, and a rejection states why."""
+#: The closed action space. J1: a planner selects and parameterises, never invents a type.
+#: Mirrors `schemas.run.InterventionKind`, and a test asserts the two agree -- two lists
+#: that must match and are never compared is how one of them quietly grows.
+KINDS = ("retain_stop_peak", "add_shuttle_feeder", "reroute_feeder",
+         "targeted_support", "phase_rollout")
+
+#: What `run_candidate` actually reaches into `params` for, per kind. A key absent from
+#: this mapping is display-only and cannot break a run.
+REQUIRED_PARAMS: dict[str, tuple[str, ...]] = {
+    "add_shuttle_feeder": ("serves", "headway_min"),
+    "reroute_feeder": ("add", "drop"),
+}
+
+#: params that must name real, open stops
+STOP_LISTS: dict[str, tuple[str, ...]] = {
+    "add_shuttle_feeder": ("serves",),
+    "reroute_feeder": ("add", "drop"),
+}
+
+
+def validate(c: Candidate, fleet_increase_allowed: bool,
+             geo: "Geography | None" = None,
+             removed: set[str] | None = None) -> Candidate:
+    """J2. A candidate is checked before it is run, and a rejection states why.
+
+    This used to check two things, which was right while the candidates were written by
+    hand below and their parameters were correct by construction. They are not written by
+    hand any more -- `plan.py` has a model select and parameterise them -- so everything
+    `run_candidate` reaches into has to be checked before it gets there.
+
+    The failure being prevented is specific. `run_candidate` does `c.params["serves"]`
+    and ends on `raise ValueError(f"no runner for intervention kind {c.kind!r}")`: a
+    missing key or an off-menu kind took down the entire run rather than rejecting one
+    candidate. A rejection is an ordinary outcome the screen already renders, carrying no
+    metrics because scoring something never simulated would be inventing a result. An
+    exception is not.
+
+    `geo` and `removed` are optional because the checks divide cleanly: shape and type
+    need nothing external and always run; "is this a real stop id" needs the network.
+    Pass them for anything a model produced.
+    """
     errors: list[str] = []
+
+    if c.kind not in KINDS:
+        errors.append(
+            f"{c.kind!r} is not one of the five actions; there is no runner for it")
+
+    for key in REQUIRED_PARAMS.get(c.kind, ()):
+        if key not in c.params:
+            errors.append(f"{c.kind} needs a {key!r} parameter and none was given")
+
+    for key in STOP_LISTS.get(c.kind, ()):
+        if key not in c.params:
+            continue                       # already reported
+        value = c.params[key]
+        if not isinstance(value, list) or not value:
+            errors.append(f"{key!r} must be a non-empty list of stop ids, got {value!r}")
+            continue
+        if geo is not None:
+            unknown = [s for s in value if s not in geo.stops]
+            if unknown:
+                errors.append(f"{key!r} names stops that do not exist: {unknown[:3]}")
+        if removed is not None and key in ("serves", "add"):
+            # Calling at a closed stop is the policy quietly undone: harm goes to zero and
+            # it reads as a brilliant intervention while really being the baseline in a hat.
+            closed = [s for s in value if s in removed]
+            if closed:
+                errors.append(f"{key!r} calls at the closed stop(s) {closed}")
+
+    if c.kind == "add_shuttle_feeder" and "headway_min" in c.params:
+        try:
+            headway = float(c.params["headway_min"])
+        except (TypeError, ValueError):
+            errors.append(
+                f"headway_min must be a number, got {c.params['headway_min']!r}")
+        else:
+            if not 2 <= headway <= 120:
+                errors.append(f"a headway of {headway:g} min is not operable")
+
     if c.estimated_cost_index > BUDGET_CEILING:
         errors.append(
             f"operating cost index {c.estimated_cost_index:.2f} exceeds the declared "

@@ -25,10 +25,10 @@ from app.deliberate import recorded_path
 from app.engine import DEFAULT_TOWN
 from app.remedies import MAPPING, UNMAPPABLE_KINDS, _match, classify_remedies
 from app.services.llm import TELEMETRY, build_client
+from _common import cost_of
 
 OUT = pathlib.Path(__file__).resolve().parents[1] / "data" / "runs"
-PRICES = {"anthropic.claude-3-5-sonnet-20240620-v1:0": (3.00, 15.00),
-          "anthropic.claude-3-haiku-20240307-v1:0": (0.25, 1.25)}
+
 
 
 def remedies_from_run(town: str) -> dict[str, str]:
@@ -78,10 +78,7 @@ def main() -> int:
     before = len(TELEMETRY.calls)
     result = classify_remedies(remedies, client, on_note=lambda m: print(f"  {m}", flush=True))
     calls = TELEMETRY.calls[before:]
-    tin = sum(c.input_tokens for c in calls)
-    tout = sum(c.output_tokens for c in calls)
-    pin, pout = PRICES.get(client.provider_name, (3.0, 15.0))
-    cost = tin / 1e6 * pin + tout / 1e6 * pout
+    tin, tout, cost = cost_of(calls, client.provider_name)
 
     llm_mapped = sum(1 for c in result.values() if c.action_type)
     llm_unmap = len(result) - llm_mapped

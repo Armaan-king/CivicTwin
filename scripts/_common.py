@@ -57,3 +57,23 @@ def refuse_if_running(marker: str, what: str) -> int | None:
         "Nothing was called and nothing was spent.",
     ]))
     return 2
+
+
+#: Per-million-token prices, (input, output), by Bedrock model id.
+#:
+#: Lived as a private copy in each script that reported a cost, and one of them had a
+#: single flat pair hardcoded: a $12 Sonnet run was reported as $1.00, which is the kind
+#: of error that only ever runs one way. Unknown models default to the most expensive
+#: entry, so a new model id understates nothing.
+PRICES: dict[str, tuple[float, float]] = {
+    "anthropic.claude-3-5-sonnet-20240620-v1:0": (3.00, 15.00),
+    "anthropic.claude-3-haiku-20240307-v1:0": (0.25, 1.25),
+}
+
+
+def cost_of(calls, model: str) -> tuple[int, int, float]:
+    """(input tokens, output tokens, dollars) for a slice of telemetry."""
+    tin = sum(c.input_tokens for c in calls)
+    tout = sum(c.output_tokens for c in calls)
+    pin, pout = PRICES.get(model) or max(PRICES.values())
+    return tin, tout, tin / 1e6 * pin + tout / 1e6 * pout

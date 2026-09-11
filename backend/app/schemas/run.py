@@ -136,6 +136,11 @@ class Intervention(BaseModel):
     valid: bool
     validation_errors: list[str] = Field(default_factory=list)
     estimated_cost_index: float
+    #: who proposed this: a model id, or "enumerated in code". The planner falls back to
+    #: the hand-written list whenever no plan covers the closure, and falling back is fine
+    #: -- doing it silently, while a slide says the alternatives are planned by a model,
+    #: is not.
+    planned_by: str = "enumerated in code"
     #: MUST be None when valid is False. A rejected candidate was never simulated,
     #: so scoring it would be inventing a result. Enforced in test_contract.py.
     metrics: Metrics | None = None

@@ -125,3 +125,88 @@ def test_retaining_the_stop_reopens_it_in_the_world(world):
     other = Candidate(intervention_id="r4", kind="phase_rollout", name="gradual",
                       params={"delay_weeks": 12}, rationale="", estimated_cost_index=1.01)
     assert closures_under(other, closed) == set(closed), "phasing does not reopen a stop"
+
+
+# --------------------------------------------------------------- model-produced params
+#
+# Everything below exists because the candidates stopped being written by hand. Each case
+# is a way `run_candidate` used to raise instead of rejecting, taking the whole run with
+# it rather than one alternative.
+
+def _candidate(kind: str, params: dict, cost: float = 1.0):
+    from app.interventions import Candidate
+    return Candidate(intervention_id="iv_x", kind=kind, name="x", params=params,
+                     rationale="x", estimated_cost_index=cost)
+
+
+def test_the_kind_list_matches_the_contract():
+    """Two lists that must agree and are never compared is how one of them grows."""
+    from typing import get_args
+
+    from app.interventions import KINDS
+    from app.schemas.run import InterventionKind
+
+    assert set(KINDS) == set(get_args(InterventionKind))
+
+
+def test_an_invented_action_is_rejected_not_raised():
+    from app.interventions import validate
+
+    c = validate(_candidate("build_a_railway", {}), fleet_increase_allowed=False)
+    assert not c.valid
+    assert "not one of the five actions" in " ".join(c.validation_errors)
+
+
+def test_a_missing_parameter_is_rejected_rather_than_a_keyerror():
+    """`run_candidate` does `c.params["serves"]` with no guard behind it."""
+    from app.interventions import validate
+
+    c = validate(_candidate("add_shuttle_feeder", {"headway_min": 20}),
+                 fleet_increase_allowed=False)
+    assert not c.valid
+    assert "'serves'" in " ".join(c.validation_errors)
+
+
+def test_invented_stop_ids_are_rejected():
+    from app.engine import DEFAULT_TOWN, study_area_for_town
+    from app.interventions import validate
+
+    geo, removed = study_area_for_town(DEFAULT_TOWN)
+    c = validate(_candidate("add_shuttle_feeder",
+                            {"serves": ["99999"], "headway_min": 20}),
+                 fleet_increase_allowed=False, geo=geo, removed=removed)
+    assert not c.valid
+    assert "do not exist" in " ".join(c.validation_errors)
+
+
+def test_a_candidate_may_not_call_at_the_stop_the_policy_closed():
+    """Otherwise harm goes to zero and the baseline is scored as a brilliant fix."""
+    from app.engine import DEFAULT_TOWN, study_area_for_town
+    from app.interventions import validate
+
+    geo, removed = study_area_for_town(DEFAULT_TOWN)
+    c = validate(_candidate("add_shuttle_feeder",
+                            {"serves": sorted(removed), "headway_min": 20}),
+                 fleet_increase_allowed=False, geo=geo, removed=removed)
+    assert not c.valid
+    assert "closed stop" in " ".join(c.validation_errors)
+
+
+def test_an_inoperable_headway_is_rejected():
+    from app.interventions import validate
+
+    for headway in (0, 1, 600, "soon"):
+        c = validate(_candidate("add_shuttle_feeder",
+                                {"serves": ["54009"], "headway_min": headway}),
+                     fleet_increase_allowed=False)
+        assert not c.valid, f"headway {headway!r} was accepted"
+
+
+def test_nothing_invalid_is_ever_simulated():
+    """The guarantee the whole screen rests on: a rejection carries no metrics."""
+    from app.engine import DEFAULT_TOWN, build_run
+
+    for row in build_run()["interventions"]:
+        if not row["valid"]:
+            assert row["metrics"] is None
+    assert DEFAULT_TOWN

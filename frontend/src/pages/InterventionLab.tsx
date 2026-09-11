@@ -75,6 +75,14 @@ export function InterventionLab() {
             <div className="options-list__heading">
               <h2>Tested options</h2>
               <p>Ranked by severe impacts prevented</p>
+              {/* Who proposed these. The planner falls back to a hand-written list when no
+                  plan covers the closure, and a screen that reads the same either way lets
+                  a slide claim a model wrote options that a developer did. */}
+              <p className="t3" style={{ fontSize: "var(--fs-12)", margin: "4px 0 0" }}>
+                {ranked[0]?.planned_by === "enumerated in code"
+                  ? "Enumerated in code · every option re-simulated"
+                  : `Planned by ${ranked[0]?.planned_by} · every option re-simulated`}
+              </p>
             </div>
             {ranked.map((item) => {
               const active = item.intervention_id === selected.intervention_id;

@@ -82775,6 +82775,7 @@
    "valid": true,
    "validation_errors": [],
    "estimated_cost_index": 1.02,
+   "planned_by": "enumerated in code",
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.36,
@@ -82804,6 +82805,7 @@
    "valid": true,
    "validation_errors": [],
    "estimated_cost_index": 1.06,
+   "planned_by": "enumerated in code",
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.06,
@@ -82834,6 +82836,7 @@
    "valid": true,
    "validation_errors": [],
    "estimated_cost_index": 0.95,
+   "planned_by": "enumerated in code",
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.06,
@@ -82858,6 +82861,7 @@
    "valid": true,
    "validation_errors": [],
    "estimated_cost_index": 1.05,
+   "planned_by": "enumerated in code",
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.14,
@@ -82886,6 +82890,7 @@
    "valid": true,
    "validation_errors": [],
    "estimated_cost_index": 0.97,
+   "planned_by": "enumerated in code",
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.34,
@@ -82910,10 +82915,12 @@
    "rationale": "Cover every subzone at commuter frequency.",
    "valid": false,
    "validation_errors": [
+    "'serves' must be a non-empty list of stop ids, got 'all four subzones'",
     "operating cost index 1.34 exceeds the declared ceiling of 1.08",
     "requires additional vehicles; the policy declares no fleet increase"
    ],
    "estimated_cost_index": 1.34,
+   "planned_by": "enumerated in code",
    "metrics": null,
    "carers_harmed": null,
    "newly_harmed_elsewhere": null,

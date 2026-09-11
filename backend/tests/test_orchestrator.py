@@ -58,7 +58,7 @@ def test_a_demo_run_reports_zero_model_calls():
     name that claimed a model had been consulted.
     """
     body = client.post("/api/orchestrator/run", json={"policy_text": ""}).json()
-    assert body["model_backed_nodes"] == 2
+    assert body["model_backed_nodes"] == 3
     assert body["model_calls"] == 0, "the demo path must not call a model"
     assert body["tokens"] == 0
 

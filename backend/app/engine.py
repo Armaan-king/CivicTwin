@@ -33,6 +33,7 @@ from app.deliberate import recorded_severity, recorded_words
 from app.geography import build_geography, display_dict
 from app.graph import build_graph
 from app.interventions import POLICY_COST_INDEX, candidates, run_candidate, validate
+from app.plan import load_planned
 from app.metrics import disparity_pp, metrics_for, subgroup_metrics
 from app.population import build_population
 from app.scenario import (POPULATION_SIZE, ROUNDS, SCENARIO_ID, SCENARIO_SEED,
@@ -311,14 +312,23 @@ def _interventions_for(geo, pop, removed, policy) -> list[dict]:
     if cached is not None:
         return cached
 
+    # The planner's cache when one covers this closure, the hand-written list otherwise.
+    # Both go through the same validator and the same re-simulation: a model proposal gets
+    # no shortcut, and a candidate written in the file below gets no exemption.
+    planned = load_planned(removed)
+    cands, planner = planned if planned else (list(candidates(removed, pop, geo)),
+                                              "enumerated in code")
+
     ivs: list[dict] = []
-    for c in candidates(removed, pop, geo):
-        validate(c, fleet_increase_allowed=False)
+    for c in cands:
+        validate(c, fleet_increase_allowed=False, geo=geo, removed=removed)
         row = {
             "intervention_id": c.intervention_id, "kind": c.kind, "name": c.name,
             "params": c.params, "rationale": c.rationale, "valid": c.valid,
             "validation_errors": c.validation_errors,
             "estimated_cost_index": c.estimated_cost_index,
+            # who proposed this, so the screen never has to assume
+            "planned_by": planner,
             "metrics": None, "carers_harmed": None,
             "newly_harmed_elsewhere": None, "subgroup_disparity_pp": None,
         }

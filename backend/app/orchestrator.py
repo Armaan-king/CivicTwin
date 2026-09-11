@@ -4,10 +4,15 @@
 thing, the shared state is typed, routing is visible, and nothing loops without a bound.
 
 **What this is, stated plainly, because the distinction is easy to blur.** Ten nodes run
-in order and **two** of them call a model: the Policy Interpreter, which reads a proposal
-into a typed change, and the Deliberation, where residents reason. The other eight are
+in order and **three** are model-backed: the Policy Interpreter, which reads a proposal
+into a typed change; the Intervention Planner, which selects and parameterises the
+alternatives; and the Deliberation, where residents reason. The other seven are
 deterministic Python -- geometry, routing, tallies, arithmetic -- and wrapping a pure
 function in a graph node does not make it an agent.
+
+Two of the three are served from recordings on the demo path, so a demo run is three
+model-backed nodes and zero calls. The run report counts those separately for exactly
+that reason.
 
 Counted here rather than asserted, because the first draft of this docstring said nine
 nodes and three models, and `describe()` reported ten and two. The numbers come from
@@ -153,15 +158,29 @@ def trace_root_causes(state: RunState) -> RunState:
 
 
 def plan_interventions(state: RunState) -> RunState:
-    """DETERMINISTIC. Five typed actions, parameterised for this town, then validated."""
+    """MODEL. Select and parameterise from the five typed actions, then validate.
+
+    Served from a recorded plan, like the Deliberation: `scripts/plan_interventions.py`
+    runs the planner once per closure and caches it, so the demo path makes no call.
+
+    Falls back to the hand-written list when no plan covers this closure, and says which
+    happened. Falling back is fine. Falling back quietly, while the architecture slide
+    says the alternatives are planned by a model, is the thing this graph exists to stop.
+    """
     t0 = time.monotonic()
     from app.interventions import candidates, validate
-    state.candidates = list(candidates(state.closures, state.pop, state.geo))
+    from app.plan import load_planned
+    found = load_planned(state.closures)
+    if found:
+        state.candidates, source = found[0], f"planned by {found[1]}"
+    else:
+        state.candidates = list(candidates(state.closures, state.pop, state.geo))
+        source = "no plan for this closure; the enumerated list stands"
     for c in state.candidates:
-        validate(c, fleet_increase_allowed=False)
+        validate(c, fleet_increase_allowed=False, geo=state.geo, removed=state.closures)
     valid = sum(1 for c in state.candidates if c.valid)
-    state.record("Intervention Planner", "deterministic", t0,
-                 f"{len(state.candidates)} candidates, {valid} valid")
+    state.record("Intervention Planner", "model", t0,
+                 f"{len(state.candidates)} candidates, {valid} valid — {source}")
     return state
 
 
@@ -224,15 +243,15 @@ def calibrate(state: RunState) -> RunState:
     return state
 
 
-#: The pipeline, in order. Nine nodes; the two marked "model" are the only ones that
-#: reason. Declared as data so the diagram and the execution cannot drift apart.
+#: The pipeline, in order. The nodes marked "model" are the only ones that reason.
+#: Declared as data so the diagram and the execution cannot drift apart.
 PIPELINE: list[tuple[str, Kind, Callable[[RunState], RunState]]] = [
     ("Policy Interpreter", "model", interpret_policy),
     ("Scenario Builder", "deterministic", build_scenario),
     ("Simulation Controller", "deterministic", run_simulation),
     ("Impact Auditor", "deterministic", audit_impact),
     ("Root-Cause Analyzer", "deterministic", trace_root_causes),
-    ("Intervention Planner", "deterministic", plan_interventions),
+    ("Intervention Planner", "model", plan_interventions),
     ("Comparator", "deterministic", compare_interventions),
     ("Deliberation", "model", deliberate_population),
     ("Feedback Analyst", "deterministic", analyse_feedback),
