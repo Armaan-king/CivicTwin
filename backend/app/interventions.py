@@ -42,6 +42,8 @@ class Candidate:
     validation_errors: list[str] = field(default_factory=list)
     #: None until simulated, and stays None if invalid
     result: SimResult | None = None
+    #: intervention_ids this one stacks, for `kind == "combined"`. Empty for the five.
+    combines: list[str] = field(default_factory=list)
 
 
 def _with_service(geo: Geography, service: Service) -> Geography:
@@ -151,6 +153,11 @@ def _nearest_surviving(geo: Geography, removed: set[str], per_closure: int) -> l
 KINDS = ("retain_stop_peak", "add_shuttle_feeder", "reroute_feeder",
          "targeted_support", "phase_rollout")
 
+#: What the contract allows. The planner may only choose from KINDS -- combinations are
+#: not a sixth instrument a planner invents, they are the engine stacking two of the five
+#: and simulating the result.
+ALL_KINDS = KINDS + ("combined",)
+
 #: What `run_candidate` actually reaches into `params` for, per kind. A key absent from
 #: this mapping is display-only and cannot break a run.
 REQUIRED_PARAMS: dict[str, tuple[str, ...]] = {
@@ -188,7 +195,7 @@ def validate(c: Candidate, fleet_increase_allowed: bool,
     """
     errors: list[str] = []
 
-    if c.kind not in KINDS:
+    if c.kind not in ALL_KINDS:
         errors.append(
             f"{c.kind!r} is not one of the five actions; there is no runner for it")
 
@@ -237,39 +244,67 @@ def validate(c: Candidate, fleet_increase_allowed: bool,
     return c
 
 
-def run_candidate(
-    c: Candidate, geo: Geography, pop: Population, removed: set[str], express_saving_min: float
-) -> SimResult | None:
-    """Re-simulate one alternative. The same engine, the same seeds, a different network."""
-    if not c.valid:
-        return None
+def _sim_args(c: Candidate, geo: Geography, pop: Population,
+              removed: set[str]) -> tuple[Geography, set[str], dict]:
+    """What one action changes about the world: the network, the closure, the flags.
 
+    Split out of `run_candidate` so two actions can be stacked by merging what each one
+    touches. Each returns only its own change, and the pieces are disjoint -- a shuttle
+    rewrites the geography, a phased closure shrinks `removed`, assisted transport sets a
+    flag -- which is why they compose at all.
+    """
     if c.kind == "retain_stop_peak":
-        return simulate(geo, pop, removed, express_saving_min,
-                        retained_peak=frozenset(removed))
+        return geo, removed, {"retained_peak": frozenset(removed)}
 
     if c.kind == "targeted_support":
         assisted = frozenset(p.persona_id for p in pop.personas
                              if p.needs_clinic and p.mobility_level in ("moderate", "severe"))
-        return simulate(geo, pop, removed, express_saving_min, assisted=assisted)
+        return geo, removed, {"assisted": assisted}
 
     if c.kind == "add_shuttle_feeder":
         serves = [s for s in c.params["serves"]] if isinstance(c.params["serves"], list) else []
         shuttle = Service("S1", "S1 Clinic Shuttle",
                           headway_min=float(c.params["headway_min"]), stops=serves)
         # the closure stands. the shuttle is an extra service through the stops around it.
-        g = _with_service(geo, shuttle)
-        return simulate(g, pop, removed, express_saving_min)
+        return _with_service(geo, shuttle), removed, {}
 
     if c.kind == "reroute_feeder":
         old = geo.services[geo.feeder_service]
         kept = [s for s in old.stops if s not in c.params["drop"]]
         insert_at = max(1, len(kept) - 1)
         stops = kept[:insert_at] + list(c.params["add"]) + kept[insert_at:]
-        g = _with_service(geo, Service(old.service_id, old.name, old.headway_min, stops))
-        return simulate(g, pop, removed, express_saving_min)
+        return _with_service(geo, Service(old.service_id, old.name, old.headway_min, stops)),             removed, {}
 
     if c.kind == "phase_rollout":
-        return simulate(geo, pop, set(sorted(removed)[:1]), express_saving_min)
+        return geo, set(sorted(removed)[:1]), {}
 
     raise ValueError(f"no runner for intervention kind {c.kind!r}")
+
+
+def run_candidate(
+    c: Candidate, geo: Geography, pop: Population, removed: set[str],
+    express_saving_min: float, parts: list[Candidate] | None = None
+) -> SimResult | None:
+    """Re-simulate one alternative. The same engine, the same seeds, a different network.
+
+    `parts` stacks several actions into one run. Two options that each help a different
+    group are not additive on paper -- whether they overlap, and whether one undoes the
+    other, is a question about the network -- so a combination is simulated rather than
+    summed, exactly as a single candidate is.
+    """
+    if not c.valid:
+        return None
+
+    if c.kind != "combined":
+        g, rm, kw = _sim_args(c, geo, pop, removed)
+        return simulate(g, pop, rm, express_saving_min, **kw)
+
+    g, rm, kw = geo, removed, {}
+    for part in parts or []:
+        pg, prm, pkw = _sim_args(part, geo, pop, removed)
+        if pg is not geo:
+            g = pg                      # a network rewrite wins over the untouched one
+        if prm != removed:
+            rm = prm                    # a phased closure shrinks what is shut
+        kw.update(pkw)
+    return simulate(g, pop, rm, express_saving_min, **kw)

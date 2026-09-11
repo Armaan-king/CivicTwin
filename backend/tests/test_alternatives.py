@@ -140,13 +140,20 @@ def _candidate(kind: str, params: dict, cost: float = 1.0):
 
 
 def test_the_kind_list_matches_the_contract():
-    """Two lists that must agree and are never compared is how one of them grows."""
+    """Two lists that must agree and are never compared is how one of them grows.
+
+    `KINDS` is what a planner may choose. `ALL_KINDS` is what the contract permits, and it
+    adds "combined" -- the engine stacking two of the five. The planner must never be able
+    to propose one, so the gap between the lists is asserted rather than assumed.
+    """
     from typing import get_args
 
-    from app.interventions import KINDS
+    from app.interventions import ALL_KINDS, KINDS
     from app.schemas.run import InterventionKind
 
-    assert set(KINDS) == set(get_args(InterventionKind))
+    assert set(ALL_KINDS) == set(get_args(InterventionKind))
+    assert set(KINDS) < set(ALL_KINDS)
+    assert "combined" not in KINDS, "a planner could propose a combination"
 
 
 def test_an_invented_action_is_rejected_not_raised():

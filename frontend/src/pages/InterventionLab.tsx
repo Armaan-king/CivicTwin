@@ -38,7 +38,15 @@ export function InterventionLab() {
   const best = ranked[0];
   const selected = ranked.find((item) => item.intervention_id === selectedId) ?? best;
   const prevented = Math.max(0, base.severe_harm_count - selected.metrics.severe_harm_count);
-  const baseCarers = run.outcomes.filter((outcome) => outcome.second_order).length;
+  // Both sides of this comparison must count the same thing, and they did not.
+  //
+  // `carers_harmed` on an option is "is a caregiver AND severely harmed". The baseline
+  // was "harmed through a care tie", which is a different set -- a caregiver can be
+  // severely harmed by their own longer walk without absorbing anyone's trip. So the card
+  // subtracted 10 caregivers from 7 care-tie victims and reported the difference as if it
+  // meant something. It read "3 more" where the truthful answer was "no change", and
+  // "1 fewer" where it was "4 fewer".
+  const baseCarers = run.metrics.subgroup.is_caregiver.True.severe_harm_count;
   const selectedCarers = selected.carers_harmed ?? 0;
   const carersPrevented = baseCarers - selectedCarers;
   const costChange = Math.round((selected.estimated_cost_index - 1) * 100);

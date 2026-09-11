@@ -328,7 +328,7 @@ def _interventions_for(geo, pop, removed, policy) -> list[dict]:
             "validation_errors": c.validation_errors,
             "estimated_cost_index": c.estimated_cost_index,
             # who proposed this, so the screen never has to assume
-            "planned_by": planner,
+            "planned_by": planner, "combines": [],
             "metrics": None, "carers_harmed": None,
             "newly_harmed_elsewhere": None, "subgroup_disparity_pp": None,
         }
@@ -345,8 +345,83 @@ def _interventions_for(geo, pop, removed, policy) -> list[dict]:
             row["subgroup_disparity_pp"] = disparity_pp(subgroup_metrics(pop, r.outcomes))
         ivs.append(row)
 
+    combo = _combined_row(cands, ivs, geo, pop, removed, policy, planner)
+    if combo:
+        ivs.append(combo)
+
     _INTERVENTION_CACHE[key] = ivs
     return ivs
+
+
+def _combined_row(cands, ivs, geo, pop, removed, policy, planner) -> dict | None:
+    """Stack assisted transport onto the best network change, and simulate the pair.
+
+    Assisted transport is the one action that composes with any other: it sets a flag on
+    named residents rather than rewriting the network, so it cannot conflict with a
+    closure or a route. Everything else touches the same stops and services and would
+    fight.
+
+    Only one combination is evaluated, the obvious one -- every pair would be ten more
+    full simulations on the slowest node in the pipeline, to answer a question nobody
+    asked. Which is also why this is the engine's job and not the planner's: a model
+    proposing "do both" would be proposing an instrument that does not exist, whereas the
+    engine can simply run the two it already has.
+
+    The result is simulated, never summed. Two options that each help six and fifteen
+    people do not help twenty-one unless those sets are disjoint, and whether they are is
+    a question about the network rather than about arithmetic.
+    """
+    from app.interventions import Candidate
+
+    scored = {r["intervention_id"]: r for r in ivs if r["valid"] and r["metrics"]}
+    support = next((c for c in cands if c.kind == "targeted_support"
+                    and c.intervention_id in scored), None)
+    others = [c for c in cands
+              if c.kind not in ("targeted_support", "combined")
+              and c.intervention_id in scored]
+    if support is None or not others:
+        return None
+    best = min(others, key=lambda c: scored[c.intervention_id]["metrics"]["severe_harm_count"])
+    if scored[best.intervention_id]["metrics"]["severe_harm_count"] >=             len([o for o in policy.outcomes.values() if o.severity == "high"]):
+        return None                     # nothing to stack onto; it helps nobody alone
+
+    combo = Candidate(
+        intervention_id="iv_combined",
+        kind="combined",
+        name=f"{best.name} + assisted transport",
+        params={"stacks": [best.intervention_id, support.intervention_id]},
+        rationale=(f"{best.rationale.rstrip('.')}, together with door-to-door transport "
+                   "for the residents it does not reach."),
+        # The engine has no model for what two actions cost together. Stated as the sum of
+        # what each adds over the policy as written, and it is an estimate -- the only
+        # number on this row that is not simulated, which is why it is spelled out here.
+        estimated_cost_index=round(
+            POLICY_COST_INDEX + (best.estimated_cost_index - POLICY_COST_INDEX)
+            + (support.estimated_cost_index - POLICY_COST_INDEX), 2),
+        combines=[best.intervention_id, support.intervention_id],
+    )
+    validate(combo, fleet_increase_allowed=False, geo=geo, removed=removed)
+    row = {
+        "intervention_id": combo.intervention_id, "kind": combo.kind, "name": combo.name,
+        "params": combo.params, "rationale": combo.rationale, "valid": combo.valid,
+        "validation_errors": combo.validation_errors,
+        "estimated_cost_index": combo.estimated_cost_index,
+        "planned_by": planner, "combines": combo.combines,
+        "metrics": None, "carers_harmed": None,
+        "newly_harmed_elsewhere": None, "subgroup_disparity_pp": None,
+    }
+    if not combo.valid:
+        return row
+    r = run_candidate(combo, geo, pop, removed, EXPRESS_SAVING_MIN, parts=[best, support])
+    row["metrics"] = metrics_for(list(r.outcomes.values()))
+    row["carers_harmed"] = sum(1 for p in pop.personas
+                               if p.is_caregiver and r.outcomes[p.persona_id].severity == "high")
+    row["newly_harmed_elsewhere"] = sum(
+        1 for p in pop.personas
+        if r.outcomes[p.persona_id].severity == "high"
+        and policy.outcomes[p.persona_id].severity != "high")
+    row["subgroup_disparity_pp"] = disparity_pp(subgroup_metrics(pop, r.outcomes))
+    return row
 
 
 def _severity_check(outcomes: dict, theirs: dict[str, str]) -> dict | None:

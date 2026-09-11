@@ -82776,6 +82776,7 @@
    "validation_errors": [],
    "estimated_cost_index": 1.02,
    "planned_by": "enumerated in code",
+   "combines": [],
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.36,
@@ -82806,6 +82807,7 @@
    "validation_errors": [],
    "estimated_cost_index": 1.06,
    "planned_by": "enumerated in code",
+   "combines": [],
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.06,
@@ -82837,6 +82839,7 @@
    "validation_errors": [],
    "estimated_cost_index": 0.95,
    "planned_by": "enumerated in code",
+   "combines": [],
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.06,
@@ -82862,6 +82865,7 @@
    "validation_errors": [],
    "estimated_cost_index": 1.05,
    "planned_by": "enumerated in code",
+   "combines": [],
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.14,
@@ -82891,6 +82895,7 @@
    "validation_errors": [],
    "estimated_cost_index": 0.97,
    "planned_by": "enumerated in code",
+   "combines": [],
    "metrics": {
     "n": 2000,
     "avg_journey_time_delta": -1.34,
@@ -82921,10 +82926,42 @@
    ],
    "estimated_cost_index": 1.34,
    "planned_by": "enumerated in code",
+   "combines": [],
    "metrics": null,
    "carers_harmed": null,
    "newly_harmed_elsewhere": null,
    "subgroup_disparity_pp": null
+  },
+  {
+   "intervention_id": "iv_combined",
+   "kind": "combined",
+   "name": "Close one stop, keep the other + assisted transport",
+   "params": {
+    "stacks": [
+     "iv_phase",
+     "iv_support"
+    ]
+   },
+   "rationale": "Half the closure. The remaining stop keeps the corridor within reach of the residents who cannot walk to the next one, together with door-to-door transport for the residents it does not reach.",
+   "valid": true,
+   "validation_errors": [],
+   "estimated_cost_index": 1.08,
+   "planned_by": "enumerated in code",
+   "combines": [
+    "iv_phase",
+    "iv_support"
+   ],
+   "metrics": {
+    "n": 2000,
+    "avg_journey_time_delta": -1.42,
+    "severe_harm_count": 15,
+    "severe_harm_rate": 0.0075,
+    "essential_trip_completion": 0.9829,
+    "walk_distance_p90": 769
+   },
+   "carers_harmed": 6,
+   "newly_harmed_elsewhere": 7,
+   "subgroup_disparity_pp": 4.65
   }
  ],
  "consultation": {

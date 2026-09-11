@@ -272,10 +272,25 @@ def test_valid_interventions_are_all_simulated(run: SimulationRun):
 
 
 def test_intervention_kinds_stay_inside_the_action_space(run: SimulationRun):
-    """J1. The planner selects and parameterises; it never invents a type."""
-    allowed = {"retain_stop_peak", "add_shuttle_feeder", "reroute_feeder",
-               "targeted_support", "phase_rollout"}
-    assert {i.kind for i in run.interventions} <= allowed
+    """J1. The planner selects and parameterises; it never invents a type.
+
+    "combined" is the engine stacking two of the five and simulating the pair, not a sixth
+    instrument -- so it must never appear without naming the two it is made of, and those
+    two must themselves be ordinary actions that this run scored.
+    """
+    from app.interventions import KINDS
+
+    planner_may_choose = set(KINDS)
+    by_id = {i.intervention_id: i for i in run.interventions}
+    for i in run.interventions:
+        if i.kind != "combined":
+            assert i.kind in planner_may_choose, f"{i.kind} is not an action"
+            assert not i.combines, "only a combination stacks other interventions"
+            continue
+        assert len(i.combines) >= 2, "a combination that combines nothing"
+        for part in i.combines:
+            assert part in by_id, f"{part} is not in this run"
+            assert by_id[part].kind in planner_may_choose
 
 
 # ---------------------------------------------------------------- calibration

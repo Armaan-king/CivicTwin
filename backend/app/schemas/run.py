@@ -40,6 +40,9 @@ EdgeKind = Literal[
 InterventionKind = Literal[
     "retain_stop_peak", "add_shuttle_feeder", "reroute_feeder",
     "targeted_support", "phase_rollout",
+    #: two of the five, stacked and simulated together. Not a sixth instrument a planner
+    #: may propose: the engine builds it, which is why `plan.py` never offers it.
+    "combined",
 ]
 
 
@@ -141,6 +144,8 @@ class Intervention(BaseModel):
     #: -- doing it silently, while a slide says the alternatives are planned by a model,
     #: is not.
     planned_by: str = "enumerated in code"
+    #: for `kind == "combined"`, the intervention_ids stacked into it. Empty otherwise.
+    combines: list[str] = Field(default_factory=list)
     #: MUST be None when valid is False. A rejected candidate was never simulated,
     #: so scoring it would be inventing a result. Enforced in test_contract.py.
     metrics: Metrics | None = None
