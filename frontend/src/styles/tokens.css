@@ -2571,3 +2571,12 @@ a.gold:hover { opacity: .72; color: var(--gold); }
   font-size: 0.95em;
   color: var(--t3);
 }
+
+/* the two answers: a line that lands, then a line that explains */
+.impact-severity-check strong {
+  color: var(--t1);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  line-height: 1.45;
+}
+.impact-severity-check span { color: var(--t2); }

@@ -130,32 +130,29 @@ function buildFindings(run: SimulationRun): Finding[] {
  * `simulation.severity_for()` decides who is severely harmed from four clauses and two
  * multipliers. The residents decided it for themselves in the deliberation, and
  * `AGENTS.md` 3 says that is where the judgement belongs now -- yet the predicate is what
- * the headline prints. On the people judged both ways the two agree three times in five.
+ * the headline prints. Showing one of them would be picking a winner by which screen
+ * loaded; this does not resolve the disagreement, it says there is one.
  *
- * Showing only one of them would be picking a winner by which screen loaded. This does not
- * resolve the disagreement, because it is not resolved: a reasoning resident may overstate
- * harm, and the predicate is deliberately conservative and measured against the baseline.
- * It says there is one, and how big.
+ * Two numbers and one sentence, because this is read in about five seconds by somebody
+ * who has not seen the product before. The first draft named `simulation.py`, quoted the
+ * agreement rate and the 91 people the rule misses, and ended on "the consultation and
+ * calibration loop" -- all true, all in the commit history and the system map, and none
+ * of it survivable at a glance. The agreement rate is the sort of detail that belongs in
+ * the answer to a question, not in the sentence that provokes it.
  */
 function SeverityDisagreement({ check }: { check?: SeverityCheck | null }) {
   if (!check || check.cohort === 0) return null;
-  const pct = Math.round(check.agree_rate * 100);
   return (
-    <p className="impact-severity-check">
+    <div className="impact-severity-check">
+      <strong>
+        Our rule counts {check.by_rule} severely harmed here. The residents count{" "}
+        {check.by_residents}.
+      </strong>
       <span>
-        That figure is the rule in <code>simulation.py</code>. The{" "}
-        <strong>{check.cohort.toLocaleString()}</strong> residents who reasoned about this
-        policy themselves reached a different answer: the rule calls{" "}
-        <strong>{check.by_rule}</strong> of them severely harmed, they say{" "}
-        <strong>{check.by_residents}</strong>.
+        We asked {check.cohort.toLocaleString()} residents to judge this policy
+        themselves. We show both answers rather than pick one.
       </span>
-      <span>
-        The two agree on <strong>{pct}%</strong> of that group, and the rule calls{" "}
-        <strong>{check.called_unharmed_but_severe}</strong> people unharmed who say
-        otherwise. Which is right is not settled here — it is what the consultation and
-        calibration loop exist to test.
-      </span>
-    </p>
+    </div>
   );
 }
 
