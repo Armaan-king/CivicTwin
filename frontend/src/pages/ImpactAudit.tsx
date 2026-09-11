@@ -1,13 +1,12 @@
-import { stepKicker } from "@/lib/workflow";
 import { useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
-import { Loading, Failed } from "@/components/ui";
+import { Loading, Failed, PageKicker } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
 import { traceToRoot } from "@/lib/run";
 import { PatternNote } from "@/components/PatternNote";
-import type { HarmPattern, SimEvent, SimulationRun } from "@/types/simulation";
+import type { HarmPattern, SimEvent, SimulationRun, SeverityCheck } from "@/types/simulation";
 import { essentialDestination, worstCohort } from "@/lib/naming";
 
 interface Finding {
@@ -125,6 +124,41 @@ function buildFindings(run: SimulationRun): Finding[] {
   ];
 }
 
+/**
+ * The headline above is one of two answers this product holds to the same question.
+ *
+ * `simulation.severity_for()` decides who is severely harmed from four clauses and two
+ * multipliers. The residents decided it for themselves in the deliberation, and
+ * `AGENTS.md` 3 says that is where the judgement belongs now -- yet the predicate is what
+ * the headline prints. On the people judged both ways the two agree three times in five.
+ *
+ * Showing only one of them would be picking a winner by which screen loaded. This does not
+ * resolve the disagreement, because it is not resolved: a reasoning resident may overstate
+ * harm, and the predicate is deliberately conservative and measured against the baseline.
+ * It says there is one, and how big.
+ */
+function SeverityDisagreement({ check }: { check?: SeverityCheck | null }) {
+  if (!check || check.cohort === 0) return null;
+  const pct = Math.round(check.agree_rate * 100);
+  return (
+    <p className="impact-severity-check">
+      <span>
+        That figure is the rule in <code>simulation.py</code>. The{" "}
+        <strong>{check.cohort.toLocaleString()}</strong> residents who reasoned about this
+        policy themselves reached a different answer: the rule calls{" "}
+        <strong>{check.by_rule}</strong> of them severely harmed, they say{" "}
+        <strong>{check.by_residents}</strong>.
+      </span>
+      <span>
+        The two agree on <strong>{pct}%</strong> of that group, and the rule calls{" "}
+        <strong>{check.called_unharmed_but_severe}</strong> people unharmed who say
+        otherwise. Which is right is not settled here — it is what the consultation and
+        calibration loop exist to test.
+      </span>
+    </p>
+  );
+}
+
 export function ImpactAudit() {
   const { run, error } = useRun();
   const navigate = useNavigate();
@@ -158,8 +192,9 @@ export function ImpactAudit() {
       <main className="impact-page">
         <header className="impact-header">
           <div>
-            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+            <PageKicker />
             <h1>{run.metrics.overall.severe_harm_count} residents face severe transport barriers</h1>
+            <SeverityDisagreement check={run.severity_check} />
           </div>
           <div className="impact-header__summary">
             <span>

@@ -224,3 +224,32 @@ def test_every_consultation_comment_is_a_resident_s_own_words():
     # and the giveaway that a pool has crept back: the same sentence twice
     texts = [r["comment"] for r in commented]
     assert len(set(texts)) == len(texts), "a comment is repeated across residents"
+
+
+def test_the_severity_check_compares_the_rule_with_the_residents():
+    """Two judges, same question, same people -- and the product must show both.
+
+    `severity_for()` produces every headline number; the residents judged themselves in
+    the deliberation. They disagree on two people in five, and the disagreement is
+    one-directional: the rule calls people unharmed who say they are not.
+    """
+    from app.engine import build_run
+
+    c = build_run()["severity_check"]
+    assert c is not None, "no recording matched the demo policy"
+    assert c["cohort"] > 0
+    assert c["agree"] <= c["cohort"]
+    assert 0 <= c["agree_rate"] <= 1
+    assert c["called_unharmed_but_severe"] <= c["by_residents"]
+
+
+def test_no_recording_means_no_severity_check_rather_than_no_disagreement():
+    """The dangerous default.
+
+    With nothing to compare against, a zero-disagreement figure would be the most
+    misleading number on the page: it reads as "the rule and the residents agree" when it
+    means "nobody has been asked". Absent is the honest answer.
+    """
+    from app.engine import _severity_check
+
+    assert _severity_check({"p1": object()}, {}) is None

@@ -235,6 +235,35 @@ class Graph(BaseModel):
     edges: list[GraphEdge]
 
 
+class SeverityCheck(BaseModel):
+    """The rule and the residents, asked the same question about the same people.
+
+    `simulation.severity_for()` decides who is severely harmed from four clauses and two
+    multipliers, and every headline in the product resolves to it. The residents decided
+    the same thing for themselves in the deliberation. `AGENTS.md` 3 says the second is
+    the answer and the first should not be making that judgement any more -- but the
+    first is what the Impact screen prints.
+
+    So both are reported. Not to be clever about uncertainty: to stop the product quietly
+    picking whichever number the reader happened to open first. Which one is right is a
+    real open question -- reasoning residents may well overstate harm, and the predicate
+    is deliberately conservative and measured against the baseline -- and the honest
+    position is to show the gap and say so.
+    """
+
+    #: residents judged both ways. Smaller than the population: only the deliberated cohort
+    #: has a verdict of its own, and the rest are unknown rather than unharmed.
+    cohort: int
+    #: 'high' counts within that cohort, from each judge
+    by_rule: int
+    by_residents: int
+    #: how often the two land on the same label of the three
+    agree: int
+    agree_rate: float = Field(ge=0, le=1)
+    #: the asymmetry that matters: the rule calls them unharmed, they say severely harmed
+    called_unharmed_but_severe: int
+
+
 class SimulationRun(BaseModel):
     """The whole contract. Every route that returns a run returns exactly this."""
     run_id: str
@@ -263,3 +292,6 @@ class SimulationRun(BaseModel):
     #: the shapes of harm this run found, in terms that carry outside transport.
     #: shipped with the run so the UI never hardcodes a description. core.PATTERNS.
     harm_patterns: dict[str, PatternDescription]
+    #: present only when a recorded deliberation covers this policy. None means
+    #: nobody has been asked, which is not the same as nobody disagreeing.
+    severity_check: SeverityCheck | None = None

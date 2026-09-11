@@ -230,18 +230,29 @@ def load_recorded(town: str, policy_text: str | None = None) -> "DeliberationRun
 
 
 @functools.lru_cache(maxsize=8)
-def _words_for(closures: frozenset[str]) -> dict[str, str]:
+def _finals_for(closures: frozenset[str]) -> dict[str, dict]:
+    """Each resident's last turn, from the recording of *this* closure. One scan."""
     for path in sorted(RUNS.glob("deliberation-*-merged.json")):
         raw = json.loads(path.read_text(encoding="utf-8"))
         if _closures_in(raw.get("policy") or "") != closures:
             continue
-        out = {}
-        for v in raw.get("voices", []):
-            turns = v.get("turns") or []
-            if turns and turns[-1].get("reasoning"):
-                out[v["persona_id"]] = turns[-1]["reasoning"]
-        return out
+        return {v["persona_id"]: v["turns"][-1]
+                for v in raw.get("voices", []) if v.get("turns")}
     return {}
+
+
+def recorded_severity(closures: set[str]) -> dict[str, str]:
+    """How badly each resident says this policy hits them, in their own judgement.
+
+    The counterpart to `simulation.severity_for()`, which decides the same thing from four
+    clauses and two multipliers. `AGENTS.md` 3 says that judgement belongs to the
+    residents now, and it does -- but the predicate still produces every headline number,
+    so the product carries two answers to one question and shows one of them.
+
+    Both are exposed so the gap is visible rather than settled by whichever screen the
+    reader happened to open. They disagree on two people in five.
+    """
+    return {pid: t.get("severity", "none") for pid, t in _finals_for(frozenset(closures)).items()}
 
 
 def recorded_words(closures: set[str]) -> dict[str, str]:
@@ -263,7 +274,8 @@ def recorded_words(closures: set[str]) -> dict[str, str]:
     Returns an empty mapping when nothing matches, and the consultation then carries no
     comments at all -- visibly empty rather than quietly invented.
     """
-    return _words_for(frozenset(closures))
+    return {pid: t["reasoning"] for pid, t in _finals_for(frozenset(closures)).items()
+            if t.get("reasoning")}
 
 
 def _cached_or_call(prompt: str, model: str, fn, run: DeliberationRun):

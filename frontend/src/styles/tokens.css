@@ -2551,3 +2551,23 @@ a.gold:hover { opacity: .72; color: var(--gold); }
   letter-spacing: .06em;
   text-transform: uppercase;
 }
+
+/* ---- the two answers to "who is severely harmed" ---- */
+.impact-severity-check {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 11px 14px;
+  max-width: 82ch;
+  border-left: 2px solid var(--warning);
+  background: var(--panel);
+  color: var(--t2);
+  font-size: var(--fs-14);
+  line-height: 1.6;
+}
+.impact-severity-check strong { color: var(--t1); font-weight: 600; }
+.impact-severity-check code {
+  font-family: inherit;
+  font-size: 0.95em;
+  color: var(--t3);
+}

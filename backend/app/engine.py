@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING
 
 from app import calibration_state
 from app.consultation import build_consultation, walk_cost_key
-from app.deliberate import recorded_words
+from app.deliberate import recorded_severity, recorded_words
 from app.geography import build_geography, display_dict
 from app.graph import build_graph
 from app.interventions import POLICY_COST_INDEX, candidates, run_candidate, validate
@@ -339,6 +339,29 @@ def _interventions_for(geo, pop, removed, policy) -> list[dict]:
     return ivs
 
 
+def _severity_check(outcomes: dict, theirs: dict[str, str]) -> dict | None:
+    """Compare `severity_for()` with the residents, on whoever was judged both ways.
+
+    Only the deliberated cohort has a verdict of its own, so this is not the population --
+    and the missing residents are unknown, not unharmed. Returns None when no recording
+    covers this policy, because then nobody has been asked and a zero-disagreement figure
+    would be the most misleading thing on the page.
+    """
+    both = [(outcomes[pid].severity, mine) for pid, mine in theirs.items() if pid in outcomes]
+    if not both:
+        return None
+    agree = sum(1 for rule, mine in both if rule == mine)
+    return {
+        "cohort": len(both),
+        "by_rule": sum(1 for rule, _ in both if rule == "high"),
+        "by_residents": sum(1 for _, mine in both if mine == "high"),
+        "agree": agree,
+        "agree_rate": round(agree / len(both), 3),
+        "called_unharmed_but_severe":
+            sum(1 for rule, mine in both if rule == "none" and mine == "high"),
+    }
+
+
 def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
               text: str = "") -> dict:
     geo, removed, resolution = study_area(policy, text)
@@ -360,6 +383,9 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
     con = build_consultation(pop, policy.outcomes, terrain_road, corrections,
                              recorded_words(removed))
     flagged = next((r for r in con.calibration if r.flagged), None)
+
+    # ------------------------------------------------------- the rule against the people
+    check = _severity_check(policy.outcomes, recorded_severity(removed))
 
     return {
         "run_id": run_id,
@@ -434,6 +460,7 @@ def build_run(run_id: str = "run_a91f", policy: "PolicyChange | None" = None,
             "proposed_adjustment": _proposed_adjustment(con, corrections),
         },
         "harm_patterns": {k: v.model_dump() for k, v in PATTERNS.items()},
+        "severity_check": check,
     }
 
 

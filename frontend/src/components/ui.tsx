@@ -1,4 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+import { stepKicker } from "@/lib/workflow";
 
 /** Shared primitives so no screen reinvents a rule, a heading, or a bar. */
 
@@ -105,4 +107,22 @@ export function Failed({ message }: { message: string }) {
       </p>
     </div>
   );
+}
+
+/**
+ * "Step 3 · Impact", and the reason it is a component rather than a line of JSX.
+ *
+ * Every page used to write `{stepKicker(useLocation().pathname)}` inline. A hook inside
+ * JSX still runs during render, so that is legal right up until the component returns
+ * early -- and all seven of these do, for loading and for error. React then sees
+ * eighteen hooks on the first render and nineteen on the second and warns that the order
+ * changed, which it had, on every page on the demo path.
+ *
+ * Calling the hook inside a component of its own makes it unconditional again, because
+ * this function has one return and no branch above it. One fix, eight call sites, instead
+ * of hoisting a `const` into seven page bodies and waiting for the eighth page to forget.
+ */
+export function PageKicker() {
+  const { pathname } = useLocation();
+  return <span className="page-kicker">{stepKicker(pathname)}</span>;
 }

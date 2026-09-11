@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { stepKicker } from "@/lib/workflow";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
-import { Loading, Failed } from "@/components/ui";
+import { Loading, Failed, PageKicker } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
 import { api, NotAvailableOffline } from "@/lib/api";
 import { TRANSPORT } from "@/lib/config";
@@ -87,7 +86,7 @@ export function Consultation() {
       <main className="consultation-page">
         <header className="consultation-header">
           <div>
-            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+            <PageKicker />
             <h1>Have your say on {serviceLabel(run)}</h1>
           </div>
           {TRANSPORT === "fixture" && (

@@ -1,10 +1,8 @@
-import { useLocation } from "react-router-dom";
-import { stepKicker } from "@/lib/workflow";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
-import { Loading, Failed } from "@/components/ui";
+import { Loading, Failed, PageKicker } from "@/components/ui";
 import { PatternNote } from "@/components/PatternNote";
 import { useRun } from "@/lib/useRun";
 import { api, NotAvailableOffline } from "@/lib/api";
@@ -90,7 +88,7 @@ Residents on ${constraint.location} report that ${
       <main className="calibration-page">
         <header className="calibration-header">
           <div>
-            <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+            <PageKicker />
             <h1>Prediction vs public feedback</h1>
             <p>
               {largest

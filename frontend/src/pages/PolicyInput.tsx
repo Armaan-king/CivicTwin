@@ -1,9 +1,8 @@
-import { stepKicker } from "@/lib/workflow";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
-import { Loading, Failed } from "@/components/ui";
+import { Loading, Failed, PageKicker } from "@/components/ui";
 import { api, NotAvailableOffline } from "@/lib/api";
 import { useRun } from "@/lib/useRun";
 import { serviceLabel, serviceId, affectedRoad, townName } from "@/lib/naming";
@@ -58,7 +57,7 @@ export function PolicyInput() {
 
       <main className="policy-workspace">
         <header className="policy-workspace__header">
-          <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+          <PageKicker />
           <h1>Review the transport policy</h1>
           <p>Edit the proposal, confirm what CivicTwin will test, then run the simulation.</p>
         </header>

@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { stepKicker } from "@/lib/workflow";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Crt } from "@/components/Crt";
 import { TopBar } from "@/components/TopBar";
-import { Loading, Failed } from "@/components/ui";
+import { Loading, Failed, PageKicker } from "@/components/ui";
 import { useRun } from "@/lib/useRun";
 import { fetchVoices, NotAvailableOffline, NotDeliberated } from "@/lib/api";
 import type { AgentVoice, VoiceListing } from "@/types/voice";
@@ -176,6 +175,9 @@ export function Voices() {
       <TopBar meta={`${data.total.toLocaleString()} RESIDENTS`} />
 
       <div style={{ padding: "var(--s-4) var(--s-6) var(--s-2)", flexShrink: 0 }}>
+        {/* the two failure branches below carried this and the success branch did not,
+            so step 4 was the one page in the walkthrough with no step label on it */}
+        <PageKicker />
         <h1 className="t1" style={{ fontSize: "var(--fs-28)", fontWeight: 500, margin: 0 }}>
           What residents make of it
         </h1>
@@ -307,7 +309,7 @@ function VoicesPending({ info }: { info: NotDeliberated }) {
       <TopBar meta="NOT DELIBERATED" />
       <main className="voices-unavailable">
         <section>
-          <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+          <PageKicker />
           <h1>These residents have not been asked about this policy</h1>
           <p>{info.why}</p>
 
@@ -349,7 +351,7 @@ function VoicesUnavailable() {
       <TopBar meta="RECORDED RUN" />
       <main className="voices-unavailable">
         <section>
-          <span className="page-kicker">{stepKicker(useLocation().pathname)}</span>
+          <PageKicker />
           <h1>No recorded deliberation for this run</h1>
           <p>
             The prepared demo includes verified transport outcomes, but no model-written

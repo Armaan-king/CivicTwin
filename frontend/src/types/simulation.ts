@@ -141,6 +141,23 @@ export interface PatternDescription {
   also_seen_in: string[];
 }
 
+/**
+ * The rule and the residents, asked the same question about the same people.
+ *
+ * `simulation.severity_for()` produces every headline number in the product; the
+ * residents judged themselves in the deliberation. Both are reported so the product
+ * cannot quietly pick whichever the reader opened first.
+ */
+export interface SeverityCheck {
+  /** residents judged both ways. Not the population: the rest are unknown, not unharmed. */
+  cohort: number;
+  by_rule: number;
+  by_residents: number;
+  agree: number;
+  agree_rate: number;
+  called_unharmed_but_severe: number;
+}
+
 export interface SimulationRun {
   run_id: string;
   scenario_id: string;
@@ -170,6 +187,8 @@ export interface SimulationRun {
   consultation: Consultation;
   /** shipped with the run so the UI never restates a description the engine owns. */
   harm_patterns: Record<HarmPattern, PatternDescription>;
+  /** absent when no recorded deliberation covers this policy: nobody has been asked */
+  severity_check?: SeverityCheck | null;
 }
 
 /* ---------- policy reading, interventions, consultation ---------- */
